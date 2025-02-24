@@ -1,0 +1,30 @@
+Maak gebruik van de PowerShell syllabus en voer uit op je host laptop. Zoek uit hoe je via
+PowerShell:
+➢ Enkel alle draaiende services kan bekomen
+➢ De eerste 5 draaiende services kan bekomen
+➢ Alle mogelijke data van de Word en Powerpoint processen toont
+▪ Zorg dat je minstens 1 Word- en Powerpoint-document geopend hebt
+➢ Een lijst van IPv4 adressen op je localhost kan tonen in tabelvorm gesorteerd op interfaceindex
+➢ 5 eigenschappen, naar eigen keuze, van je lokale schijf in tabelvorm kan tonen
+
+1 
+
+Get-Command -Type Cmdlet *process*
+Get-Process
+--> toont enkel actieve processen
+Alternatief
+Get-Service | Where-Object Status -EQ "running"
+--> toont ook enkel actieve processen
+
+2
+Get-Process | Select-Object -First 5
+--> toont de eerste 5 processen van boven naar beneden zonder verdere filtering
+3
+Get-Process *word*, *powerp*
+--> geeft alle informatie over de processen van word en powerpoint weer
+4
+Get-NetIPAddress | Sort-Object -Property InterfaceIndex | format-table
+--> Bekijkt alle lokale ip addressen sorteert het op Interfaceindex en dan in een mooie tabel.
+5
+Get-Volume | Select-Object C, FileSystemLabel , Size , SizeRemaining , FileSystem | Format-Table
+--> 5 willekeurige eigenschappen van de lokale schrijf.
