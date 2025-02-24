@@ -1,4 +1,4 @@
-**Windows Versions**
+## Windows Versions
 
 | Operating System Names                     | Version Number |
 |--------------------------------------------|----------------|
@@ -35,8 +35,7 @@ Lokale manier om de computer te bedienen
 Toegang krijgen tot een computer over een network. 
 Er is een computer met lokale access nodig voordat we connectie kunnen maken met een remote computer.
 
-MSP & MSSPS zijn afhankelijk van clienten hun systemen te beheren remote
-De meest gebruikte methodes zijn
+MSP & MSSPS zijn afhankelijk van remote connectie om clienten te beheren van op afstand.
 
 - Virtual Private Networks (VPN)
 - Secure Shell (SSH)
@@ -82,7 +81,7 @@ dir c:\
 We kunnen een boomstructuur krijgen met 
 tree "C:\Program Files (x86)\VMware\"
 
-# File System
+## File System
 
 **FAT32**
 
