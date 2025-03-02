@@ -9,4 +9,3 @@ Get-command -Name *a
 # --> Gives all the commands that end with a
 Get-command -Name a*    
 # --> Gives all the commands that start with a
-
