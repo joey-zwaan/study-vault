@@ -11,3 +11,5 @@ Remove-OSConfigDesiredConfiguration -Scenario SecurityBaseline/WS2025/MemberServ
 
 # Je hebt verschillende scenario's je hebt bijvoorbeeld ook voor een domaincontroller
 Set-OSConfigDesiredConfiguration -Scenario SecurityBaseline/WS2025/DomainController -Default
+Get-OSConfigDesiredConfiguration -Scenario SecurityBaseline/WS2025/MemberServer | ft Name, @{ Name = "Status"; Expression={$_.Compliance.Status} }, @{ Name = "Reason"; Expression={$_.Compliance.Reason} } -AutoSize -Wrap
+# --> Dit controleert of de gewenste configuratie van de baseline security voor een Windows Server 2025 Member Server correct is ingesteld.
