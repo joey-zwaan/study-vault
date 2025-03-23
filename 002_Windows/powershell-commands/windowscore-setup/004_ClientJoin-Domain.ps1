@@ -3,7 +3,7 @@ Get-NetIPInterface
 
 Set-DnsClientServerAddress -InterfaceIndex 13 -ServerAddresses ("192.168.153.200")
 # Join domain
-Add-Computer -DomainName nswb.test -restart
+Add-Computer -DomainName nswb.test -Credential (Get-Credential) -Restart
 
 # Check network connectivity to the domain controller
 Test-Connection -ComputerName "dc01.nswb.test"

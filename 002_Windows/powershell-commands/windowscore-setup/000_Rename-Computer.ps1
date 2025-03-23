@@ -1,6 +1,6 @@
 # Rename the computer and restart it
 Rename-Computer -NewName "Server01" -Restart
-
+/
 # Rename the computer and specify the local credentials
 Rename-Computer -NewName "Server02" -LocalCredential (Get-Credential) -Restart
 
@@ -11,3 +11,9 @@ Rename-Computer -NewName "Server03" -DomainCredential (Get-Credential) -Restart
 Rename-Computer -NewName "Server04"
 
 # Rename the computer and force the operation without c
+
+
+# sysprep cmd
+%WINDIR%\system32\sysprep\sysprep.exe /generalize /shutdown /oobe
+# sysprep powershell
+C:\Windows\System32\Sysprep\Sysprep.exe /generalize /shutdown /oobe

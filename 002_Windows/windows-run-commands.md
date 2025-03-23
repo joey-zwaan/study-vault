@@ -8,7 +8,7 @@
 | Computer Management        | compmgmt.msc|
 | Service Control Manager    | services.msc|
 | network-adapters           | ncpa.cpl    |
-| Remote desktop connection  | mstc.exe    |
+| system-propterties         | sysdm.cpl    |
 | Remote desktop connection  | mstc.exe    |
 | Remote desktop connection  | mstc.exe    |
 | Remote desktop connection  | mstc.exe    |

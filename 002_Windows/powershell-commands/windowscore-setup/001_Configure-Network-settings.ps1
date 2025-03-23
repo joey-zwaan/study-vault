@@ -17,7 +17,7 @@ Disable-NetAdapter -Name "Ethernet" -Confirm:$false
 Remove-NetIPAddress -InterfaceIndex 5 -Confirm:$false
 
 # Set the DNS server address on the network interface with index 5
-Set-DnsClientServerAddress -InterfaceIndex 5 -ServerAddresses ("127.0.0.1")
+Set-DnsClientServerAddress -InterfaceIndex 5 -ServerAddresses ("127.0.0.1, 1.1.1.1")
 
 # Remove a specific IP address from any network interface
 Remove-NetIPAddress -IPAddress 192.168.1.100 -Confirm:$false

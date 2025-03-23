@@ -56,6 +56,12 @@ Powershell geeft directe toegang tot het bestandsysteem en een groot deel van de
 
 Soms zien we dat het systeem weigerd van een script te draaien. Dit is dankzij een security feature genaamd "execution policy" die voorkomt dat gevaarlijke scripts zomaar gerunt kunnen worden.
 
+Om een powershell script te runnen moet je de executionpolicy aanpassen.
+Het veiligste is om dit enkel voor de sessie te doen waar je het voor nodig hebt
+
+powershell -ExecutionPolicy Bypass -File .\add_ou_opdracht1.ps1
+
+
 <img src="/assets/execution-policy.png" alt="share" width="600">
 
 

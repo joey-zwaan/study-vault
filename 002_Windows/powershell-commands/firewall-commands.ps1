@@ -1,5 +1,4 @@
 #Instellen Firewall rules via Powershell
-
 Get-Command *Firewall*
 Get-help Get-NetFirewallRule -Examples
 Get-NetFirewallRule -Name *Remote* | Format-Table -AutoSize
@@ -18,3 +17,5 @@ Set-NetFirewallRule -Name "WINRM-HTTP-In" -Enabled True -RemoteAddress 192.168.1
 Set-NetFirewallRule -Name "WINRM-HTTP-In-TCP-NoScope" -Enabled False -RemoteAddress 192.168.153.10 -Profile Domain,Private
 #--> Als je een regel zou maken kan je ook kiezen op welke Profile hij van toepassing is.
 
+Get-NetFirewallProfile
+# --> Toon de firewall profielen op een client
