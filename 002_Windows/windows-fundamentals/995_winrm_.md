@@ -1,16 +1,16 @@
-### WinRM - Windows Remote Management  
+# WinRM - Windows Remote Management  
 
 **Wat is WinRM?**  
 WinRM is een Windows-service gebaseerd op **WS-Management** waarmee externe apparaten veilig kunnen worden beheerd via **PowerShell of CMD**. Het gebruikt poort **5985 (HTTP)** en **5986 (HTTPS)**.  
 
-#### WinRM inschakelen  
+## WinRM inschakelen  
 ```powershell
 winrm quickconfig
 ```
 - Start de WinRM-service als deze nog niet actief is  
 - Staat externe verbindingen toe met bevestiging  
 
-#### WinRM Listener handmatig instellen  
+## WinRM Listener handmatig instellen  
 **Voor alle IP-adressen via HTTP:**  
 ```powershell
 winrm create winrm/config/Listener?Address=*+Transport=HTTP @{Port="5985"}
@@ -19,29 +19,35 @@ winrm create winrm/config/Listener?Address=*+Transport=HTTP @{Port="5985"}
 ```powershell
 winrm create winrm/config/Listener?Address=192.168.1.10+Transport=HTTPS @{Port="5986";CertificateThumbprint="THUMBPRINT"}
 ```
-#### Firewal rules (manueel)
+ **Firewal rules (manueel)**
+
 ```powershell
 netsh advfirewall firewall add rule name="WinRM HTTP" protocol=TCP dir=in localport=5985 action=allow
 netsh advfirewall firewall add rule name="WinRM HTTPS" protocol=TCP dir=in localport=5986 action=allow 
 ```
 
-#### Huidige configuratie controleren  
+**Huidige configuratie controleren**
+
 ```powershell
 winrm enumerate winrm/config/listener
 ```
 
-#### WinRM verwijderen of aanpassen  
+**WinRM verwijderen of aanpassen**
+
 **Een bestaande listener verwijderen:**  
+
 ```powershell
 winrm delete winrm/config/listener?Address=*+Transport=HTTP
 ```
 **Instellingen aanpassen:**  
+
 ```powershell
 winrm set winrm/config/service @{AllowUnencrypted="true"}
 winrm set winrm/config/service/auth @{Basic="true"}
 ```
 
-#### WinRM testen  
+## WinRM testen  
+
 **Lokaal testen:**  
 ```powershell
 Test-WSMan
@@ -56,28 +62,44 @@ Test-WSMan -ComputerName dc1.zjlocal.test
 Enter-PSSession -ComputerName dc1.zjlocal.test -Credential Administrator
 ```
 
-#### GPO en WinRM  
-- **In een GPO-serverbeheerinstelling moet IPv4 op `*` of een specifiek IP-adres staan, anders blijft het leeg (default = uitgeschakeld).**  
-- **WinRM kan via GPO worden ingeschakeld onder:**  
-  `Computerconfiguratie > Beheersjablonen > Windows-componenten > Windows Remote Management (WinRM)`
 
+## GPO en WinRM
 
+WinRM moet correct worden geconfigureerd in Group Policy Object (GPO) om externe beheerverbindingen mogelijk te maken.  
 
-#### Windows Firewall Rules via Group Policy (GPO)
+- In een GPO-serverbeheerinstelling moet IPv4 op `*` of een specifiek IP-adres staan, anders blijft het leeg (default = `*`).
+- WinRM kan via GPO worden ingeschakeld onder:  
 
-Om een nieuwe inbound firewallregel toe te voegen via Group Policy Object (GPO), volg je deze stappen:
+  ```
+  Computerconfiguratie > Beheersjablonen > Windows-componenten > Windows Remote Management (WinRM)
+  ```
 
-1. Ga naar **Policies**  
+Daarnaast moeten firewallregels worden geconfigureerd om inkomend verkeer op de juiste poorten toe te staan.
+
+---
+
+## Windows Firewall Rules via Group Policy (GPO)
+
+Om een nieuwe inbound firewallregel toe te voegen via GPO, volg je deze stappen:
+
+1. Open **Group Policy Management Editor**  
 2. Navigeer naar:  
-   **Windows Settings** → **Security Settings** → **Windows Defender Firewall** → **Inbound Rules**
+   **Computerconfiguratie** → **Beleidsregels** → **Windows-instellingen** → **Beveiligingsinstellingen** →  
+   **Windows Defender Firewall met Geavanceerde Beveiliging** → **Inbound Rules**  
+3. Voeg een nieuwe regel toe met de volgende instellingen:
 
-#### Nieuwe Inbound Regel Toevoegen
+ #### Nieuwe Inbound Regel Toevoegen
 
-| Instelling  | Waarde |
-|-------------|--------|
-| **Protocol** | TCP |
-| **Poorten**  | 5985 (HTTP) / 5986 (HTTPS) |
-| **Actie**    | Allow |
-| **Profielen** | Domain, Private, Public |
+| **Instelling** | **Waarde** |
+|--------------|---------------------------|
+| **Protocol**  | TCP                       |
+| **Poorten**   | 5985 (HTTP) / 5986 (HTTPS) |
+| **Actie**     | Allow                      |
+| **Profielen** | Domain, Private, Public    |
 
+---
+
+## Extra Configuratie en Beveiliging
+- **Controleer WinRM-instellingen:** Zorg ervoor dat WinRM correct is ingeschakeld in de GPO-instellingen.  
+- **Beperk toegang:** Overweeg IP-adresbeperkingen voor extra beveiliging.  
 
