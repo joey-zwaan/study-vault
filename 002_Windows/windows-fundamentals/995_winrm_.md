@@ -63,7 +63,7 @@ Enter-PSSession -ComputerName dc1.zjlocal.test -Credential Administrator
 ```
 
 
-## GPO en WinRM
+## GPO 
 
 WinRM moet correct worden geconfigureerd in Group Policy Object (GPO) om externe beheerverbindingen mogelijk te maken.  
 
@@ -78,7 +78,7 @@ Daarnaast moeten firewallregels worden geconfigureerd om inkomend verkeer op de 
 
 ---
 
-## Windows Firewall Rules via Group Policy (GPO)
+#### Windows Firewall Rules via Group Policy (GPO)
 
 Om een nieuwe inbound firewallregel toe te voegen via GPO, volg je deze stappen:
 
@@ -97,9 +97,4 @@ Om een nieuwe inbound firewallregel toe te voegen via GPO, volg je deze stappen:
 | **Actie**     | Allow                      |
 | **Profielen** | Domain, Private, Public    |
 
----
-
-## Extra Configuratie en Beveiliging
-- **Controleer WinRM-instellingen:** Zorg ervoor dat WinRM correct is ingeschakeld in de GPO-instellingen.  
-- **Beperk toegang:** Overweeg IP-adresbeperkingen voor extra beveiliging.  
 
