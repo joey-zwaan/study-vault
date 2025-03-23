@@ -19,6 +19,11 @@ winrm create winrm/config/Listener?Address=*+Transport=HTTP @{Port="5985"}
 ```powershell
 winrm create winrm/config/Listener?Address=192.168.1.10+Transport=HTTPS @{Port="5986";CertificateThumbprint="THUMBPRINT"}
 ```
+#### Firewal rules (manueel)
+```powershell
+netsh advfirewall firewall add rule name="WinRM HTTP" protocol=TCP dir=in localport=5985 action=allow
+netsh advfirewall firewall add rule name="WinRM HTTPS" protocol=TCP dir=in localport=5986 action=allow 
+```
 
 #### Huidige configuratie controleren  
 ```powershell
@@ -55,3 +60,24 @@ Enter-PSSession -ComputerName dc1.zjlocal.test -Credential Administrator
 - **In een GPO-serverbeheerinstelling moet IPv4 op `*` of een specifiek IP-adres staan, anders blijft het leeg (default = uitgeschakeld).**  
 - **WinRM kan via GPO worden ingeschakeld onder:**  
   `Computerconfiguratie > Beheersjablonen > Windows-componenten > Windows Remote Management (WinRM)`
+
+
+
+#### Windows Firewall Rules via Group Policy (GPO)
+
+Om een nieuwe inbound firewallregel toe te voegen via Group Policy Object (GPO), volg je deze stappen:
+
+1. Ga naar **Policies**  
+2. Navigeer naar:  
+   **Windows Settings** → **Security Settings** → **Windows Defender Firewall** → **Inbound Rules**
+
+#### Nieuwe Inbound Regel Toevoegen
+
+| Instelling  | Waarde |
+|-------------|--------|
+| **Protocol** | TCP |
+| **Poorten**  | 5985 (HTTP) / 5986 (HTTPS) |
+| **Actie**    | Allow |
+| **Profielen** | Domain, Private, Public |
+
+
