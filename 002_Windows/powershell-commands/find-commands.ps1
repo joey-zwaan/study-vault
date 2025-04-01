@@ -9,3 +9,14 @@ Get-command -Name *a
 # --> Gives all the commands that end with a
 Get-command -Name a*    
 # --> Gives all the commands that start with a
+Get-ADOrganizationalUnit -Filter * | Select-Object Name, DistinguishedName
+# --> Get all the Organizational Units in the Active Directory
+Get-ADOrganizationalUnit -Filter * -SearchBase "DC=example,DC=com" | 
+    Sort-Object DistinguishedName | 
+    ForEach-Object { $_.DistinguishedName -replace "^CN=|^OU=", "" } | 
+    Format-Table -AutoSize
+# --> Get all the Organizational Units in the Active Directory and format the output
+Get-ADGroup
+# --> Get all the groups in the Active Directory
+Get-ADGroup -Filter * | Select-Object Name, DistinguishedName
+# --> Get all the groups in the Active Directory

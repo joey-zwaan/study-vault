@@ -32,8 +32,6 @@ netsh advfirewall firewall add rule name="WinRM HTTPS" protocol=TCP dir=in local
 winrm enumerate winrm/config/listener
 ```
 
-**WinRM verwijderen of aanpassen**
-
 **Een bestaande listener verwijderen:**  
 
 ```powershell
@@ -76,7 +74,6 @@ WinRM moet correct worden geconfigureerd in Group Policy Object (GPO) om externe
 
 Daarnaast moeten firewallregels worden geconfigureerd om inkomend verkeer op de juiste poorten toe te staan.
 
----
 
 #### Windows Firewall Rules via Group Policy (GPO)
 
