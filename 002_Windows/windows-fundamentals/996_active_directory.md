@@ -17,74 +17,79 @@ Het is belangrijk om ook de language files erbij te hebben.
 
 ## Kerberos
 
-Kerberos is een beveiligingsprotocol
-Protocol waarbij het mogelijk is om te communiceren over een onveilig netwerk met een partner die niet altijd betrouwbaar is. Er word een 3e partij vertrouwd door zowel client 1 & client 2 terwijl ze elkaar onderling niet vertrouwen. ER WORDEN GEEN WACHTWOORDEN GESTUURD OVER HET NETWERK.
+Kerberos is een beveiligingsprotocol. Het is een protocol waarbij het mogelijk is om te communiceren over een onveilig netwerk met een partner die niet altijd betrouwbaar is. Er wordt een derde partij vertrouwd door zowel client 1 als client 2, terwijl ze elkaar onderling niet vertrouwen. **Er worden geen wachtwoorden gestuurd over het netwerk.**
 
-Open standaard --> RFC4120
-Werkt met tickets.
+- **Open standaard**: RFC4120  
+- **Werkt met tickets**
 
+---
 
-** Onderdelen **
+### **Onderdelen**
 
-KDC (Key distribution server)
-- AGS (Authenthication service)
-- TGS (Ticket Granting Service)
+1. **KDC (Key Distribution Center)**  
+   - **AS (Authentication Service)**  
+   - **TGS (Ticket Granting Service)**  
 
-SP (security principal)
-Entiteit herkend door het beveiligingsysteem
-- Users,group,computer
+2. **SP (Security Principal)**  
+   Een entiteit herkend door het beveiligingssysteem, zoals:  
+   - Gebruikers  
+   - Groepen  
+   - Computers  
 
-TGT 
-- Een ticket, beperkt in de tijd om services te bekomen via TGS. Enkel leesbaar door de KDC en uitgegeven door AS. Bevat User Access Token waar instaat o.a welke groepen de user zit
+3. **TGT (Ticket Granting Ticket)**  
+   - Een ticket, beperkt in tijd, om services te verkrijgen via de TGS.  
+   - Enkel leesbaar door de KDC en uitgegeven door de AS.  
+   - Bevat een User Access Token met o.a. de groepen waartoe de gebruiker behoort.  
 
-Session Key
-- Tijdelijke sleutel die je meekrijgt om communicatie met een DC te beveiligen voor de sessie. Geen user paswd meer nodig.
+4. **Session Key**  
+   - Een tijdelijke sleutel die je ontvangt om communicatie met een DC te beveiligen voor de sessie.  
+   - Geen gebruikerswachtwoord meer nodig.  
 
-**Kerberos Process**
+---
+
+### **Kerberos Process**
+
+#### Stap 1: Authenticatie bij de KDC (AS)
+1. Een **AS-REQ (Authentication Service Request)** wordt gestuurd naar de Authentication Service.  
+   Dit bevat:  
+   - Gebruikersnaam  
+   - Clienttijd  
+   - Geëncrypteerd met de hash van het gebruikerswachtwoord.  
+
+2. De AS decrypt de aanvraag met de hash van het gebruikerswachtwoord uit Active Directory.  
+
+3. Een **AS-REP (Authentication Service Reply)** wordt teruggestuurd.  
+   Dit bevat:  
+   - Session Key  
+   - TGT (Ticket Granting Ticket)  
+   - Geldigheidsduur van het ticket  
 
 <img src="/assets/kerberos_1.png" width="600">
 
-KDC (AS)
-KDC(TGS)
-- draait op een domain controller.
+---
 
-E word een request (AS-REQ) gestuurd naar de authentication service.
-Dit bevat o.a
-- Username
-- Client Tijd
-Deze is gencrypteerd met hash van gebruikerswachtwoord
-AS Gaat deze decrypteren met hash gebruikerswachtwoord uit AD
+#### Stap 2: Aanvragen van een service bij de KDC (TGS)
+1. Een **TGS-REQ (Ticket Granting Service Request)** wordt gestuurd naar de TGS.  
+   Dit bevat:  
+   - **Service Principal Name (SPN)**: Unieke identificatie van de service die de gebruiker wil raadplegen.  
+   - **TGT**: Om aan te tonen dat de gebruiker al geauthenticeerd is.  
 
-
-Er word een antwoord teruggestuurd (AS-REP)
-Dit bevat o.a
-- Session Key
-- TGT (Ticket granting Ticket)
-- Geldigheidsduur van het ticket
+2. De TGS stuurt een **TGS-REP (Ticket Granting Service Reply)** terug.  
+   Dit bevat:  
+   - **Service Ticket**:  
+     - Wordt gepresenteerd aan de service om toegang te krijgen.  
+     - Niet leesbaar door de client.  
+     - Beperkt bruikbaar in tijd.  
 
 <img src="/assets/kerberos_2.png" width="600">
 
+---
 
-Na de Authenticatie gaan we een service aanvragen we sturen een request (TGS-REQ) naar de TGS (Ticket granting service)
+#### Stap 3: Toegang tot de service
+1. Een **AP-REQ (Application Request)** wordt gestuurd naar de service.  
+   Dit bevat:  
+   - **Service Ticket**  
 
-Dit bevat o.a
-- Service Principal Name (SPN)
-Unieke identificatie van de service die de user wil raadplegen
-
-- TGT
-Om aan te tonen dat we al geauthenticeerd zijn.
-
-Er word een antwoord teruggestuurd (TGS-REP) 
-Dit bevat o.a
-- Service ticket
-Dit zal de client presenteren aan de service om toegang te krijgen.
-Niet leesbaar door de client --> versleuteld
-Beperkt bruikbaar in de tijd
-
-
-We sturen een request naar de service (AP-REQ)
-Dit bevat o.a
-- Service ticket
-
-We krijgen een antwoord terug (AP-REP)
-Omdat de KDC een vertrouwde 3e partij is vertrouwd de server het ticket en geeft hij toegang tot de service. Er is nog een mogelijkheid tot optionele verificatie van de authenticatie.
+2. De service stuurt een **AP-REP (Application Reply)** terug.  
+   - Omdat de KDC een vertrouwde derde partij is, vertrouwt de server het ticket en geeft toegang tot de service.  
+   - Optioneel: Verificatie van de authenticatie.
