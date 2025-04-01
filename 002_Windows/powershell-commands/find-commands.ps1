@@ -20,3 +20,10 @@ Get-ADGroup
 # --> Get all the groups in the Active Directory
 Get-ADGroup -Filter * | Select-Object Name, DistinguishedName
 # --> Get all the groups in the Active Directory
+
+Get-ADRootDSE
+# --> Get the root of the Active Directory
+Get-ADRootDSE | Select-Object dnsHostName, namingcontext
+Get-ADRootDSE -Server dc1.zjlocal.test
+# --> Get the root of the Active Directory on a specific server
+
