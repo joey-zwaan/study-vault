@@ -24,15 +24,4 @@ Get-NetFirewallProfile
 # Prompt the user for the computer name and port number
 
 
-$Users = Import-Csv -Path "C:\Users\joey-admin2\Documents\users.csv" -Delimiter ";"
-$SecurePwd = ConvertTo-SecureString "P@ssw0rd123!!!!!" -AsPlainText -Force
-foreach ($User in $Users) {
-    New-ADUser -GivenName $User.Firstname `
-               -Surname $User.Lastname `
-               -Name "$($User.Firstname) $($User.Lastname)" `
-               -Path $User.OU `
-               -EmailAddress $User.Email `
-               -Enabled $true `
-               -ChangePasswordAtLogon $true
-               -AccountPassword $SecurePwd
-}
+
