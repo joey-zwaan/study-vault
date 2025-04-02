@@ -27,3 +27,5 @@ Get-ADRootDSE | Select-Object dnsHostName, namingcontext
 Get-ADRootDSE -Server dc1.zjlocal.test
 # --> Get the root of the Active Directory on a specific server
 
+# Get the distinguished name and oter attributes of user accounts       
+Get-ADUser -Filter * | Select-Object Name, DistinguishedName, SamAccountName, UserPrincipalName

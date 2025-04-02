@@ -1,4 +1,54 @@
-## Wat is GPO?
+## Security Principal
+
+
+Een Security Principal in Windows en Active Directory is een entiteit (zoals een gebruiker, groep, computer of service) die een Security Identifier (SID) heeft en toegang kan krijgen tot bronnen binnen een netwerk.
+
+Voorbeelden van Security Principals
+Gebruikersaccounts 
+
+Normale gebruikers (bijv. Jan in AD)
+
+Administrators (Administrator, Domain Admins)
+
+Gasten (Guest)
+
+Groepen 
+
+Bevatten meerdere gebruikers en krijgen rechten toegewezen.
+
+Voorbeelden: Domain Users, Administrators, Backup Operators.
+
+Computeraccounts 
+
+Elke computer die lid is van een domein heeft een account in AD.
+
+Bijvoorbeeld: PC-01$
+
+Service Accounts
+
+Speciale accounts voor toepassingen en services, zoals SQL Server Service Account.
+
+### Hoe werkt een Security Principal?
+
+Identificatie
+
+Elke Security Principal heeft een SID (Security Identifier).
+
+Dit is uniek binnen het domein en wordt gebruikt voor authenticatie.
+
+Authenticatie & Autorisatie
+
+Authenticatie: Wie ben je? (bijv. gebruikersnaam/wachtwoord of certificaat)
+
+Autorisatie: Wat mag je doen? (gebaseerd op rechten en groepslidmaatschappen)
+
+Toegangscontrole (ACLs - Access Control Lists)
+
+Bestanden, mappen, printers en netwerkresources hebben ACL's met toegangsrechten voor specifieke Security Principals.
+
+Bijvoorbeeld: Jan mag een map lezen, maar niet bewerken.
+
+## Wat is een GPO?
 
 Groepsbeleid (GPO) is een functie binnen Microsoft Windows waarmee beheerders instellingen centraal kunnen beheren en afdwingen binnen een netwerk.
 
@@ -239,8 +289,6 @@ Kerberos is een beveiligingsprotocol. Het is een protocol waarbij het mogelijk i
 
 ---
 
-## Tools
-
 ### ADSI EDIT 
 
 *ADSI Edit** is een krachtig hulpmiddel voor geavanceerd beheer en probleemoplossing van Active Directory. Het stelt beheerders in staat om taken uit te voeren die niet mogelijk zijn met standaardtools zoals Active Directory Gebruikers en Computers (ADUC).
@@ -339,3 +387,125 @@ Deze metadata, ook wel de "stamp" genoemd, wordt gebruikt om conflicten op te lo
 Wanneer een wijziging wordt binnengehaald door een DC, spreken we van een **replicated update**.
 
 <img src="/assets/replicatie_process.png" width="600">
+
+
+### Replicatie topologie
+
+Site
+Bestaat uit 1 of meerdere subnetten
+
+- Verzameling van goed geconnecteerde subnetten
+- Binnen site snelle verbinding tussen DC's
+- Site gebruik je om logische collecties te maken waartussen je replicatieafspraken vastlegt.
+- Helpt clients om de dichtste bron te vinden voor bepaalde services.
+
+Je kan verschillende domains hebben en maar 1 site hebben. Je kan ook meerdere Sites hebben en maar 1 domain.
+
+
+Intrasite Replication
+
+- Tussen DC'S in dezelfde site
+- Binnen 15 sec na wijziging
+- RPC
+
+Intersite Replication
+- Tussen 2 sites
+- Tussen "bridgehead" servers
+- RPC
+- Standaard 3 uur (minimum 15 minuten)
+
+Site Link
+
+
+is een Softwarematige set van instellingen die we gebruiken om een replicatieverbinding te configuren.
+Ze laten je toe om te bepalen welke sites geconnecteerd zijn en wat de cost is.
+Je kan hier de schedule , replication period/interval en cost instellen.
+
+We stellen dit in in AD Sites and Services -> Sites -> Inter-Site Transports --> IP
+
+
+### Replicatie RODC
+
+Dit is een read-only domain controller
+Het houd een read-only kopie van de database zonder passwoorden van accounts bij. Er kunnen op de RODC zelf ook geen instelling worden gewijzigd.
+Er bestaat een aparte Administrator role om RODC te beheren.
+
+We gebruiken dit vooral voor hoger risico ( DMZ - externe site)
+--> onveiligere situatie
+Principe : Dat de RODC by default is gecompromiteerd 
+
+We kunnen filteren op welke atributen mogen gerepliceerd worden naar de RODC.
+Er bestaat ook een PRP (Password Replication Policy) die bijhoud welke objecten hun paswoord gecached wordt.
+
+<img src="/assets/RODC.png" width="600">
+
+***Replicatie Tools***
+
+***Active Directory Replication Status Tool***
+***Repadmin***
+
+
+
+## FSMO -2
+
+AD is multimaster maar voor bepaalde functies kan er maar 1 master zijn.
+
+Schema Master (forest-wide)
+- de DC met deze rol kan aanpassingen uitvoeren aan het Schema
+
+Het schema in een Active Directory forest bepaalt welke objecten en attributen in de directory kunnen bestaan. Het is globaal voor het hele forest, beheerd door de Schema Master en kan worden uitgebreid. Wijzigingen hebben impact op alle domeinen binnen het forest.
+
+
+Domain Naming Master (forest-wide)
+- De DC met deze rol beheert wijzigingen aan de forest-wide namespace. Toevoegen en verwijderen van domeinen alsook het verplaatsen of hernoemen van een domain
+
+PDC-emulator (domain-wide)
+- Voor compitabiliteit met oude NT4 en oudere clients
+- Bevat het laatste wachtwoord van een account. DC's forwarden account wachtwoord wijzingen naar PDC
+- Primaire tijdserver
+
+Infrastructre Master (domain-wide)
+
+- Beheert links met domeinobjecten die van buiten het eigen domein afkomstig zijn.
+- Vertaalt GUIDS, SID en DNs tussen domeinen
+- Verantwoordelijk voor updates van multi-domein objecten
+RID Master (domain-wide)
+- Elke security principal heeft een SID
+- Elke SID binnen een domein moet uniek zijn
+- De RID master beheert poules van RID's en geeft telkens (per blok van 500) RID's aan 1 DC zodat deze kunnen gebruikt worden om SID's aan te maken.
+
+### FSMO - GC
+
+Word ook wel eens de 6e FSMO rol genoemgd.
+
+
+Funtie op een DC
+- 1e dc van een forest is een verplichte GC, verdere DC kunnen evnetueel ook een kopie bijhouden.
+Gedeeltelijke RO-replica van andere Domains
+
+Waarom?
+- Bevat forest-wide informatie
+- Universal grou Membership
+UG bevatten users van een ganse forest. Dergelijke users vind je terug via GC
+
+Inloggen met UPN -> zoek DN
+- logonName@DNSDomainName
+GC zoekt DN
+
+
+<img src="/assets/UPNLogin.png" width="600">
+
+
+
+## BACK-UP Windows-server
+
+- AD RECYCLE BIN
+
+Windows Serer Backup
+- Full server backup
+volledige restore op zelfde of andere machine
+- System state backup
+Restore van systeem en applicatie data op dezelfde machine.
+Authoritative vs non-authoritative restore
+
+Restore via replicatie
