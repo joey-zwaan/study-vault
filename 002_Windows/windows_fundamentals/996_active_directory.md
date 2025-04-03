@@ -560,6 +560,9 @@ Soms de **6e FSMO-rol** genoemd.
 - Bevat **Universal Group Memberships**.
 - Nodig voor **UPN-logins** (logonName@DNSDomainName).
 
+
+<img src="/assets/UPNLogin.png" width="600">
+
 ## Back-up Windows Server
 
 ### AD Recycle Bin
