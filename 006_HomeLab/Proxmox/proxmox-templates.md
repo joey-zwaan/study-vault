@@ -12,12 +12,6 @@ For CentOS / Rocky / AlmaLinux, refer to [Creating Rocky / AlmaLinux / CentOS OS
 
 ---
 
-## Prerequisites
-
-- Proxmox VE environment set up
-- Basic knowledge of Proxmox VE and virtual machines
-
----
 
 ## Step 1: Create VM on Proxmox VE
 
@@ -179,3 +173,9 @@ To create a VM from the template, right-click the template and choose **Clone**.
 
 ---
 
+bron :
+1 : [Proxmox templates for Debian & Ubuntu](https://computingforgeeks.com/creating-ubuntu-and-debian-os-template-on-proxmox-ve/)
+2 : [Reset machine-id on Linux](https://syncbricks.com/how-to-reset-the-machine-id-on-an-ubuntu-server)
+
+
+---
