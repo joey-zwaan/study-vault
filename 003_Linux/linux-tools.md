@@ -29,7 +29,7 @@ Met `smbclient` kun je verbinding maken met SMB-shares.
 ---
 
 
-### Configuratie
+### Oh My Zsh
 
 #### Oh My Zsh installeren
 Installeer Oh My Zsh met het volgende script:
