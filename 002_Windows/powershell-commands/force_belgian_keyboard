@@ -1,0 +1,20 @@
+# Set English (US) with only Belgian (Period) layout
+$LangList = New-WinUserLanguageList en-US
+$LangList[0].InputMethodTips.Clear()
+$LangList[0].InputMethodTips.Add("0409:00000813")  # en-US + Belgian (Period)
+Set-WinUserLanguageList $LangList -Force
+
+Set-WinUILanguageOverride -Language en-US
+Set-WinUserLanguageOverride -Language en-US
+Set-WinSystemLocale en-US
+Set-Culture en-US
+Set-WinHomeLocation -GeoId 21  # Belgium (optional)
+
+Set-ItemProperty -Path "Registry::HKEY_USERS\.DEFAULT\Keyboard Layout\Preload" -Name "1" -Value "00000813"
+New-Item -Path "Registry::HKEY_USERS\.DEFAULT\Keyboard Layout\Substitutes" -Force | Out-Null
+Set-ItemProperty -Path "Registry::HKEY_USERS\.DEFAULT\Keyboard Layout\Substitutes" -Name "00000409" -Value "00000813"
+
+
+# Dit is nodig omdat als we geen license key hebben voor onze vm's dan kan je geen persoonlijke instellingen veranderen.
+# Windows beschouwt dit als een "persoonlijke instelling" en dus kan je dit niet veranderen zonder een license key.
+# Dit is een workaround om de keyboard layout te veranderen zonder een license key.

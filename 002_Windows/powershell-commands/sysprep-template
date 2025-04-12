@@ -1,0 +1,35 @@
+# Run as Administrator!
+
+Write-Host "=== Preparing system for Sysprep ===" -ForegroundColor Cyan
+
+# ===============================
+# 1. Suspend BitLocker (Required for Sysprep)
+# ===============================
+Write-Host "Suspending BitLocker on C: drive..." -ForegroundColor Yellow
+Suspend-BitLocker -MountPoint "C:" -RebootCount 0 -ErrorAction SilentlyContinue
+
+# ===============================
+# 2. Remove all AppX packages (user + provisioned)
+# ===============================
+Write-Host "Removing AppX packages (may take a while)..." -ForegroundColor Yellow
+Get-AppxPackage -AllUsers | Remove-AppxPackage -ErrorAction SilentlyContinue
+Get-AppxProvisionedPackage -Online | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
+
+# ===============================
+# 3. Force English (US) UI + Belgian (Period) Keyboard
+# ===============================
+Write-Host "Applying English UI with Belgian (Period) keyboard layout..." -ForegroundColor Yellow
+$LangList = New-WinUserLanguageList en-US
+$LangList[0].InputMethodTips.Clear()
+$LangList[0].InputMethodTips.Add("0409:00000813")  # en-US + Belgian (Period)
+Set-WinUserLanguageList $LangList -Force
+
+# ===============================
+# 4. Set default keyboard for login screen (HKU\.DEFAULT)
+# ===============================
+Write-Host "Setting default keyboard layout for login screen..." -ForegroundColor Yellow
+Set-ItemProperty -Path "Registry::HKEY_USERS\.DEFAULT\Keyboard Layout\Preload" -Name "1" -Value "00000813"
+New-Item -Path "Registry::HKEY_USERS\.DEFAULT\Keyboard Layout\Substitutes" -Force | Out-Null
+Set-ItemProperty -Path "Registry::HKEY_USERS\.DEFAULT\Keyboard Layout\Substitutes" -Name "00000409" -Value "00000813"
+
+Write-Host "`n=== Done! You can now safely run Sysprep ===" -ForegroundColor Green
