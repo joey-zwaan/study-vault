@@ -1,4 +1,4 @@
-## Ansible
+# Ansible
 
 Ansible is een open-source automatiseringstool die wordt gebruikt voor:
 - Configuratiebeheer
@@ -10,13 +10,13 @@ Ansible is een open-source automatiseringstool die wordt gebruikt voor:
 
 ---
 
-### Control Node
+## Control Node
 
-De Control Node draait uitsluitend op een Linux-systeem (Windows wordt niet ondersteund). Het bevat de Ansible-software en wordt gebruikt voor het beheren van 'hosts' of 'managed nodes'. In combinatie met de inventory (de lijst van beheerde nodes) vormt dit de Control Node. 
+De Control Node draait uitsluitend op een Linux-systeem (Windows wordt niet ondersteund). Het bevat de Ansible-software en wordt gebruikt voor het beheren van 'hosts' of 'managed nodes'. 
 
 > **Opmerking:** Op de managed nodes zelf is geen extra software nodig, aangezien Ansible agentless werkt. Standaard wordt SSH gebruikt als communicatiemiddel.
 
-#### Installatiemodi
+### Installatiemodi
 - **Ansible-core:** Enkel basismodules.
 - **Ansible-community:** Grotere installatie, core + bijkomende modules.
 
@@ -26,7 +26,9 @@ De Control Node draait uitsluitend op een Linux-systeem (Windows wordt niet onde
 
 ## Inventory
 
-Een inventory is een lijst waarin alle hosts staan die je met Ansible gaat beheren. Playbooks en ad-hoc commando's maken gebruik van de inventory. Ansible accepteert verschillende formaten voor dit configuratiebestand (YAML of INI). 
+- Inventories bevatten de lijst van te beheren hosts.
+- Structurering mogelijk per functie of omgeving.
+- Gebruik van geneste groepen en standaardgroepen (`all`, `ungrouped`).
 
 In deze cursus maken we gebruik van de **INI-plugin** om een lokale inventory aan te leggen. Hoewel er nadelen zijn ten opzichte van YAML inventories, biedt de hogere leesbaarheid een groot voordeel.
 
@@ -37,7 +39,7 @@ De standaard inventory bevindt zich in:
 /etc/ansible/hosts
 ```
 
-#### Gerelateerde commando's
+### Gerelateerde commando's
 - `man 1 ansible-inventory`: RTFM
 - `ansible-doc -t inventory -l`: Lijst met inventory plugins.
 - `ansible-doc -t inventory ini`: Documentatie over de INI-plugin.
@@ -160,7 +162,7 @@ Bijvoorbeeld, als je inventory `~/ansible/hosts.ini` is, dan gaat het over `~/an
 
 #### Voorbeeld: Group_vars
 Bestand: `~/ansible/inventory/group_vars/howest_gitlab.yaml`
-```
+```yaml
 ---
 ansible_python_interpreter: /usr/bin/python3
 ansible_user: root

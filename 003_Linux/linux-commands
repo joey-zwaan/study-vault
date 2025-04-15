@@ -1,0 +1,104 @@
+# SSH Commands
+
+---
+
+## Basic SSH Commands
+
+```bash
+ssh user@host             # Connect to remote host
+ssh host                  # If user is defined in ~/.ssh/config
+ssh -p 2222 user@host     # Connect to a custom port
+ssh -q user@host          # Suppress warnings and diagnostic messages
+```
+
+---
+
+## Common Options
+
+```bash
+ssh -p <port> user@host           # Specify port
+ssh -i ~/.ssh/my_key user@host    # Use a specific private key
+ssh -F ./custom_config user@host  # Use a custom SSH config
+ssh -v user@host                  # Verbose output (add more v's for more detail)
+ssh -T user@host                  # Disable pseudo-tty
+ssh -A user@host                  # Enable SSH agent forwarding
+ssh -X user@host                  # Enable X11 forwarding
+ssh -o "StrictHostKeyChecking=no" user@host  # Disable host key checking
+ssh -C user@host                  # Enable compression
+```
+
+---
+
+## Remote Command Execution
+
+```bash
+ssh user@host "ls -la"                            # Run a command remotely
+ssh user@host 'bash -s' < local_script.sh         # Run local script remotely
+ssh user@host << 'EOF'
+echo "Inline script"
+hostname
+EOF
+ssh user@host -- "sudo systemctl restart nginx"   # Run a command with sudo
+```
+
+---
+
+## File Transfer (scp and rsync)
+
+```bash
+scp file.txt user@host:/remote/path/              # Copy file to remote
+scp user@host:/remote/file.txt ./                 # Copy file from remote
+scp -r ./local_dir user@host:/remote/             # Copy directory to remote
+rsync -avz -e ssh ./local/ user@host:/remote/     # rsync over SSH
+rsync -avz --progress ./local/ user@host:/remote/ # rsync with progress
+```
+
+---
+
+## Port Forwarding & Tunnels
+
+```bash
+ssh -L 8080:localhost:80 user@host                # Local port forward
+ssh -R 2022:localhost:22 user@host                # Remote port forward
+ssh -D 1080 user@host                             # Dynamic SOCKS proxy
+ssh -L 5901:localhost:5901 user@host              # Forward VNC connection
+ssh -N -L 3306:localhost:3306 user@host           # Forward MySQL connection without executing commands
+```
+
+---
+
+## SSH Keys
+
+```bash
+ssh-keygen -t ed25519                             # Generate SSH key
+ssh-keygen -t rsa -b 4096                         # Generate RSA key with 4096 bits
+ssh-copy-id user@host                             # Copy key to remote host
+ssh-add ~/.ssh/my_key                             # Add key to SSH agent
+ssh-add -l                                        # List keys in SSH agent
+ssh-add -d ~/.ssh/my_key                          # Remove key from SSH agent
+```
+
+---
+
+## SSH Config File Example
+
+```plaintext
+# ~/.ssh/config
+Host myserver
+    HostName 192.168.1.10
+    User myuser
+    Port 2222
+    IdentityFile ~/.ssh/my_key
+    ForwardAgent yes
+    Compression yes
+```
+
+---
+
+## Troubleshooting SSH
+
+```bash
+ssh -vvv user@host                                # Debug SSH connection
+ssh-keyscan -H host                               # Add host key to known_hosts
+ssh user@host -o "LogLevel=DEBUG3"                # Detailed logging
+```
