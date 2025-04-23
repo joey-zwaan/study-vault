@@ -183,6 +183,10 @@ Als we zelf een naam willen gebruiken pakken we het iets anders aan.
         - { name: 'testuser1', groups: 'sudo' }
         - { name: 'testuser2', groups: 'users' }
 
-*Complexere variant*
+*Complexere variant 1*
 
 <img src="/assets/ansible-playbook-complex.png" alt="share" width="600">
+
+*Complexere variant 2*
+
+<img src="/assets/ansible-playbook-complex1.png" alt="share" width="600">
