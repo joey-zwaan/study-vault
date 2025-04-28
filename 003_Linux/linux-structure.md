@@ -22,3 +22,11 @@ bewaard in 1 of meer textbestanden
 
 **Componenten**
 
+
+
+## /etc/motd - Message of the Day
+
+- `/etc/motd` (Message of the Day) is een bestand dat automatisch getoond wordt bij het inloggen via een terminal of SSH.
+- Wordt vaak gebruikt om meldingen, systeeminfo of waarschuwingen te tonen.
+- Beheerders kunnen dit bestand handmatig aanpassen of automatisch bijwerken via tools zoals Ansible.
+- Sommige systemen (zoals Ubuntu) gebruiken `/etc/update-motd.d/` voor dynamische MOTD's.

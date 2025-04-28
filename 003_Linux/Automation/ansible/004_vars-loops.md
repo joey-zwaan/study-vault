@@ -51,6 +51,10 @@ We kunnen ook bestanden kopieeren.
 [test1]
 192.168.20.51
 192.168.20.100
+
+
+[servers_nginx:vars]
+
 ```
 
 ```yaml
