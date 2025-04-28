@@ -71,18 +71,16 @@ De `ansible.builtin.template` module wordt gebruikt om een Jinja2-template naar 
 2. **Test lokaal**: Test je playbook in een testomgeving voordat je het in productie gebruikt.
 3. **Gebruik variabelen in templates**: Maak je templates dynamisch door gebruik te maken van Jinja2-variabelen, bijvoorbeeld:
    ```plaintext
-   ###################################################
-#            Welcome to {{ ansible_hostname }}            #
-###################################################
+   Welcome to {{ ansible_hostname }}
 
-Hostname:           {{ ansible_hostname }}
-Operating System:   {{ ansible_distribution }} {{ ansible_distribution_version }}
-Current Date:       {{ ansible_date_time.date }} {{ ansible_date_time.time }}
-Load Averages:      1m: {{ ansible_loadavg['1m'] }}, 5m: {{ ansible_loadavg['5m'] }}, 15m: {{ ansible_loadavg['15m'] }}
+   Hostname:           {{ ansible_hostname }}
+   Operating System:   {{ ansible_distribution }} {{ ansible_distribution_version }}
+   Current Date:       {{ ansible_date_time.date }} {{ ansible_date_time.time }}
+   Load Averages:      1m: {{ ansible_loadavg['1m'] }}, 5m: {{ ansible_loadavg['5m'] }}, 15m: {{ ansible_loadavg['15m'] }}
 
-Memory:
-  Total RAM:        {{ ansible_memtotal_mb }} MB
-  Free RAM:         {{ ansible_memfree_mb }} MB
-  Used RAM:         {{ ansible_memtotal_mb - ansible_memfree_mb }} MB}}!
+   Memory:
+     Total RAM:        {{ ansible_memtotal_mb }} MB
+     Free RAM:         {{ ansible_memfree_mb }} MB
+     Used RAM:         {{ ansible_memtotal_mb - ansible_memfree_mb }} MB
    ```
 4. **Beveilig gevoelige gegevens**: Gebruik Ansible Vault om gevoelige gegevens in templates te beschermen.
