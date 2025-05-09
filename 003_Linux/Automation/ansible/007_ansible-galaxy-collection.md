@@ -9,6 +9,7 @@ Meer informatie: [community.general documentatie](https://docs.ansible.com/ansib
 ## Installatie van de Collectie
 
 Gebruik het volgende commando om de `community.general` collectie te installeren:
+
 ```bash
 ansible-galaxy collection install community.general
 ```
@@ -19,13 +20,13 @@ ansible-galaxy collection install community.general
 
 De `community.general.timezone` module wordt gebruikt om de tijdzone van een systeem te configureren.
 
-### Voorbeeldgebruik:
+### Voorbeeldgebruik
+
 ```yaml
-- name: Stel de tijdzone in op UTC
+- name: Stel tijdzone in naar {{ timezone }}
+  become: true
   community.general.timezone:
-    name: UTC
+    name: "{{ timezone }}"
 ```
 
----
-
-#
+> **Opmerking:** We gebruiken hier een variabele zodat we, indien nodig, bij hergebruik van deze rol een andere tijdzone kunnen instellen. Deze variabele wordt standaard ingesteld in defaults van de rol.

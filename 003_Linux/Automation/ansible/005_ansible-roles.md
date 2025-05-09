@@ -1,35 +1,37 @@
 # Opbouw van een Role
 
-Een role bestaat uit een vooraf bepaalde structuur die toelaat om automatisch bestanden, tasks, handlers en andere Ansible-objecten in te laden. Dit gebeurt automatisch zolang je de opgelegde mappenstructuur respecteert.
+Een role in Ansible heeft een vooraf bepaalde structuur die automatisch bestanden, taken, handlers en andere objecten inlaadt, zolang de opgelegde mappenstructuur wordt gerespecteerd.
 
 ---
 
 ## Structuur van een Role
 
+De basisstructuur van een role ziet er als volgt uit:
+
 ```plaintext
 roles/
-├── common/               # Alles hieronder stelt een role voor
-│   ├── tasks/            # Taken die uitgevoerd worden
-│   │   └── main.yml      # Bestand met alle taken
-│   ├── handlers/         # Handlers die opgeroepen worden door taken
-│   │   └── main.yml      # Bestand met handlers
-│   ├── templates/        # Templates in Jinja2-formaat
-│   │   └── ntp.conf.j2   # Voorbeeld van een templatebestand
-│   ├── files/            # Bestanden om te gebruiken in taken
-│   │   ├── bar.txt       # Tekstbestand om te kopiëren
-│   │   └── foo.sh        # Scriptbestand om uit te voeren
-│   ├── vars/             # Variabelen gekoppeld aan de role
+├── common/               # Een role
+│   ├── tasks/            # Taken
+│   │   └── main.yml      # Takenbestand
+│   ├── handlers/         # Handlers
+│   │   └── main.yml      # Handlersbestand
+│   ├── templates/        # Jinja2-templates
+│   │   └── ntp.conf.j2   # Voorbeeld templatebestand
+│   ├── files/            # Bestanden
+│   │   ├── bar.txt       # Tekstbestand
+│   │   └── foo.sh        # Scriptbestand
+│   ├── vars/             # Variabelen
 │   │   └── main.yml      # Variabelenbestand
-│   ├── defaults/         # Lagere prioriteitsvariabelen
+│   ├── defaults/         # Standaardvariabelen
 │   │   └── main.yml      # Standaardvariabelenbestand
-│   ├── meta/             # Role dependencies
+│   ├── meta/             # Metadata
 │   │   └── main.yml      # Metadata van de role
 │   ├── library/          # Custom modules
 │   ├── module_utils/     # Custom module utilities
-│   └── lookup_plugins/   # Custom plugins zoals lookup
-├── webtier/              # Tweede role met dezelfde structuur
-├── monitoring/           # Derde role met dezelfde structuur
-└── fooapp/               # Vierde role met dezelfde structuur
+│   └── lookup_plugins/   # Custom plugins
+├── webtier/              # Tweede role
+├── monitoring/           # Derde role
+└── fooapp/               # Vierde role
 ```
 
 > **Tip:** Gebruik het volgende commando om een nieuwe role aan te maken:
@@ -41,16 +43,38 @@ ansible-galaxy role init common
 
 ## Uitleg van Submappen
 
-- **`tasks/`**: Bevat één of meerdere YAML-bestanden met de stappen die uitgevoerd worden door de role.
-- **`handlers/`**: Taken die enkel uitgevoerd worden wanneer ze opgeroepen worden vanuit andere taken.
-- **`templates/`**: Bevat Jinja2-templatebestanden die gebruikt worden in taken.
+Hieronder een overzicht van de belangrijkste submappen binnen een role:
+
+- **`tasks/`**: Bevat YAML-bestanden met de stappen die uitgevoerd worden.
+- **`handlers/`**: Taken die enkel uitgevoerd worden wanneer ze expliciet worden aangeroepen.
+- **`templates/`**: Jinja2-templatebestanden die gebruikt worden in taken.
 - **`files/`**: Bestanden die gekopieerd of uitgevoerd worden op de hosts.
-- **`vars/`**: Variabelen die specifiek zijn voor de role.
+- **`vars/`**: Variabelen specifiek voor de role.
 - **`defaults/`**: Standaardvariabelen met lagere prioriteit.
-- **`meta/`**: Bevat metadata zoals role dependencies.
+- **`meta/`**: Metadata zoals role dependencies.
 - **`library/`**: Custom modules die door de role gebruikt worden.
 - **`module_utils/`**: Custom utilities voor modules.
 - **`lookup_plugins/`**: Custom plugins zoals lookup.
+
+---
+
+## Organiseren van Variabelen in `defaults/main/`
+
+In plaats van één enkel `defaults/main.yml`-bestand te gebruiken, kun je variabelen beter organiseren door meerdere YAML-bestanden in een `defaults/main/`-map te plaatsen. Ansible laadt automatisch alle `.yml`-bestanden in deze map.
+
+### Voorbeeldstructuur
+
+```plaintext
+roles/my-role/
+└── defaults/
+    └── main/
+        ├── first_file.yml
+        ├── second_file.yml
+        └── subdir_1/
+            └── foo.yml
+        └── subdir_2/
+            └── bar.yml
+```
 
 ---
 
@@ -77,20 +101,17 @@ ansible-galaxy role init common
   notify: Restart SSH service  # Roept de handler aan
 ```
 
-### Uitleg
+### Flow
 
-Met bovenstaande configuratie zal de handler `Restart SSH service` opgeroepen worden na het kopiëren van het bestand `sshd_config` uit de `files/` map naar de bestemming `/etc/ssh/sshd_config` op de host.
-
-```plaintext
-Flow:
-1. De taak kopieert het bestand `sshd_config`.
+1. De taak kopieert het bestand `sshd_config` naar `/etc/ssh/sshd_config`.
 2. De taak roept de handler `Restart SSH service` aan.
 3. De handler herstart de SSH-service.
-```
 
 ---
 
 ## Playbook met Roles
+
+Een playbook kan meerdere roles bevatten. Hier is een voorbeeld:
 
 ```yaml
 # filepath: playbooks/webserver.yml
@@ -103,3 +124,7 @@ Flow:
     - webserver
     - database
 ```
+
+---
+
+Met deze structuur en voorbeelden kun je eenvoudig Ansible-roles opzetten en beheren.
