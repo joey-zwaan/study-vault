@@ -1,0 +1,4 @@
+firewall_rules:
+  - port: 3306/tcp
+    permanent: true
+    state: enabled
