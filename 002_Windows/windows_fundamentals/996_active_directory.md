@@ -2,6 +2,95 @@
 
 ---
 
+## Directory Services 
+
+- **Active Directory Domain Services (AD DS)**  
+  Dit is de rol die we reeds kennen uit Windows 1 en vormt de kern van elk Windows Domain. Binnen deze syllabus verwijzen we vooral naar deze rol wanneer we spreken over AD.
+
+- **Active Directory Lightweight Directory Services (AD LDS)**  
+  Een lichtgewicht versie van AD DS waarbij een LDAP-database wordt voorzien, maar zonder replicatie, group policies en andere geavanceerde functionaliteiten.
+
+- **Active Directory Certificate Services (AD CS)**  
+  Laat je toe om een PKI (Public Key Infrastructure) op te zetten. Certificaten die via de eigen PKI zijn uitgegeven, kunnen gebruikt worden om gebruikers, computers en andere devices te authenticeren.
+
+- **Active Directory Federation Services (AD FS)**  
+  Met AD FS kun je authenticatie tegenover je AD DS-structuur buiten je eigen organisatie brengen. Zo kun je bijvoorbeeld in internetapplicaties Single Sign-On principes inbouwen, gekoppeld aan je interne AD-structuur. Deze functionaliteit wordt tegenwoordig deels vervangen door de mogelijkheden binnen Azure.
+
+- **Active Directory Rights Management Services (AD RMS)**  
+  Met AD RMS kun je de toegang tot documenten verder beveiligen door te bepalen wie welke soort toegang heeft tot bepaalde documenten. Zo voorkom je dat gevoelige data geprint, doorgestuurd of gekopieerd kan worden. Eenmaal Information Rights Management (IRM) is ingesteld op een document, blijft deze beveiliging geïntegreerd in het document, waar het zich ook bevindt.
+
+
+  Active directoryt is de microsoft implementatie van een Directory Service (DS)
+
+  Het is een soort databank van hele specifieke content.
+  Het wordt gebruikt voor het beheren & lokaliseren van netwerkbronnen zoals folders, printers , gebruikers, toestellen en andere objecten. Elke bron op het netwerk wordt binnen de DS voorgesteld als een object.
+
+
+
+  ### x.500
+
+  AD is gebaseerd op LDAP & dat protocol is dan weer gebaseerd op X.500 standaard. Dit is een standaard die gegroeid is vanuit de telecombedrijven. De volgende afspraken zijn belangrijk.
+
+
+  DIT: Directory information Tree : Een hierarische organisatie van inhoud binnen een DS verspreid over 1 of meerdere servers
+
+  DSA: Directory System Agent : Een server waarop de DS actief is
+
+  DN: Distinguished name: De DN zorgt ervoor dat elk object binnen een DS uniek is.
+
+  ### ACL
+
+  Een oplijsting van wie kan toegang krijgen tot een bepaald object is een ACL of Access Control List. elk object binnen AD heeft een ACL die deze toegang bepaald.
+
+---
+  ## Waarom gebruiken we AD?
+
+
+We gebruiken AD voor een Aantal redenen. We herkennen eveneens de 3 A's van Autorisation, Authentication & Accounting
+
+
+**Centraal Beheer**
+
+ We beschikken over 1 tool dat ons toelaat om onze netwerkomgeving centraal te beheren
+
+
+**Authentication**
+
+Binnen AD gebruiken we Authenticatie om de identiteit van een gebruiker, toestel of dienst te controleren. Waneer de identiteit bevestigd wordt dan wordt de toegang tot een bepaalde bron toegekend.
+
+Een belangrijk concept is SSO (Single-Sign-ON) waarbij je je 1 x authentiseert en daarna toegang krijgt tot meerdere diensten. Binnen AD gebeurt dit door Kerberos.
+
+De meest eenvoudige vorm is SFA hier word enkel voorzien van een gebruikersnaam en een wachtwoord. Deze vorm vereist een sterk wachtwoord van minstens 14 karakters. Best practice is MFA waarbij je je identiteit bewijst via minstens 2 verschillende manieren.
+
+Hierbij word meestal gewerkt met een combinatie van volgende:
+
+- Wat de gebruiker weet ( pincode)
+- wat de gebruiker heeft (hardware token, software token,GSM)
+- Wie de gebruiker is (vingerafdruk, retina-scan)
+- Iets wat de gebruiker doet (handtekening)
+- Waar de gebruiker is (betrouwbare en onbetrouwbare locaties)
+
+
+**Authorisatie**
+
+Met autorisatie bepalen welke toegang geauthentiseerde gebruikers krijgen to bepaalde bronnen.
+Er zijn hier verschillende vormen voor
+
+- ACL
+Bepalen de permissies die iemand heeft tot bepaalde bronnen
+- Server instellingen
+Bepalen wat je kan doen op een server of met server bronnen
+- Client instellingen
+Bepalen wat je kunt doen op een client
+- Group Policies
+Bepalen welke policy instellingen van toepassing zijn
+
+**Accounting**
+
+Bijhouden van toegang tot het netwerk alsook de gespendeerde tijd tot bepaalde bronnen. Het bijhouden van logfiles is belangrijk alsook wat er in de logfiles komt. Dit kan je instelllen via auditing regels binnen je AD omgeving.
+
+---
+
 ## Security Principal
 
 Een Security Principal in Windows en Active Directory is een entiteit (zoals een gebruiker, groep, computer of service) die een Security Identifier (SID) heeft en toegang kan krijgen tot bronnen binnen een netwerk.
@@ -137,74 +226,9 @@ De Windows Registry is onderverdeeld in vijf hoofdsecties:
 
 GPO’s bestaan uit twee onderdelen:
 
-#### GPC (Group Pol---
-
-### Registry
-
-De Windows Registry is onderverdeeld in vijf hoofdsecties:
-
-1. **HKEY_CLASSES_ROOT**  
-   Gegevens voor algemeen gebruik, zoals geregistreerde bestandstypen en programma's die gegevens kunnen uitwisselen.
-
-2. **HKEY_CURRENT_USER**  
-   Instellingen die specifiek zijn voor de ingelogde gebruiker, zoals geïnstalleerde software, netwerkinstellingen, toetsenbord en muis.
-
-3. **HKEY_LOCAL_MACHINE**  
-   Instellingen voor hardware en software, zoals standaardconfiguraties, aangesloten hardware en softwareconfiguraties.
-
-4. **HKEY_USERS**  
-   Bevat alle gebruikersprofielen.
-
-5. **HKEY_CURRENT_CONFIG**  
-   Alle huidige instellingen van de computer.
-
-icy Container)
-- Bevat eigenschappen van de GPO, zoals versie-informatie #### GPC (Group Pol---
-
-### Registry
-
-De Windows Registry is onderverdeeld in vijf hoofdsecties:
-
-1. **HKEY_CLASSES_ROOT**  
-   Gegevens voor algemeen gebruik, zoals geregistreerde bestandstypen en programma's die gegevens kunnen uitwisselen.
-
-2. **HKEY_CURRENT_USER**  
-   Instellingen die specifiek zijn voor de ingelogde gebruiker, zoals geïnstalleerde software, netwerkinstellingen, toetsenbord en muis.
-
-3. **HKEY_LOCAL_MACHINE**  
-   Instellingen voor hardware en software, zoals standaardconfiguraties, aangesloten hardware en softwareconfiguraties.
-
-4. **HKEY_USERS**  
-   Bevat alle gebruikersprofielen.
-
-5. **HKEY_CURRENT_CONFIG**  
-   Alle huidige instellingen van de computer.
-
-icy Container)
-ctive Directory.  
-  **Locatie:** `LDAP://CN{GUID},CN=P#### GPC (Group Pol---
-
-### Registry
-
-De Windows Registry is onderverdeeld in vijf hoofdsecties:
-
-1. **HKEY_CLASSES_ROOT**  
-   Gegevens voor algemeen gebruik, zoals geregistreerde bestandstypen en programma's die gegevens kunnen uitwisselen.
-
-2. **HKEY_CURRENT_USER**  
-   Instellingen die specifiek zijn voor de ingelogde gebruiker, zoals geïnstalleerde software, netwerkinstellingen, toetsenbord en muis.
-
-3. **HKEY_LOCAL_MACHINE**  
-   Instellingen voor hardware en software, zoals standaardconfiguraties, aangesloten hardware en softwareconfiguraties.
-
-4. **HKEY_USERS**  
-   Bevat alle gebruikersprofielen.
-
-5. **HKEY_CURRENT_CONFIG**  
-   Alle huidige instellingen van de computer.
-
-icy Container)
-ctive="/assets/GPC.png" width="600">
+#### GPC (Group Policy Container)
+- Bevat eigenschappen van de GPO, zoals versie-informatie  
+  **Locatie:** `LDAP://CN{GUID},CN=Policies,CN=System,DC=zjlocal,DC=test`
 
 #### GPT (Group Policy Template)
 - Bevat de daadwerkelijke instellingen van de GPO.
@@ -262,60 +286,9 @@ Het is belangrijk om ook de language files erbij te hebben.
 
 ## AGDLP
 
-
 ## Kerberos
 
-Kerberos is een beveiligingsprotocol. Het is een protocol waarbij het mogelijk is om te communiceren over een onveilig n
-### Group Policy Loopback Processing Mode
-
-Met de **Group Policy Loopback Processing Mode** kun je gebruikersconfiguratie-instellingen toepassen op een computerobject. Dit is handig in scenario’s zoals:
-
-- **Kiosk-machines**: Computers in openbare ruimtes waar gebruikersinstellingen moeten worden toegepast, ongeacht wie inlogt.
-
-#### Modes
-
-1. **Merge Mode**  
-   - Eerst worden de normale user policies toegepast bij de gebruiker die inlogt.  
-   - Daarna worden de user configuration-instellingen toegepast die op het computerobject van toepassing zijn.  
-   - Bij conflicterende instellingen heeft de instelling van het computerobject prioriteit.
-
-2. **Replace Mode**  
-   - Instellingen voor de gebruiker worden genegeerd bij het inloggen.  
-   - Alleen de user configuration-instellingen van GPO’s die op het computerobject zijn toegepast, gelden.
-
-**Let op:**  
-LBM (Loopback Mode) is een instelling die geldt voor de hele computer.  
-- Zodra LBM is ingesteld via één GPO, geldt deze voor de hele computer en dus voor elke gebruiker die zich aanmeldt op de computer.
-
-<img src="/assets/gpo_gpc.png" width="600">
-
----
-
-### Software installeren via GPO
-
-- **Enkel via .msi-installaties**  
-- Beschikbaar maken via een netwerkshare met leesrechten.  
-
-#### Installatiemethoden:
-1. **Assign**  
-   - **Users**: Installatie van het programma gebeurt zodra de gebruiker op de snelkoppeling klikt.  
-   - **Computer**: Automatische installatie na een herstart.
-
-2. **Publish**  
-   - **Users**: Het programma kan worden geïnstalleerd via het configuratiescherm of (instelbaar) als de gebruiker een bestand probeert te openen dat aan de applicatie is gekoppeld.  
-   - **Computer**: Publish is niet mogelijk.
-
-**Central Storage**
-
-We maken een Central storage for Administrative Templates (.admx) voor group policies. We maken een folder aan PolicyDefinitions op de locatie 
-C:/windows/SYSVOL/sysvol/ZJLocal.test/policies
-
-We downloaden de nieuwste templates voor Windows 10 en zorgen ook dat onze machines op de laatste updates zitten.
-Het is belangrijk om ook de language files erbij te hebben.
-
-## AGDLP
-
-etwerk met een partner die niet altijd betrouwbaar is. Er wordt een derde partij vertrouwd door zowel client 1 als client 2, terwijl ze elkaar onderling niet vertrouwen. **Er worden geen wachtwoorden gestuurd over het netwerk.**
+Kerberos is een beveiligingsprotocol. Het is een protocol waarbij het mogelijk is om te communiceren over een onveilig netwerk met een partner die niet altijd betrouwbaar is. Er wordt een derde partij vertrouwd door zowel client 1 als client 2, terwijl ze elkaar onderling niet vertrouwen. **Er worden geen wachtwoorden gestuurd over het netwerk.**
 
 - **Open standaard**: RFC4120  
 - **Werkt met tickets**
