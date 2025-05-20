@@ -493,48 +493,6 @@ Gebruik in **risicovolle omgevingen** zoals:
 - **Active Directory Replication Status Tool**
 - **Repadmin**
 
-## FSMO Rollen
-
-Active Directory is **multimaster**, maar sommige taken vereisen één specifieke master.
-
-### Forest-wide rollen
-#### Schema Master
-- Kan wijzigingen aan het **Schema** doorvoeren.
-- Het schema bepaalt welke objecten en attributen bestaan in het forest.
-
-#### Domain Naming Master
-- Beheert wijzigingen aan de **forest-wide namespace**.
-- Toevoegen/verwijderen van domeinen.
-- Verplaatsen of hernoemen van een domein.
-
-### Domain-wide rollen
-#### PDC Emulator
-- Compatibiliteit met oude NT4 en oudere clients.
-- Bevat de **laatste wachtwoordwijzigingen**.
-- **Primaire tijdserver**.
-
-#### Infrastructure Master
-- Beheert links met domeinobjecten uit andere domeinen.
-- Vertaalt **GUIDs, SIDs en DNs** tussen domeinen.
-- Verantwoordelijk voor updates van **multi-domein objecten**.
-
-#### RID Master
-- Elke security principal krijgt een unieke **SID**.
-- De **RID Master** beheert en verdeelt **RID-pools** naar DC's.
-- DC's krijgen **blokken van 500 RID's** voor nieuwe objecten.
-
-### Global Catalog (GC)
-Soms de **6e FSMO-rol** genoemd.
-- De **eerste DC** van een forest is verplicht een **GC**.
-- Andere DC's kunnen ook een **GC-kopie** bijhouden.
-
-**Functies:**
-- Bevat **forest-wide informatie**.
-- Bevat **Universal Group Memberships**.
-- Nodig voor **UPN-logins** (logonName@DNSDomainName).
-
-
-<img src="/assets/UPNLogin.png" width="600">
 
 ## Back-up Windows Server
 
