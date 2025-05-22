@@ -224,6 +224,8 @@ De Windows Registry is onderverdeeld in vijf hoofdsecties:
 
 ### Hoe worden GPO's bewaard?
 
+Bij GPO’s wordt de data waaruit de GPO bestaat op twee verschillende locaties bewaard: de **Group Policy Container (GPC)** en de **Group Policy Template (GPT)**.
+
 GPO’s bestaan uit twee onderdelen:
 
 #### GPC (Group Policy Container)
@@ -234,6 +236,15 @@ GPO’s bestaan uit twee onderdelen:
 - Bevat de daadwerkelijke instellingen van de GPO.
 - Wordt opgeslagen binnen SYSVOL.  
   **Locatie:** `\\zjlocal.test\sysvol\zjlocal.test\Policies\{GUID}`
+
+Gezien onze volledige GPO bewaard wordt op verschillende plaatsen, is het belang van een correcte replicatie of het kopiëren van de GPO-data tussen DC’s cruciaal.  
+Wanneer de SYSVOL-folder niet zou repliceren, dan zou een deel van de GPO-data achterblijven op andere DC’s en kan je problemen ondervinden.  
+Correcte replicatie monitoren zal dan ook een belangrijke taak zijn van de systeembeheerder.
+
+Volledig voorbeeld hoe een GPO wordt bewaard.
+
+<img src="/assets/gpt1.png" width="600">
+
 
 ---
 
@@ -262,6 +273,29 @@ LBM (Loopback Mode) is een instelling die geldt voor de hele computer.
 
 ---
 
+### Toepassing Group Policy
+
+
+<img src="/assets/gpo-volgorde.png" width="600">
+
+**Wanneer wordt een Group Policy toegepast?**
+
+- **Machine Configuration**-instellingen worden toegepast wanneer de computer opstart.
+- **User Configuration**-instellingen worden toegepast wanneer een gebruiker zich aanmeldt.
+
+<img src="/assets/gpo-volgorde1.png" width="600">
+
+**Normale werking**
+
+Standaard worden op workstations & member servers de policies om de 90 minuten hernieuwd. Op een DC is dit elke 5 minuten.
+
+Om te voorkomen dat het netwerk verzadigd raakt door gelijktijdige refreshes, wordt een willekeurige offset toegevoegd aan deze refresh-tijd:
+- Tussen de 0 en 30 minuten voor werkstations en member servers
+- 0 minuten voor DC’s
+
+Je kan zelf de refresh-tijd instellen in een policy:
+`Administrative templates -> System -> Group Policy -> Set Group Policy refresh interval for computers`
+
 ### Software installeren via GPO
 
 - **Enkel via .msi-installaties**  
@@ -283,6 +317,22 @@ C:/windows/SYSVOL/sysvol/ZJLocal.test/policies
 
 We downloaden de nieuwste templates voor Windows 10 en zorgen ook dat onze machines op de laatste updates zitten.
 Het is belangrijk om ook de language files erbij te hebben.
+
+
+
+### Best Practice GPO
+
+**Best practices voor GPO-beheer:**
+
+- **Vermijd Enforce en Block Inheritance:** Gebruik deze opties alleen als het echt niet anders kan. Ze maken het troubleshooten van GPO’s moeilijker door uitzonderingen op de standaardwerking te introduceren.
+- **Beperk het aantal GPO’s:** Groepeer policy-instellingen waar mogelijk. Maak niet voor elke instelling een aparte GPO. Standaardisatie binnen de organisatie helpt hierbij. Hoe meer GPO’s, hoe langer het opstarten of aanmelden kan duren.
+- **Kies de juiste plek om GPO’s te linken:** Denk goed na over waar je een GPO linkt om dubbele links te vermijden. Dit maakt beheer en troubleshooting eenvoudiger.
+- **Gebruik logische namen en documentatie:** Geef GPO’s duidelijke namen en gebruik het commentaarveld om te beschrijven wat de GPO doet. Zorg voor goede en actuele documentatie zodat teamleden weten wat waar is ingesteld.
+- **Splits User en Computer Configuration:** Mix deze instellingen niet in één GPO. Maak aparte GPO’s voor gebruikers- en computerinstellingen om troubleshooting te vereenvoudigen.
+- **Let op met Loopback Processing Mode (LPM):** Dit verhoogt de complexiteit. Vermeld duidelijk in de beschrijving als je LPM gebruikt. Gebruik Merge alleen als het echt nodig is, want dit maakt troubleshooting extra lastig.
+- **Default Domain Policy:** Gebruik deze alleen voor wachtwoord-, lockout- en Kerberos-instellingen.
+- **Default Domain Controller Policy:** Gebruik deze alleen voor het toewijzen van gebruikersrechten en auditing op DC’s.
+- **Onderhoud:** Controleer regelmatig je GPO’s. Verwijder onnodige policies en oude instellingen, update documentatie en optimaliseer waar mogelijk met nieuwe GPO-functionaliteiten.
 
 ## AGDLP
 

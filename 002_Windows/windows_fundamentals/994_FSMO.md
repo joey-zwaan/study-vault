@@ -74,4 +74,5 @@ Een single forest single domain omgeving met meerdere sites is een populair ontw
 **Single Forest Multi Domain**  
 De Schema Master en Domain Naming Master zijn forest-brede rollen en komen typisch in het forest root domain terecht. Qua computerkracht vergen deze rollen niet veel, omdat ze maar sporadisch gebruikt worden. De PDC Emulator is de rol die het meeste vergt (tijd synchronisatie, wachtwoordwijzigingen repliceren en GPO-wijzigingen beheren), dus deze plaats je best op de DC met de beste processorkracht. De RID Master plaats je best samen met de PDC Emulator. In een omgeving met meerdere domeinen is de cross-reference tussen objecten belangrijk. Stel dat er in domain A een wijziging gebeurt aan de naam van een user account en deze account wordt gebruikt binnen een ander account, dan moet deze wijziging doorgestuurd worden. De Infrastructure Master plaats je op een DC die geen GC is (indien niet elke DC in je forest ook GC is).
 
+
 ---
