@@ -40,6 +40,9 @@ Active Directory is **multimaster**, maar sommige taken vereisen één specifiek
 - Vertaalt **GUIDs, SIDs en DNs** tussen domeinen.
 - Verantwoordelijk voor updates van **multi-domein objecten**.
 - Uniek binnen een domain
+- Update group membership
+
+Infrastructure Master best niet op een GC in een multiple domain environment (forest)
 
 #### RID Master
 - Elke security principal krijgt een unieke **SID**.
