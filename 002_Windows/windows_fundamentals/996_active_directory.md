@@ -515,12 +515,42 @@ Gebruik in **risicovolle omgevingen** zoals:
 
 ### Windows Server Backup
 
+Is een feature dat kan toegevoegd worden aan een Windows Server waarmee je de machine kan back-uppen.
+Het installeren kan via 'Add Roles & Features' of via Powershell
+
+
+
 #### Full Server Backup
 
-- Volledige herstelmogelijkheid op dezelfde of andere machine.
+- Deze backup bevat het besturingsysteem, de applicaties en bijhorende data. Deze vorm van backup zorgt ervoor dat je de volledige server kan restoren. Als het initieele probleem in het besturingsysteem ligt is deze backup het meest geschikt. 
+
+Om een restore uit te voeren herstart je de server opnieuw op in DSRM-mode waarmee je de backup kunt terugzetten. Directory Services Restore Mode
 
 #### System State Backup
 
 - Herstelt systeem en applicatiegegevens op dezelfde machine.
 - **Authoritative Restore:** Overschrijft andere DC's met herstelde data.
 - **Non-Authoritative Restore:** Laat andere DC's data bijwerken via replicatie.
+
+
+
+### RODC
+
+Een Read-Only domain controller is een type DC dat read only partities heeft binnen de AD Domain Services database. Dit plaatsen we typisch op een locatie waar we niet voorzien in fysieke beveiliging. Denk maar aan een kantoor waar een DC moet aanwezig zijn voor een vlotte werking zonder dat er een afgesloten ruimte kan voorzien worden.
+
+
+#### Principe
+
+Het principe dat je moet aanhouden wanneer je met een RODC werkt is de volgende ;
+
+Altijd veronderstellen dat hij compromised is by default. De keuzes naar beveiliging moeten hiermee rekening houden.
+
+
+#### Werking
+
+- Een Read-onlt of alleen-lezen kopie van de AD
+- Database zonder wachtwoorden.
+- Geen wachtwoorden in de cache van DC
+- 1 richtingsreplicatie
+- Aparte account om RODC te beheren.
+
