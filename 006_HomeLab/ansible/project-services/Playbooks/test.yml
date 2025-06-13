@@ -1,0 +1,7 @@
+---
+- name: Install required apps
+  hosts: all
+  become: true
+
+  roles:
+    - common

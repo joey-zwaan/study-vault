@@ -1,14 +1,12 @@
 ---
 
 - name: Required applications
-  become: true
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: "{{ applications_to_install }}"
     state: present
-  register: application_results
-
 
 - name: Update all packages to their latest version
+  become: true
   ansible.builtin.apt:
     name: "*"
     state: latest
