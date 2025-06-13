@@ -1,0 +1,8 @@
+[servers]
+
+[servers:children]
+plex-stack
+
+
+[plex-stack]
+plex1 ansible_host=192.168.20.11
