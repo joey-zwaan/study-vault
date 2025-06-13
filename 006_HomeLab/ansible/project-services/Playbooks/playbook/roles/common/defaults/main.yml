@@ -1,2 +1,11 @@
 ---
 # defaults file for common
+timezone: Europe/Brussels
+applications_to_install:
+  - nano
+  - htop
+  - curl
+  - software-properties-common
+  - ca-certificates
+  - apt-transport-https
+  - ufw
