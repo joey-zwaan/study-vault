@@ -1,0 +1,24 @@
+###################################################
+#            Welcome to {{ ansible_hostname }}    #
+###################################################
+
+Hostname:           {{ ansible_hostname }}
+Operating System:   {{ ansible_distribution }} {{ ansible_distribution_version }}
+Architecture:       {{ ansible_architecture }}
+Current Date:       {{ ansible_date_time.date }} {{ ansible_date_time.time }}
+Uptime:             {{ ansible_uptime_seconds // 3600 }}h {{ (ansible_uptime_seconds // 60) % 60 }}m
+
+CPU:                {{ ansible_processor[1] }}
+  Cores:            {{ ansible_processor_cores }}
+  Threads:          {{ ansible_processor_vcpus }}
+Load Averages:      1m: {{ ansible_loadavg['1m'] }}, 5m: {{ ansible_loadavg['5m'] }}, 15m: {{ ansible_loadavg['15m'] }}
+
+Memory:
+  Total RAM:        {{ ansible_memtotal_mb }} MB
+  Free RAM:         {{ ansible_memfree_mb }} MB
+  Used RAM:         {{ ansible_memtotal_mb - ansible_memfree_mb }} MB
+
+Disk (/):           Used: {{ (ansible_mounts[0].size_total - ansible_mounts[0].size_available) | human_readable }}, Total: {{ ansible_mounts[0].size_total | human_readable }}
+Network:
+  IP:               {{ ansible_default_ipv4.address }}
+  Interface:        {{ ansible_default_ipv4.interface }}
