@@ -1,7 +1,0 @@
-[servers]
-
-[servers:children]
-proxmox
-
-[proxmox]
-proxmox1 ansible_host=192.168.20.10
