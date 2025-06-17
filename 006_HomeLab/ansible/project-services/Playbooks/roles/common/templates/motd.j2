@@ -19,6 +19,7 @@ Memory:
   Used RAM:         {{ ansible_memtotal_mb - ansible_memfree_mb }} MB
 
 Disk (/):           Used: {{ (ansible_mounts[0].size_total - ansible_mounts[0].size_available) | human_readable }}, Total: {{ ansible_mounts[0].size_total | human_readable }}
+
 Network:
   IP:               {{ ansible_default_ipv4.address }}
   Interface:        {{ ansible_default_ipv4.interface }}
