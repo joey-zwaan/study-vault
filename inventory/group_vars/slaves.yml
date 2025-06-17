@@ -1,4 +1,0 @@
-ansible_user: joey
-
-
-## We zorgen ervoor dat de servers in de groep slaves joey als user gebruiken om te connecteren.
