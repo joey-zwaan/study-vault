@@ -112,6 +112,12 @@ Accepteert Layer 3 packets en voegt een Layer 2 header en trailer toe om een fra
 - MAC-adressen zijn 48-bits lang en worden vaak weergegeven in hexadecimale notatie, zoals `00:1A:2B:3C:4D:5E`.
 - MAC-adressen worden gebruikt om frames te adresseren en te routeren binnen een lokaal netwerk.
 
+OUI (Organizationally Unique Identifier) is het eerste deel van een MAC-adres en identificeert de fabrikant van de netwerkinterfacekaart. Het bestaat uit de eerste 24 bits (3 bytes) van het MAC-adres.
+
+00:1A:2B is bijvoorbeeld een OUI dat aangeeft dat de fabrikant Apple is.
+
+
+
 <img src="/assets/Datalink-MAC.png" alt="Frame" width="600">
 
 
