@@ -1,6 +1,6 @@
 # Ethernet Switching
 
-## ## Physical Layer (Layer 1) & Data Link Layer (Layer 2)
+## Physical Layer (Layer 1) & Data Link Layer (Layer 2)
 
 
 De Physical Layer definieert de fysieke kenmerken van het gebruikte medium om data over te dragen tussen apparaten. De Data Link Layer zorgt voor de betrouwbare overdracht van frames over dit fysieke medium.
@@ -80,48 +80,49 @@ De Preamble en SFD zijn meestal niet beschouwd als deel van de Ethernet header. 
 
 ### Switch Forwarding Behavior
 
-**Unknown unicast frame:**
-- Frame met bestemmings-MAC-adres dat niet in MAC-adres tabel staat
-- Frame wordt naar alle poorten verzonden (flooding), behalve ontvangstpoort
-- Zorgt ervoor dat frame juiste bestemming bereikt, ook als switch locatie niet kent
+**Unknown unicast frame**  
+Een frame met een bestemmings-MAC-adres dat niet in de MAC-adres tabel van de switch staat.  
+- Wordt naar alle poorten verzonden (flooding), behalve de poort waar het frame vandaan komt.
+- Zorgt ervoor dat het frame de juiste bestemming bereikt, ook als de switch de locatie niet kent.
 
-**Known unicast frame:**
-- Frame met bestemmings-MAC-adres dat wel in MAC-adres tabel staat
-- Frame wordt alleen naar specifieke poort gestuurd die overeenkomt met MAC-adres
-- Efficiënter dan flooding omdat verkeer beperkt blijft tot relevante
+**Known unicast frame**  
+Een frame met een bestemmings-MAC-adres dat wél in de MAC-adres tabel staat.  
+- Wordt alleen naar de specifieke poort gestuurd die overeenkomt met het MAC-adres.
+- Efficiënter dan flooding omdat verkeer beperkt blijft tot de relevante poort.
 
+---
 
-ARP - Address Resolution Protocol
-- Wordt gebruikt om het MAC-adres van een apparaat te vinden op basis van zijn IP-adres
-- Werkt op de Data Link Layer (Layer 2)
-- Zendt een ARP-verzoek uit naar het netwerk om het MAC-adres van een specifiek IP-adres te achterhalen
-- Ontvangt een ARP-respons met het MAC-adres van het apparaat
+### ARP (Address Resolution Protocol)
 
-ARP-table:
-- Bevat IP-adressen en bijbehorende MAC-adressen
-- Wordt gebruikt om snel het MAC-adres van een apparaat te vinden zonder opnieuw een ARP-verzoek te hoeven sturen
-- Wordt dynamisch bijgewerkt wanneer ARP-verzoeken en -antwoorden worden ontvangen
+ARP wordt gebruikt om het MAC-adres van een apparaat te vinden op basis van zijn IP-adres.  
+Het protocol werkt op de Data Link Layer (Layer 2).
 
-ARP-request: 
-- Wordt verzonden als broadcast naar alle apparaten in het lokale netwerk
-ARP-reply:
-- Wordt verzonden als unicast naar de zender van het ARP-verzoek.
+- Een ARP-verzoek wordt als broadcast naar alle apparaten in het lokale netwerk gestuurd.
+- Een ARP-respons wordt als unicast teruggestuurd naar de zender van het ARP-verzoek.
 
-ARP-request frame:
+**ARP-table**  
+- Bevat IP-adressen en bijbehorende MAC-adressen.
+- Wordt gebruikt om snel het MAC-adres van een apparaat te vinden zonder opnieuw een ARP-verzoek te hoeven sturen.
+- Dynamisch bijgewerkt bij ontvangst van ARP-verzoeken en -antwoorden.
+
+**ARP-request frame:**  
 - Bestemmings-MAC-adres: FF:FF:FF:FF:FF:FF (broadcast)
 - Bron-MAC-adres: MAC-adres van de zender
 - EtherType: 0x0806 (ARP)
 
-ARP-reply frame:
+**ARP-reply frame:**  
 - Bestemmings-MAC-adres: MAC-adres van de zender van het ARP-verzoek
 - Bron-MAC-adres: MAC-adres van de ontvanger
 - EtherType: 0x0806 (ARP)
 - Payload bevat ARP-header met IP- en MAC-adressen
 
-ICMP echo request/reply:
+---
 
-- Wordt gebruikt voor netwerkdiagnose, zoals ping
-- ICMP echo request wordt verzonden naar een apparaat om te controleren of het bereikbaar is
-- ICMP echo reply wordt verzonden als antwoord op het verzoek
-- Bevat geen MAC-adressen, alleen IP-adressen
+### ICMP echo request/reply
+
+ICMP wordt gebruikt voor netwerkdiagnose, bijvoorbeeld met het commando **ping**.
+
+- **ICMP echo request** wordt verzonden naar een apparaat om te controleren of het bereikbaar is.
+- **ICMP echo reply** wordt verzonden als antwoord op het verzoek.
+- ICMP bevat geen MAC-adressen, alleen IP-adressen.
 - Werkt op de Internet Layer (Layer 3)

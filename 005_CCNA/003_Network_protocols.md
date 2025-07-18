@@ -142,3 +142,7 @@ OUI (Organizationally Unique Identifier) is het eerste deel van een MAC-adres en
 - HDLC (High-Level Data Link Control)
 - Frame Relay
 - ...
+
+Runts zijn frames die kleiner zijn dan de minimale grootte van 64 bytes. Ze worden vaak veroorzaakt door fouten in de transmissie of door verkeerde configuraties. Runts worden genegeerd door switches en routers.
+
+Giant frames zijn frames die groter zijn dan de maximale grootte van 1518 bytes (of 9000 bytes voor jumbo frames). Ze kunnen problemen veroorzaken in netwerken die geen ondersteuning bieden voor grotere frames.

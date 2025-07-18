@@ -15,3 +15,12 @@ arp -d <ip-address> # Deletes an ARP entry
 arp -s <ip-address> <mac-address> # Adds a static ARP entry
 
 ## Basic device security
+
+
+
+### Configuring interfaces
+
+interface <interface-name> # Enters interface configuration mode
+no shutdown # Enables the interface
+shutdown # Disables the interface
+description <description> # Adds a description to the interface
