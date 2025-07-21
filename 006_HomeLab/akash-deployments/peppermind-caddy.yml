@@ -1,0 +1,131 @@
+version: "2.0"
+
+endpoints:
+  caddy-ip:
+    kind: ip
+
+services:
+  peppermintpostgres:
+    image: postgres:15-alpine
+    env:
+      - POSTGRES_DB=peppermint
+      - POSTGRES_USER=peppermint
+      - POSTGRES_PASSWORD=1234
+    expose:
+      - port: 5432
+        as: 5432
+        to:
+          - service: peppermint
+
+  peppermint:
+    image: pepperlabs/peppermint:latest
+    expose:
+      - port: 3000
+        as: 3000
+        to:
+          - service: caddy
+      - port: 5003
+        as: 5003
+        to:
+          - global: false
+    env:
+      - DB_USERNAME=peppermint
+      - DB_PASSWORD=1234
+      - DB_HOST=peppermintpostgres
+      - SECRET=peppermint4life
+      - SSH_PUBLIC_KEY=ssh-rsa AAAA... joey@joey-ThinkPad-T16-Gen-2
+    depends_on:
+      - peppermintpostgres
+
+  caddy:
+    image: caddybuilds/caddy-cloudflare
+    expose:
+      - port: 443
+        as: 443
+        to:
+          - global: true
+            ip: caddy-ip
+    depends_on:
+      - peppermint
+    command:
+      - sh
+      - -c
+      - |
+        mkdir -p /etc/caddy-config
+        cat > /etc/caddy-config/Caddyfile <<EOF
+        peppermint.joey-home.com {
+            reverse_proxy peppermint:3000
+            tls {
+                dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+            }
+        }
+        EOF
+        echo "Caddyfile contents:"
+        cat /etc/caddy-config/Caddyfile
+        caddy run --config /etc/caddy-config/Caddyfile --adapter caddyfile
+    env:
+      - CLOUDFLARE_API_TOKEN=1nWfqnrMP4DyNTrq0JYN8wzQNvwfsm_gEP_N2kWa
+    volumes:
+      - type: persistent
+        name: caddy-data
+        mount: /data
+      - type: persistent
+        name: caddy-config
+        mount: /config
+
+profiles:
+  compute:
+    peppermint:
+      resources:
+        cpu:
+          units: 2
+        memory:
+          size: 1Gi
+        storage:
+          - size: 20Gi
+    peppermintpostgres:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 512Mi
+        storage:
+          - size: 10Gi
+    caddy:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 512Mi
+        storage:
+          - name: caddy-data
+            size: 2Gi
+          - name: caddy-config
+            size: 1Gi
+
+  placement:
+    dcloud:
+      pricing:
+        peppermint:
+          denom: ibc/170C677610AC31DF0904FFE09CD3B5C657492170E7E52372E48756B71E56F2F1
+          amount: 100000
+        peppermintpostgres:
+          denom: ibc/170C677610AC31DF0904FFE09CD3B5C657492170E7E52372E48756B71E56F2F1
+          amount: 50000
+        caddy:
+          denom: ibc/170C677610AC31DF0904FFE09CD3B5C657492170E7E52372E48756B71E56F2F1
+          amount: 50000
+
+deployment:
+  peppermint:
+    dcloud:
+      profile: peppermint
+      count: 1
+  peppermintpostgres:
+    dcloud:
+      profile: peppermintpostgres
+      count: 1
+  caddy:
+    dcloud:
+      profile: caddy
+      count: 1
