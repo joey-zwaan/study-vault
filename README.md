@@ -1,36 +1,54 @@
-# Titel van het Document
+# Standaarddocument-markdown
 
-Korte inleiding over het onderwerp. Geef in 1-3 zinnen de kern aan.
+## Doel
 
----
+Gebruik dit document als referentie voor de opmaak en structuur van alle toekomstige documentatie, lesmateriaal of technische markdown-bestanden.
 
-## Hoofdstuk 1: Brede Onderwerptitel
+## Opmaakregels
 
-Begin elk hoofdstuk met een korte uitleg of definitie.
+- Eén hoofdtitel (`#`) per document (bovenaan)
+- Hoofdonderwerpen als `##`
+- Subonderwerpen als `###`
+- Optioneel: verdieping/detail als `####` (alleen als het echt nodig is)
+- Geen overmatig gebruik van `---` (enkel aan einde van een groot hoofdstuk indien echt nodig)
+- Geen nummering: gebruik logische secties, witruimte en duidelijke koppen
+- Korte, bondige inleiding per sectie
+- Tabellen en codeblokken altijd onder het juiste kopje/subkopje
+- Inhoud bondig, technisch correct en goed leesbaar
+- Altijd gestructureerd, zoals het voorbeeld hieronder
 
-Deel daarna de details uit in één vloeiende tekst. Geef voorbeelden, tabellen of stappen waar relevant — direct bij de uitleg, niet onnodig versnipperd.
+## Voorbeeldstructuur
 
-**Voorbeeld:**  
-Voorbeeld of use-case direct onder de uitleg.
+# [Titel van het document]
 
-**Tabelvoorbeeld:**  
-| Kop 1 | Kop 2 |
-|-------|-------|
-| ...   | ...   |
+## Inleiding
 
----
+Korte introductie over het onderwerp.
 
-## Hoofdstuk 2: Volgende Logische Onderwerp
+## Hoofdonderwerp
 
-Herhaal de structuur:  
-- Inleiding  
-- Uitleg  
-- Eventueel voorbeelden/tabellen/stappen direct na uitleg
+### Subonderwerp
 
----
+Korte uitleg over het subonderwerp.
 
-## Afsluiting of Samenvatting
+#### Verdieping (optioneel)
 
-Sluit het document af met de belangrijkste punten, leerdoelen, of een korte samenvatting.
+Extra detail of specifieke uitleg.
 
----
+### Voorbeeldtabel
+
+| Kolom 1 | Kolom 2 | Kolom 3 |
+|---------|---------|---------|
+| Data    | Data    | Data    |
+
+## Tweede hoofdonderwerp
+
+### Codevoorbeeld
+
+```python
+print("Voorbeeld codeblok")
+```
+
+## Samenvatting
+
+Bondige herhaling van de belangrijkste punten.

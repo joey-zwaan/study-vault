@@ -1,48 +1,35 @@
-# Network Layer (Layer 3)
+# Network Layer (Laag 3)
 
-De Network Layer is verantwoordelijk voor het routeren van data tussen verschillende netwerken. Het belangrijkste protocol op deze laag is het Internet Protocol (IP), dat zorgt voor adressering en routering van pakketten. Binnen deze laag zijn IP-adressen essentieel voor het identificeren van apparaten, en wordt veel gebruik gemaakt van subnetting om netwerken logisch in te delen.
+## Overzicht
 
----
+De Network Layer is verantwoordelijk voor het routeren van data tussen verschillende netwerken. Het belangrijkste protocol is het Internet Protocol (IP), dat zorgt voor adressering en routering van pakketten. Op deze laag zijn IP-adressen essentieel voor het identificeren van apparaten, en subnetting wordt veel gebruikt om netwerken logisch in te delen.
 
-## IPv4, Adressering en Subnetting
+## IPv4, Adressering & Subnetting
 
-### Adressering en Binaire Notatie
+### Adressering en binaire notatie
 
-IPv4-adressen bestaan uit 32 bits en worden weergegeven als vier groepen van 8 bits (octets), gescheiden door punten, bijvoorbeeld: `192.168.1.254`. Elk octet kan een waarde aannemen van 0 tot 255. In binaire notatie loopt dit van **00000000** (decimaal 0) tot **11111111** (decimaal 255). Binaire representatie betekent dat je elk getal alleen met nullen en enen weergeeft; zo is 192 bijvoorbeeld **11000000**.
+IPv4-adressen bestaan uit 32 bits en worden genoteerd als vier groepen van 8 bits (octets), gescheiden door punten, bijvoorbeeld: `192.168.1.254`.  
+Elk octet varieert van 0 tot 255. In binaire notatie loopt dit van **00000000** (0) tot **11111111** (255).  
+Binaire representatie betekent dat elk decimaal getal wordt weergegeven in enen en nullen. Bijvoorbeeld:  
+- 192 = **11000000**
 
-<img src="/assets/base2.png" alt="Binary Representation" width="600">
+Je telt de waarde van elk '1'-bit bij elkaar op om van binair naar decimaal te rekenen.
 
-**Voorbeeld:**  
-Het getal 192 wordt in binaire notatie als volgt opgebouwd:  
-- 192 past in 128, dus eerste bit is 1  
-- 64 past niet, tweede bit is 0  
-- 32 past, derde bit is 1  
-- 16 past niet, vierde bit is 0  
-- 8 past niet, vijfde bit is 0  
-- 4 past, zesde bit is 0  
-- 2 past, zevende bit is 0  
-- 1 past niet, achtste bit is 0  
-Dus, 192 = **11000000**
+> Een byte is 8 bits en kent 256 mogelijke waarden.
 
-Ook andersom kun je van binair naar decimaal rekenen door de waarde van elk '1'-bit bij elkaar op te tellen.
+### IPv4-header en adresstructuur
 
-<img src="/assets/base2-2.png" alt="Binary Representation 2" width="600">
+De IPv4-header bevat de essentiële informatie voor het routeren van IP-pakketten, zoals bron- en bestemmingsadres, fragmentatie, TTL en het protocoltype (bijv. TCP/UDP).  
+De header heeft een minimale grootte van 20 bytes en kan tot 60 bytes uitbreiden door opties.
 
-Een byte bestaat dus uit 8 bits en kan maximaal 256 verschillende waarden bevatten.
+Een IPv4-adres is altijd 32 bits lang, overeenkomend met vier octetten.  
+In decimale notatie: `192.168.1.254`  
+In binair: `11000000.10101000.00000001.11111110`
 
----
+### Private IPv4-adressen
 
-### IPv4 Header en Adresstructuur
-
-De IPv4-header bevat de essentiële informatie voor het routeren van IP-pakketten, waaronder het bron- en bestemmingsadres, fragmentatie, controle, TTL en het protocoltype (zoals TCP of UDP). De header heeft een minimale grootte van 20 bytes en kan uitbreiden tot 60 bytes bij gebruik van opties. Het adres zelf is altijd 32 bits lang, wat overeenkomt met vier octetten.
-
-<img src="/assets/ipv4header.png" alt="IPv4 Header Format" width="600">
-
-IPv4-adressen worden meestal in decimale notatie weergegeven, bijvoorbeeld:  
-**192.168.1.254**  
-In binaire vorm: `11000000.10101000.00000001.11111110`
-
-Private IPv4-adressen zijn adressen die niet op het openbare internet worden gebruikt, maar binnen lokale netwerken. De drie grote blokken private adressen zijn:
+Private adressen zijn niet voor het publieke internet, maar voor intern gebruik.  
+De drie grote blokken:
 
 | Range                        | Subnetmasker     | CIDR           |
 |------------------------------|------------------|----------------|
@@ -50,97 +37,12 @@ Private IPv4-adressen zijn adressen die niet op het openbare internet worden geb
 | 172.16.0.0 – 172.31.255.255  | 255.240.0.0      | 172.16.0.0/12  |
 | 192.168.0.0 – 192.168.255.255| 255.255.0.0      | 192.168.0.0/16 |
 
----
+## Subnetting & CIDR
 
-### Subnetting en CIDR in de Praktijk
+### Praktische uitleg
 
-Subnetting betekent het verdelen van een groot netwerk in kleinere subnetten. Dit gebeurt met behulp van een subnetmasker of met CIDR-notatie (Classless Inter-Domain Routing), waarbij je na een schuine streep het aantal netwerkbits aangeeft (zoals `/24`).
-
-CIDR en subnetmaskers helpen bepalen hoeveel hosts in een subnet passen en hoe je een netwerk logisch kunt opdelen. Bijvoorbeeld:
-- `/24` betekent 255.255.255.0, oftewel 256 adressen waarvan er 254 bruikbaar zijn voor hosts (de eerste is het netwerkadres, de laatste is broadcast).
-- `/26` betekent 255.255.255.192, ofwel 64 adressen waarvan 62 bruikbaar voor hosts.
-
-#### Omrekenen en Voorbeelden
-
-Om van een subnetmasker naar CIDR te gaan tel je het aantal ‘1’-bits in het masker. Bijvoorbeeld:  
-- 255.255.240.0 → 8+8+4=**/20**  
-- 255.255.252.0 → 8+8+6=**/22**
-
-Om van CIDR naar het aantal adressen te gaan:  
-- **Formule:** `2^(32 - CIDR)`  
-- `/24`: 2^8 = 256 adressen, 254 bruikbaar  
-- `/28`: 2^4 = 16 adressen, 14 bruikbaar
-
-Om van aantal hosts naar CIDR te gaan:  
-- Tel 2 bij het gewenste aantal hosts op (voor netwerk en broadcast)
-- Zoek de kleinste macht van 2 die dit aantal dekt, en trek het aantal benodigde bits van 32 af.
-
-Voorbeeld: 50 hosts nodig → 50+2=52 → eerstvolgende macht van 2 is 64 (2^6) → 32-6=**/26**
-
-### Veelgebruikte Subnetvoorbeelden
-
-Hieronder vind je de meest gangbare subnets, met binaire, decimale en rekenvoorbeelden:
-
-
-**/8 subnet:**
-
-/8: 11111111.00000000.00000000.00000000
-
-**CIDR:** /8  
-**Subnet Mask:** 255.0.0.0  
-**Network bits:** 8  
-**Host bits:** 32 - 8 = 24 bits  
-**Total addresses:** 2²⁴ = 16,777,216 = 256 x 256 x 256  
-**Usable hosts:** 16,777,216 - 2 = 16,777,214
-
-
-**/16 subnet:**
-
-/16: 11111111.11111111.00000000.00000000
-
-**CIDR:** /16  
-**Subnet Mask:** 255.255.0.0  
-**Network bits:** 16  
-**Host bits:** 32 - 16 = 16 bits  
-**Total addresses:** 2¹⁶ = 65,536 = 256 x 256  
-**Usable hosts:** 65,536 - 2 = 65,534
-
-
-**/24 subnet:**
-
-/24: 11111111.11111111.11111111.00000000
-
-**CIDR:** /24  
-**Subnet Mask:** 255.255.255.0  
-**Network bits:** 24  
-**Host bits:** 32 - 24 = 8 bits  
-**Total addresses:** 2⁸ = 256  
-**Usable hosts:** 256 - 2 = 254
-
-
-**/26 subnet:**
-
-/26: 11111111.11111111.11111111.11000000
-(255) (255) (255) (192)
-|----------- Network ----------|Host|
-
-**CIDR:** /26  
-**Subnet Mask:** 255.255.255.192  
-**Network bits:** 26  
-**Host bits:** 32 - 26 = 6 bits  
-**Total addresses:** 2⁶ = 64  
-**Usable hosts:** 64 - 2 = 62
-
-
-#### Sprongberekening
-
-Met de sprongberekening kun je snel subnetgrenzen vinden:  
-- **Sprong = 256 - waarde van het octet dat geen 255 is in het subnetmasker**  
-- Voorbeeld: 255.255.240.0 → 256-240=16, dus subnetten lopen van .0, .16, .32, enzovoort.
-
----
-
-### Subnetting Tabellen en Overzicht
+Subnetting is het opdelen van een groot netwerk in kleinere subnetten. Dit gebeurt via een subnetmasker of CIDR-notatie (Classless Inter-Domain Routing).  
+Bij CIDR geeft het getal achter de schuine streep het aantal netwerkbits aan, bijvoorbeeld `/24`.
 
 | CIDR | Subnetmasker        | Aantal hosts |
 |------|---------------------|--------------|
@@ -152,18 +54,73 @@ Met de sprongberekening kun je snel subnetgrenzen vinden:
 | /29  | 255.255.255.248     | 6            |
 | /30  | 255.255.255.252     | 2            |
 
-**Voorbeeld uitwerking:**  
-Netwerk `192.168.1.0/24` opgesplitst in `/26`:
-- `192.168.1.0/26`   = 192.168.1.0 – 192.168.1.63 (62 hosts)
-- `192.168.1.64/26`  = 192.168.1.64 – 192.168.1.127 (62 hosts)
-- `192.168.1.128/26` = 192.168.1.128 – 192.168.1.191 (62 hosts)
-- `192.168.1.192/26` = 192.168.1.192 – 192.168.1.255 (62 hosts)
+- `/24` betekent 255.255.255.0: 256 adressen waarvan 254 bruikbaar voor hosts
+- `/26` betekent 255.255.255.192: 64 adressen waarvan 62 bruikbaar
 
----
+**Omrekenen subnetmasker naar CIDR:** tel het aantal ‘1’-bits  
+- 255.255.240.0 → 20 bits (8+8+4) = `/20`
+- 255.255.252.0 → 22 bits (8+8+6) = `/22`
 
-### Klassen en Speciale Adressen
+**Aantal adressen per subnet:** `2^(32 - CIDR)`  
+- `/24`: 2^8 = 256 adressen, 254 bruikbaar  
+- `/28`: 2^4 = 16 adressen, 14 bruikbaar
 
-Historisch werden IPv4-adressen in klassen ingedeeld (A, B, C), maar dankzij CIDR is dat minder relevant geworden. Toch is het goed de ranges te kennen:
+**Aantal hosts naar CIDR:**  
+- Tel 2 bij het gewenste aantal hosts (voor netwerk & broadcast)
+- Zoek de eerstvolgende macht van 2 die dit aantal dekt, en trek het aantal benodigde bits van 32 af.
+
+Voorbeeld:  
+- 50 hosts nodig → 50+2=52  
+- Eerstvolgende macht van 2 is 64 (2^6)  
+- 32-6= `/26`
+
+### Sprongberekening
+
+De sprong is het verschil tussen subnetten in een bepaald octet.  
+Formule: **Sprong = 256 - waarde van het subnetmasker-octet dat geen 255 is**  
+Voorbeeld: 255.255.240.0 → 256-240=16, dus subnetten lopen van .0, .16, .32, enzovoort.
+
+### Veelgebruikte subnetvoorbeelden
+
+| CIDR | Subnet Mask       | Netwerkbits | Hostbits | Total adresses | Usable hosts  |
+|------|-------------------|-------------|----------|---------------|--------------|
+| /8   | 255.0.0.0         | 8           | 24       | 16.777.216    | 16.777.214   |
+| /16  | 255.255.0.0       | 16          | 16       | 65.536        | 65.534       |
+| /24  | 255.255.255.0     | 24          | 8        | 256           | 254          |
+| /26  | 255.255.255.192   | 26          | 6        | 64            | 62           |
+
+#### Hoe worden de subnetadressen bepaald?
+
+| Subnetbits | Berekening        | Decimaal | Subnetadres        |
+|------------|-------------------|----------|--------------------|
+|    00      | 0×128 + 0×64      |   0      | 192.168.1.0        |
+|    01      | 0×128 + 1×64      |  64      | 192.168.1.64       |
+|    10      | 1×128 + 0×64      | 128      | 192.168.1.128      |
+|    11      | 1×128 + 1×64      | 192      | 192.168.1.192      |
+
+Elke combinatie van de 2 subnetbits geeft een ander subnet. Je telt de waarde van elk "subnetbit" op als deze bit op 1 staat in het binaire subnetnummer.
+
+#### Complete subnetoverzicht `/26`
+
+| Subnet            | Netwerkadres     | Eerste host      | Laatste host     | Broadcastadres    |
+|-------------------|------------------|------------------|------------------|-------------------|
+| 192.168.1.0/26    | 192.168.1.0      | 192.168.1.1      | 192.168.1.62     | 192.168.1.63      |
+| 192.168.1.64/26   | 192.168.1.64     | 192.168.1.65     | 192.168.1.126    | 192.168.1.127     |
+| 192.168.1.128/26  | 192.168.1.128    | 192.168.1.129    | 192.168.1.190    | 192.168.1.191     |
+| 192.168.1.192/26  | 192.168.1.192    | 192.168.1.193    | 192.168.1.254    | 192.168.1.255     |
+
+#### Broadcastadressen in binair
+
+| Subnet            | Broadcastadres    | Binair (laatste octet) |
+|-------------------|------------------|------------------------|
+| 192.168.1.0/26    | 192.168.1.63     | `00111111`             |
+| 192.168.1.64/26   | 192.168.1.127    | `01111111`             |
+| 192.168.1.128/26  | 192.168.1.191    | `10111111`             |
+| 192.168.1.192/26  | 192.168.1.255    | `11111111`             |
+
+## Klassen en speciale adressen
+
+Historisch werden IPv4-adressen in klassen ingedeeld (A, B, C). Met CIDR is dat minder relevant, maar goed om te kennen:
 
 | Klasse | Eerste octet | Subnetmasker   | Adressen per netwerk |
 |--------|--------------|----------------|---------------------|
@@ -171,19 +128,9 @@ Historisch werden IPv4-adressen in klassen ingedeeld (A, B, C), maar dankzij CID
 | B      | 128-191      | 255.255.0.0    | 65.536              |
 | C      | 192-223      | 255.255.255.0  | 256                 |
 
-Speciale adressen zijn:
+Speciale adressen:
 - **Loopback:** 127.0.0.0 - 127.255.255.255
-- **Broadcast:** Het hoogste adres binnen een subnet (bijv. 192.168.1.255)
-- **Netwerkadres:** Het laagste adres binnen een subnet (bijv. 192.168.1.0)
-
----
-
-## Belangrijkste punten
-
-- De Network Layer verzorgt routering en adressering.
-- IPv4-adressen zijn 32 bits, meestal genoteerd als vier decimale getallen.
-- Private adressen zijn bedoeld voor intern gebruik, niet publiek routeerbaar.
-- Subnetting via CIDR en subnetmaskers is essentieel voor een efficiënte netwerkopbouw.
-- Tabellen, sprongberekeningen en binaire notatie maken subnetting inzichtelijk en toepasbaar.
+- **Broadcast:** Hoogste adres binnen een subnet (bijv. 192.168.1.255)
+- **Netwerkadres:** Laagste adres binnen een subnet (bijv. 192.168.1.0)
 
 ---

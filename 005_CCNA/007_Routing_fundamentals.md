@@ -1,14 +1,18 @@
-## Routing
+
+# Routing
+
+## Inleiding
 
 Routing is het proces waarbij routers bepalen welke route IP-pakketten moeten volgen om hun bestemming te bereiken. Routers bewaren routes van bekende netwerken in hun routing table en kiezen op basis daarvan de beste route voor elk ontvangen pakket.
 
+## Soorten Routing
+
 Er zijn twee hoofdtypen routing:
+
 - **Statische routing:** Handmatig geconfigureerd door een beheerder.
 - **Dynamische routing:** Automatisch beheerd door routingprotocollen, waarbij routers informatie uitwisselen en hun routing tables aanpassen bij netwerkveranderingen.
 
 Een route vertelt de router waar een pakket naartoe moet: naar een next-hop router of, als het netwerk direct verbonden is, naar de juiste interface. Is de bestemming het eigen IP-adres van de router, dan wordt het pakket direct afgeleverd aan de router zelf.
-
----
 
 ## Routing Details
 
@@ -26,7 +30,8 @@ Bij een connected route naar `192.168.1.0/24` worden alle adressen binnen dat ne
 ```
 
 Als een pakket op meerdere routes matcht, kiest de router altijd de meest specifieke (langste prefix).  
-Bijvoorbeeld:  
+Bijvoorbeeld:
+
 - `192.168.1.0/24`
 - `192.168.1.1/32`
 
@@ -34,8 +39,12 @@ Voor bestemming `192.168.1.1` kiest de router de `/32` route.
 
 Routers flooden nooit zoals switches. Als een router geen route kent naar de bestemming, wordt het pakket altijd gedropt.
 
-**Default Gateway:**  
+## Default Gateway
+
 End hosts gebruiken een default gateway om adressen buiten hun eigen netwerk te bereiken. De default route (`0.0.0.0/0`) geeft aan waar pakketten naartoe moeten als er geen specifieke route bekend is.
 
+## Point-to-Point Verbindingen
 
-Bij een point-to-point verbinding, zoals tussen twee routers, kan je een /31 subnet gebruiken omdat je geen broadcast of netwerkadres nodig hebt. Dit geeft je twee IP-adressen die je kunt gebruiken voor de twee routers.
+Bij een point-to-point verbinding, zoals tussen twee routers, kun je een `/31` subnet gebruiken omdat je geen broadcast of netwerkadres nodig hebt. Dit geeft je precies twee bruikbare IP-adressen voor de twee routers.
+
+---
