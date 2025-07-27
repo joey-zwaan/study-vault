@@ -1,4 +1,3 @@
-
 # Routing
 
 ## Inleiding
@@ -43,25 +42,35 @@ Routers flooden nooit zoals switches. Als een router geen route kent naar de bes
 
 End hosts gebruiken een default gateway om adressen buiten hun eigen netwerk te bereiken. De default route (`0.0.0.0/0`) geeft aan waar pakketten naartoe moeten als er geen specifieke route bekend is.
 
-## Point-to-Point Verbindingen
+### Point-to-Point Verbindingen
 
 Bij een point-to-point verbinding, zoals tussen twee routers, kun je een `/31` subnet gebruiken omdat je geen broadcast of netwerkadres nodig hebt. Dit geeft je precies twee bruikbare IP-adressen voor de twee routers.
 
+
+## ROAS (Router-on-a-Stick)
+
+**Router-on-a-Stick (ROAS)** is een methode waarbij één enkele fysieke routerinterface gebruikt wordt om verkeer tussen meerdere VLANs te routeren. Dit gebeurt door op die interface meerdere **subinterfaces** te configureren. Elke subinterface is gekoppeld aan een specifieke VLAN via **802.1Q VLAN-tagging**.
+
+Deze aanpak is nodig omdat switches standaard geen verkeer tussen VLANs doorlaten (layer 2-beperking). Door een router toe te voegen (layer 3), wordt **inter-VLAN-communicatie** mogelijk. In plaats van voor elke VLAN een aparte fysieke verbinding te voorzien, wordt met ROAS alles via één trunkverbinding afgehandeld.
+
+De switch stuurt getagd verkeer naar de router via een **trunkpoort**. De router herkent aan de hand van de tag tot welke VLAN het verkeer behoort, en stuurt het via de juiste subinterface naar het bijhorende subnet. Als verkeer van VLAN 10 naar VLAN 20 moet, verloopt dit via de router die beide subnets kent en daartussen kan routeren.
+
+**Waarom gebruiken?**
+
+- Bespaart fysieke interfaces
+- Eenvoudig te beheren in kleine tot middelgrote netwerken
+- Maakt VLAN-segmentatie mogelijk met centrale routing
+
+Deze techniek is ideaal in omgevingen waar meerdere VLANs actief zijn, maar slechts één routerinterface beschikbaar is.
+
+```cisco
+interface g0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.1.1 255.255.255.0
+```
+
+- `g0/0.10`: Subinterface voor VLAN 10  
+- `encapsulation dot1Q 10`: VLAN 10 tagging inschakelen  
+- `ip address`: Default gateway voor VLAN 10 clients
+
 ---
-
-
-192.168.255.0/27
-
-255.255.255.224
-
-256 - 224 = 32 addressen per subnet
-
-192.168.255.32
-192.168.255.64
-192.168.255.96
-192.168.255.128
-192.168.255.160
-
-8 subnets
-
-2 ^ 8 

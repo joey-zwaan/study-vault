@@ -52,3 +52,5 @@ Access ports worden wel eens "untagged" genoemd omdat ze geen VLAN-tag bevatten.
 
 De switch voegt geen VLAN-tag toe aan frames die van het native VLAN komen. Dit betekent dat als een frame van het native VLAN over een trunkport wordt verzonden, het frame geen tag heeft.     
 Op een trunkport is het default native VLAN 1 maar dit kan aangepast worden. Je moet dit consistent houden over alle trunk links om problemen te voorkomen.
+
+---

@@ -101,4 +101,45 @@ Dit hoofdstuk geeft de belangrijkste commando’s voor het aanmaken, bekijken en
 | `switchport trunk native vlan <vlan-id>`     | Stelt de native (untagged) VLAN voor de trunk in|
 | `switchport nonegotiate`                     | Zet DTP-onderhandeling uit op de interface     |
 
+
+
+## ROAS (Router-on-a-Stick)
+
+**Router Configuratie**
+
+```cisco
+interface g0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+```
+
+```cisco
+interface g0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+```
+
+```cisco
+interface g0/0.30
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+```
+
+**Switch Configuratie**
+
+```cisco
+interface g0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30
+```
+
+**Opmerkingen**
+
+- De router moet **802.1Q** trunking ondersteunen
+- Elke VLAN moet zich in een uniek **IP-subnet** bevinden
+
+
+
+
 ---

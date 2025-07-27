@@ -193,6 +193,27 @@ Aantal hostadressen = 2^(aantal host bits) − 2
 Voorbeeld:
 - `/30` → 2 host bits → 2² = 4 → 4 − 2 = 2 usable hosts
 
+Subnetinformatie voor `192.168.1.0/26`:
+
+- Subnet: `192.168.1.0/26`
+- Subnetmasker: 255.255.255.192 (26 netwerkbits)
+
+Binaire representatie:
+- Netwerkadres (alle hostbits 0):  
+  `192.168.1.0` → `11000000.10101000.00000001.00000000`
+- Broadcastadres (alle hostbits 1):  
+  `192.168.1.63` → `11000000.10101000.00000001.00111111`
+
+Hostbereik en berekeningen:
+- Aantal hostbits: 32 - 26 = 6 bits
+- Totaal aantal adressen: 2⁶ = 64
+- Bruikbare hostrange: `192.168.1.1` t/m `192.168.1.62`
+- Netwerkadres: `192.168.1.0`
+- Broadcastadres: `192.168.1.63`
+
+
+
+
 <img src="/assets/classes.png" alt="IPv4 classes" width="600">
 
 ### Class A, B, C, D, E
