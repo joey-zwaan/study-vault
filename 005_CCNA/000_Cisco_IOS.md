@@ -143,3 +143,13 @@ interface g0/1
 
 
 ---
+
+
+### Intervlan routing met SVI
+```cisco
+interface Vlan10
+no switchport
+ip routing
+ip address 192.168.10.1 255.255.255.0 
+```
+Hier gebruiken we geen encapsulation omdat de switch dit automatisch afhandelt.

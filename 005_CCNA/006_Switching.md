@@ -33,3 +33,5 @@ Interfaces die verschillende snelheden aankunnen hebben default setting van spee
 Interfaces adverteren hun snelheid en duplexmodus aan elkaar, zodat ze kunnen onderhandelen over de beste instelling die ze beide ondersteunen. Dit gebeurt meestal via het autonegotiation-protocol, dat informatie uitwisselt over de mogelijkheden van elk apparaat.
 
 ---
+
+
