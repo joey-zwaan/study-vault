@@ -153,3 +153,104 @@ ip routing
 ip address 192.168.10.1 255.255.255.0 
 ```
 Hier gebruiken we geen encapsulation omdat de switch dit automatisch afhandelt.
+
+
+### Spanning Tree Protocol (RSTP)
+
+| Commando                                 | Beschrijving                                              |
+|-------------------------------------------|----------------------------------------------------------|
+| `show spanning-tree`                      | Toont algemene STP/RSTP-status en -topologie             |
+| `show spanning-tree vlan <vlan-id>`       | Toont STP/RSTP-informatie specifiek voor een VLAN        |
+| `show spanning-tree interface <if>`       | Laat de STP/RSTP-status van een specifieke interface zien|
+| `show spanning-tree detail`               | Meer gedetailleerde info over STP/RSTP-topologie         |
+| `show spanning-tree summary`              | Samenvatting van de STP/RSTP-instanties                  |
+| `show spanning-tree root`                 | Overzicht van root bridge per VLAN                       |
+| `show spanning-tree bridge`               | Toont bridge-ID info van de eigen switch                 |
+
+***STP/RSTP configureren**
+
+| Commando                                  | Beschrijving                                              |
+|--------------------------------------------|----------------------------------------------------------|
+| `spanning-tree mode rapid-pvst`           | Zet de switch in Rapid PVST+ (Cisco RSTP) mode           |
+| `spanning-tree mode pvst`                 | Zet de switch in PVST+ (Cisco STP) mode                  |
+| `spanning-tree vlan <vlan-id> priority <waarde>` | Wijzigt de bridge priority voor STP/RSTP voor een VLAN   |
+| `spanning-tree vlan <vlan-id> root primary`     | Maakt de switch root bridge voor opgegeven VLAN          |
+| `spanning-tree vlan <vlan-id> root secondary`   | Maakt de switch backup root bridge voor opgegeven VLAN   |
+| `spanning-tree portfast`                        | Zet PortFast aan op een interface (voor snelle activatie)|
+| `spanning-tree bpduguard enable`                | Zet BPDU Guard aan op een PortFast interface             |
+
+**Portrollen en states bekijken**
+
+| Commando                                 | Beschrijving                                              |
+|-------------------------------------------|----------------------------------------------------------|
+| `show spanning-tree interface <if>`       | Toont de huidige role (Root, Designated, Alternate, Backup) en state van de poort |
+| `show spanning-tree active`               | Overzicht van actieve spanning-tree instanties            |
+
+
+
+ **Let op:**  
+  Cisco gebruikt voor snelle STP meestal *rapid-pvst* (Rapid Per VLAN Spanning Tree Plus), gebaseerd op RSTP (802.1w).
+
+
+### EtherChannel
+
+EtherChannel bundelt meerdere fysieke poorten tot één logische link voor bandbreedte en redundantie.
+
+- Poorten moeten identieke configuratie hebben (snelheid, duplex, VLAN)
+- Beide switches gebruiken zelfde protocol en channel-group nummer
+
+
+#### Protocollen
+
+| Protocol | Mode Options | Description |
+|----------|--------------|-------------|
+| LACP     | active, passive | IEEE 802.3ad standaard |
+| PAgP     | desirable, auto | Cisco proprietary protocol |
+| Static   | on | Geen negotiatie |
+
+#### Basisconfiguratie
+
+| Commando | Beschrijving |
+|----------|--------------|
+| `interface range g0/1-2` | Selecteer interfaces voor EtherChannel |
+| `channel-group 1 mode active` | LACP active mode |
+| `channel-group 1 mode passive` | LACP passive mode |
+| `channel-group 1 mode desirable` | PAgP desirable mode |
+| `channel-group 1 mode auto` | PAgP auto mode |
+| `channel-group 1 mode on` | Static EtherChannel |
+
+#### Port-channel Interface
+
+| Commando | Beschrijving |
+|----------|--------------|
+| `interface port-channel 1` | Configureer port-channel interface |
+| `switchport mode trunk` | Zet interface in trunk mode |
+| `switchport trunk allowed vlan 10,20` | Sta specifieke VLANs toe |
+
+#### Load-Balancing
+
+| Commando | Beschrijving |
+|----------|--------------|
+| `port-channel load-balance src-mac` | Source MAC based |
+| `port-channel load-balance dst-mac` | Destination MAC based |
+| `port-channel load-balance src-dst-mac` | Source-destination MAC based |
+| `port-channel load-balance src-ip` | Source IP based |
+| `port-channel load-balance dst-ip` | Destination IP based |
+| `port-channel load-balance src-dst-ip` | Source-destination IP based |
+
+#### Verificatie
+
+| Commando | Beschrijving |
+|----------|--------------|
+| `show etherchannel summary` | Overzicht van alle EtherChannels |
+| `show interfaces port-channel 1` | Details van specifieke port-channel |
+| `show etherchannel load-balance` | Huidige load-balancing methode |
+| `show etherchannel port-group` | Poort groep informatie |
+| `show etherchannel protocol` | Protocol status |
+
+> **Let op:**  
+> - Maximum 8 interfaces per EtherChannel
+> - Alle poorten moeten identieke configuratie hebben
+> - LACP ondersteunt standby links (max 16)
+
+
