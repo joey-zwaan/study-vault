@@ -1,10 +1,8 @@
-# Network Media
+# Physical Layer
+## Overzicht
+De Physical Layer (Layer 1) van het OSI-model is verantwoordelijk voor de fysieke verbindingen tussen netwerkapparaten. Dit omvat de elektrische, optische of radiogolven die gebruikt worden om data over te dragen. De belangrijkste aspecten zijn de kabels, connectoren, signaalsterkte en transmissiesnelheid.
 
-## Inleiding
-
-Dit document beschrijft de belangrijkste netwerkmedia, hun eigenschappen, voordelen en nadelen. Er wordt ook uitgelegd welke standaarden er zijn en welke begrippen je moet kennen voor fysieke netwerken.
-
-## Ethernet & Netwerkmedia
+### Ethernet & Netwerkmedia
 
 Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare communicatie tussen apparaten. Ethernet media verwijst naar de fysieke kabels en verbindingen die gebruikt worden om netwerken te bouwen.
 
@@ -73,5 +71,18 @@ Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare 
 
 - **Multimode fiber:** grotere core, meerdere lichtmodi, goedkoper, kortere afstand
 - **Single-mode fiber:** kleinere core, één lichtstraal, duurder, langere afstand
+
+### UTP Kabels in Detail
+
+#### Twisted Pair Categories
+
+| Categorie | Max Snelheid | Bandbreedte
+|-----------|--------------|-----------
+| Cat5e     | 1 Gbps       | 100 MHz
+| Cat6      | 10 Gbps      | 250 MHz
+| Cat6a     | 10 Gbps      | 500 MHz
+| Cat7      | 10 Gbps      | 600 MHz
+| Cat8      | 40 Gbps      | 2000 MHz
+
 
 ---

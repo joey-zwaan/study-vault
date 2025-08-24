@@ -1,36 +1,18 @@
-# Ethernet Switching
+# Datalink Layer
 
-## Inleiding
+## Overzicht
 
-Dit document behandelt de werking van Ethernet switching, de structuur van Ethernet frames, het gedrag van switches, ARP en ICMP.
+De Datalink Layer (Layer 2) van het OSI-model is verantwoordelijk voor de betrouwbare overdracht van dataframes tussen apparaten op hetzelfde netwerk. Het zorgt voor foutdetectie, frame-synchronisatie en MAC-adressering. De belangrijkste protocollen zijn Ethernet en PPP.
 
-## Physical Layer en Data Link Layer
+## Ethernet & Netwerkmedia
 
-De Physical Layer definieert de fysieke kenmerken van het gebruikte medium om data over te dragen tussen apparaten. De Data Link Layer zorgt voor de betrouwbare overdracht van frames over dit fysieke medium.
+Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare communicatie tussen apparaten. Ethernet media verwijst naar de fysieke kabels en verbindingen die gebruikt worden om netwerken te bouwen.
 
-### Medium specificaties
 
-- Type kabel of draadloos medium (koper, glasvezel, radiofrequentie)
-- Elektrische of optische signalen (spanningsniveaus, lichtpulsen)
-- Connectoren en pinconfiguraties
 
-### Netwerk karakteristieken
-
-- Fysieke topologie (bus, ster, ring)
-- Kabellengtes, bandbreedte, transmissiesnelheden
-
-### Functies
-
-- Converteert frames naar bits
-- Verstuurt bits als elektrische/optische signalen over het fysieke medium
-- Ontvangt signalen en converteert deze terug naar bits
-- Geen adressering, werkt alleen met ruwe bits
-
-## Ethernet Frame Structure
+### Ethernet Frame Structuur
 
 Een Ethernet frame is de eenheid van data die over een Ethernet-netwerk wordt verzonden. Het bestaat uit verschillende delen.
-
-### Frame Components
 
 **Ethernet Header:**
 - **Preamble**: 7 bytes (56 bits), gebruikt om kloksynchronisatie te bereiken tussen zender en ontvanger. Bestaat uit zeven opeenvolgende bytes met het patroon 10101010 * 7, die zorgen voor een ritmische klok voor de ontvanger om zich op af te stemmen.

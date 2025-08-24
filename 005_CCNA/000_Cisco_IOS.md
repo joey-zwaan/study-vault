@@ -252,5 +252,4 @@ EtherChannel bundelt meerdere fysieke poorten tot één logische link voor bandb
 > - Maximum 8 interfaces per EtherChannel
 > - Alle poorten moeten identieke configuratie hebben
 > - LACP ondersteunt standby links (max 16)
-
-
+> - Voor layer 3 EtherChannel moet je "no switchport" gebruiken op de interfaces

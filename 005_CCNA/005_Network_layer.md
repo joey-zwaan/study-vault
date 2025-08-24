@@ -98,7 +98,7 @@ De IPv4-header bevat essentiële informatie voor het routeren van IP-pakketten, 
 - **TTL** (8 bits): Time To Live
 - **Protocol** (8 bits): L4-protocol (TCP=6, UDP=17, ICMP=1, OSPF=89)
 - **Header Checksum** (16 bits): Foutcontrole header
-- **Source/Destination Address** (32 bits): Afzender/ontvanger IP
+- **Source/Destination Address** (32 bits + 32 bits): Afzender/ontvanger IP
 - **Options + Padding**: Optioneel
 
 #### Grootte van IPv4-header
@@ -153,6 +153,7 @@ Bij CIDR geeft het getal achter de schuine streep het aantal netwerkbits aan, bi
 - Eerstvolgende macht van 2 is 64 (2^6)  
 - 32-6= `/26`
 
+255.255.255.0
 ### Sprongberekening
 
 De sprong is het verschil tussen subnetten in een bepaald octet.  
