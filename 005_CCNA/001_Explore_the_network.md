@@ -2,22 +2,23 @@
 
 DNS (Domain Name System) is a hierarchical system for naming resources on the internet. It translates human-readable domain names (like www.example.com) into IP addresses (like 192.0.2.1) that computers use to identify each other on the network.
 
-## Werking
+**Werking**
 
 1. **DNS Query:** Wanneer een gebruiker een website bezoekt, wordt er een DNS-query verzonden naar een DNS-server.
 2. **Recursieve DNS-server:** Deze server zoekt de IP-adresinformatie op, mogelijk door andere DNS-servers te raadplegen.
 3. **Caching:** DNS-servers cachen (onthouden) eerder opgevraagde informatie om toekomstige queries te versnellen.
 4. **DNS Records:** Verschillende soorten records worden gebruikt, zoals A-records (voor IPv4-adressen), AAAA-records (voor IPv6-adressen), en CNAME-records (voor aliassen).
 
-## DNS-structuur
+#### DNS-structuur
 
 - **Root Level:** De hoogste laag in de DNS-hiërarchie, aangeduid met een punt (.) en bevat de root DNS-servers.
 - **Top-Level Domains (TLDs):** De volgende laag, zoals .com, .org, .net, enz.
 - **Second-Level Domains:** De naam die aan de TLD is voorafgegaan, zoals "example" in www.example.com.
 - **Subdomains:** Extra niveaus die aan een domein kunnen worden toegevoegd, zoals "www" in www.example.com.
 
+---
 
-## Qualiteit van Service (QoS)
+### Qualiteit van Service (QoS)
 
 Hiermee worden de volgende aspecten van netwerkverkeer beheerd:
 
@@ -39,7 +40,7 @@ Packet loss: < 1%
 Als de standaarden overschreden worden, kan dit leiden tot een slechte gebruikerservaring, zoals haperende audio of video.
 
 
-### Queuing 
+#### Queuing 
 
 Als een netwerkapparaat (zoals een router of switch) meer verkeer ontvangt dan het kan verwerken, worden pakketten in een wachtrij geplaatst. QoS kan verschillende wachtrijmechanismen gebruiken om te bepalen welke pakketten als eerste worden verwerkt:
 
@@ -56,7 +57,7 @@ Als een netwerkapparaat (zoals een router of switch) meer verkeer ontvangt dan h
 Je kan bijv. kiezen om HTTTP verkeer minder snel te droppen dan FTP verkeer. of VOIP verkeer minder snel te droppen dan email verkeer. 
 
 
-### Classification and Marking
+#### Classification and Marking
 Voordat QoS kan worden toegepast, moet het netwerkverkeer worden geclassificeerd en gemarkeerd. Dit kan op verschillende manieren:
 
 - **Access Control Lists (ACLs):** Hiermee kunnen specifieke soorten verkeer worden geïdentificeerd op basis van IP-adressen, poorten, of protocollen.
@@ -112,7 +113,7 @@ QoS marking moet worden vertrouwd op specifieke punten in het netwerk, anders za
 Het beste is om je trust boundaries zo dicht mogelijk bij de bron van het verkeer te plaatsen, bijvoorbeeld op de access switch waar de end devices (zoals computers en IP-phones) zijn aangesloten.
 
 
-### Queuing/congestion management
+#### Queuing/congestion management
 
 Een veelgebruikte methode is **round-robin**; hierbij wordt elk pakket in de wachtrij gelijkmatig behandeld, ongeacht het type verkeer.
 **Weighted** wordt meer data van een hogere prioriteit queue verstuurd dan van een lagere prioriteit queue.
@@ -126,10 +127,11 @@ Dit is handig om delay & jitter te voorkomen op voice/video traffic.
 
 **Nadeel**  is dat het andere verkeer (zoals data) kan verhongeren als er constant voice/video traffic is.
 
-### Shaping and Policing
+#### Shaping and Policing
 
 Traffic shaping en policing worden gebruikt om de hoeveelheid netwerkverkeer te beheersen. Traffic shaping buffert en verspreidt verkeer gelijkmatig over de tijd om pieken af te vlakken, terwijl policing verkeer dat de ingestelde limieten overschrijdt direct afwijst of markeert.
 
+---
 
 ## Lan Architectures
 
@@ -155,7 +157,7 @@ De access layer is de laag waar eindgebruikers en apparaten verbinding maken met
 Distribution layer fungeert als een brug tussen de access layer en de core layer. Het is verantwoordelijk voor het aggregeren van verkeer van meerdere access switches en het toepassen van beleidsregels zoals QoS, filtering, en routing.
 Typisch is het de grens tussen Layer 2 en Layer 3. Meestal multi-layer switches die zowel Layer 2 switching als Layer 3 routing kunnen uitvoeren.
 
-### 2 tier & 3 tier architectures
+#### 2 tier & 3 tier architectures
 
 **collapsed core architecture**
 
@@ -168,7 +170,7 @@ Dit wordt vooral gebruikt in Datacenters. Dit werkt goed als er veel verkeer tus
 Met de introductie van virtualisatie is er veel meer oost-west verkeer (tussen servers onderling). Dit kan leiden tot bottlenecks in de core layer.
 
 
-### Spine-leaf architecture
+#### Spine-leaf architecture
 
 **Spine-leaf architecture** is een netwerkontwerp dat bestaat uit twee lagen: spine en leaf. In dit ontwerp zijn alle leaf switches verbonden met alle spine switches, waardoor er meerdere paden zijn voor gegevensoverdracht. Dit biedt hoge beschikbaarheid, lage latentie, en schaalbaarheid, waardoor het ideaal is voor moderne datacenters met veel oost-west verkeer.
 
