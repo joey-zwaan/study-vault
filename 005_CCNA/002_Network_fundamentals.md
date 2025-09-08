@@ -1,28 +1,23 @@
-# Network Protocols
+## Network Fundamentals
 
-## Inleiding
+1. **Afspraken voor communicatie**  
+   Voordat apparaten kunnen communiceren, moeten ze afspraken maken over hoe dat verloopt: een bekende zender en ontvanger, een afgesproken taal en grammatica, snelheid en timing van aflevering, en bevestiging van ontvangst.  
 
-Dit document behandelt netwerkprotocollen, communicatie, OSI- en TCP/IP-modellen, protocol data units, en de werking van de Data Link Layer. 
+2. **Belangrijke aspecten**  
+   Message encoding: hoe data wordt gecodeerd (bv. ASCII of UTF-8).  
+   Message formatting: structuur van berichten (bv. JSON of XML).  
+   Message size: maximale grootte van een bericht.  
+   Message timing: wanneer berichten worden verzonden (toegangsmethode, flow control, responstijd).  
+   Message acknowledgment: bevestiging van ontvangst.  
 
-## Communicatieregels
+3. **Message Delivery-opties**  
+   Unicast: één zender naar één ontvanger.  
+   Multicast: één zender naar meerdere specifieke ontvangers.  
+   Broadcast: één zender naar alle ontvangers in het netwerk.  
+   Anycast: één zender naar de dichtstbijzijnde ontvanger in een groep.  
 
-Voordat apparaten kunnen communiceren, moeten ze afspraken maken over hoe die communicatie verloopt. Dit gebeurt aan de hand van standaarden en protocollen, zoals:
 
-- Een bekende zender en ontvanger
-- Een afgesproken taal & grammatica
-- Snelheid & timing van aflevering
-- Bevestiging van ontvangst
-
-Belangrijke aspecten van communicatie zijn onder andere **message encoding** (hoe data wordt gecodeerd, zoals ASCII of UTF-8), **message formatting** (structuur van berichten, bijvoorbeeld JSON of XML), **message size** (maximale grootte), **message timing** (wanneer berichten worden verzonden, toegangsmethode, flow control, responstijd) en **message acknowledgment** (bevestiging van ontvangst).
-
-### Message Delivery-opties
-
-- **Unicast:** Eén zender naar één ontvanger.
-- **Multicast:** Eén zender naar meerdere specifieke ontvangers.
-- **Broadcast:** Eén zender naar alle ontvangers in het netwerk.
-- **Anycast:** Eén zender naar de dichtstbijzijnde ontvanger in een groep.
-
-## Netwerkmodellen: OSI vs TCP/IP
+#### Netwerkmodellen: OSI vs TCP/IP
 
 Netwerkmodellen helpen bij het structureren van communicatieprotocollen en standaarden. De twee bekendste modellen zijn het OSI-model en het TCP/IP-model.
 
@@ -38,41 +33,62 @@ Netwerkmodellen helpen bij het structureren van communicatieprotocollen en stand
 
 *De bovenste drie OSI-lagen (Application, Presentation, Session) zijn samengevoegd tot de Application-laag in het TCP/IP-model. De onderste twee OSI-lagen (Data Link, Physical) zijn samengevoegd tot de Network Access-laag in het TCP/IP-model.*
 
-#### Ezelbruggetjes
-- OSI: "All people seem to need data processing"
-- TCP/IP: "All Turtles In New York"
+> OSI: "All people seem to need data processing"
+> TCP/IP: "All Turtles In New York"
 
-### Functies van de OSI-lagen
+#### Functies van de OSI-lagen
 
-- **Application:** process-to-process communicatie
-- **Presentation:** representatie van data tussen application layer services, zoals codering en compressie
-- **Session:** organisatie van communicatie
-- **Transport:** applicatie-tot-applicatie communicatie
-- **Network:** host-to-host communicatie, routering
-- **Data Link:** node-to-node communicatie, framing, MAC-adressen
-- **Physical:** fysieke verbindingen, elektrische signalen
+1. **Application**  
+   Process-to-process communicatie. Zorgt voor netwerkservices richting de gebruiker.  
+   *Voorbeeld:* webbrowser die HTTP gebruikt of e-mail via SMTP.  
 
-## Protocol Data Units (PDU's) en Encapsulation
+2. **Presentation**  
+   Zorgt voor representatie van data, codering, compressie en versleuteling.  
+   *Voorbeeld:* TLS/SSL versleutelt HTTPS-verkeer, JPEG/MP3 comprimeren bestanden.  
 
-### PDU's per laag
+3. **Session**  
+   Organiseert de communicatie tussen applicaties: sessies opbouwen, beheren en afsluiten.  
+   *Voorbeeld:* inloggen op een server en je sessie actief houden, of een VoIP-gesprek beheren.  
 
-- Application/Presentation/Session: data
-- Transport: segment = L4 header + data
-- Network: packet = L3 header + segment (L4 header + data)
-- Data Link: frame = L2 header + packet (L3 + L4 + data) + L2 trailer
-- Physical: bits → het frame wordt verzonden als elektrische/optische signalen
+4. **Transport**  
+   Applicatie-tot-applicatie communicatie, segmentatie, error control en flow control.  
+   *Voorbeeld:* TCP (betrouwbare levering van webpagina’s), UDP (snelle levering bij DNS of streaming).  
 
-### Encapsulation
+5. **Network**  
+   Host-to-host communicatie, logische adressen en routering.  
+   *Voorbeeld:* een router gebruikt het IP-adres om pakketten naar de juiste bestemming te sturen.  
 
-Toevoegen van headers en trailers aan PDU's bij elke laag.  
-- Van boven naar beneden: data → segment → packet → frame → bit
+6. **Data Link**  
+   Node-to-node communicatie, framing en foutdetectie op basis van MAC-adressen.  
+   *Voorbeeld:* een switch gebruikt MAC-adressen om frames naar de juiste poort te sturen (Ethernet).  
 
-### Decapsulation
+7. **Physical**  
+   De fysieke laag: media en signalen die bits transporteren.  
+   *Voorbeeld:* een UTP-kabel, glasvezel of Wi-Fi-radio die elektrische/optische signalen verstuurt.  
 
-Verwijderen van headers en trailers bij ontvangst.  
-- Van beneden naar boven: bit → frame → packet → segment → data
 
-## TCP/IP Protocol Suite
+#### Protocol Data Units (PDU's) en Encapsulation
+
+1. **Application/Presentation/Session**  
+   Data.  
+
+2. **Transport**  
+   Segment = L4-header + data.  
+
+3. **Network**  
+   Packet = L3-header + segment (L4-header + data).  
+
+4. **Data Link**  
+   Frame = L2-header + packet (L3 + L4 + data) + L2-trailer.  
+
+5. **Physical**  
+   Bits → het frame wordt verzonden als elektrische of optische signalen.  
+
+> **Encapsulation:** bij verzending worden headers en trailers toegevoegd. Van boven naar beneden: data → segment → packet → frame → bits.  
+> **Decapsulation:** bij ontvangst worden headers en trailers verwijderd. Van beneden naar boven: bits → frame → packet → segment → data.  
+
+
+#### TCP/IP Protocol Suite
 
 De TCP/IP protocol suite vormt de basis voor internetcommunicatie en bestaat uit vier lagen:
 
@@ -83,7 +99,6 @@ De TCP/IP protocol suite vormt de basis voor internetcommunicatie en bestaat uit
 | Internet       | Host-to-host communicatie over verschillende netwerken         | IPv4, IPv6, ICMP, ARP                 |
 | Network Access | Node-to-node communicatie via fysieke media                    | Ethernet, Wi-Fi, MAC-adressen         |
 
-### PDU's in TCP/IP
 
 | Laag           | PDU     |
 |----------------|---------|
@@ -92,52 +107,44 @@ De TCP/IP protocol suite vormt de basis voor internetcommunicatie en bestaat uit
 | Internet       | Packet  |
 | Network Access | Frame   |
 
-## Data Link Layer (Layer 2)
 
-De Data Link Layer (L2) is verantwoordelijk voor communicatie tussen directe buren in een netwerk. Het zorgt voor betrouwbare overdracht van frames over fysieke verbindingen en bevat protocollen zoals Ethernet, Wi-Fi en PPP.
+#### Data Link Layer (Layer 2)
 
-Accepteert Layer 3 packets en voegt een Layer 2 header en trailer toe om een frame te creëren. De header bevat informatie zoals bron- en bestemmings-MAC-adressen, terwijl de trailer vaak een Frame Check Sequence (FCS) bevat voor foutdetectie.
+De Data Link Layer (L2) zorgt voor communicatie tussen directe buren in een netwerk.  
+Het ontvangt Layer 3 packets en voegt een L2-header en -trailer toe om een frame te creëren.  
+De header bevat o.a. bron- en bestemmings-MAC-adressen, de trailer bevat vaak een FCS (Frame Check Sequence) voor foutdetectie.  
 
-### Sublayers van de Data Link Layer
+#### Sublayers
 
-#### Logical Link Control (LLC)
+1. **Logical Link Control (LLC)**  
+   Zorgt voor de communicatie tussen L3 en L2. Geeft aan welk L3-protocol wordt gebruikt (bv. IPv4 of IPv6) en maakt samenwerking van meerdere L3-protocollen op dezelfde L2 mogelijk.  
 
-- Beheert communicatie tussen de netwerklaag en de datalinklaag.
-- Plaatst informatie in het frame dat duidelijk maakt welk layer 3 protocol wordt gebruikt (bijvoorbeeld IPv4 of IPv6).
-- Maakt samenwerking mogelijk van verschillende layer 3 protocollen op dezelfde datalinklaag.
+2. **Media Access Control (MAC)**  
+   Definieert hoe apparaten toegang krijgen tot het fysieke medium. Zorgt voor adressering via unieke MAC-adressen (48-bit hex, bv. `00:1A:2B:3C:4D:5E`).  
+   - Eerste 24 bits = **OUI (Organizationally Unique Identifier)** → fabrikant (bv. `00:1A:2B` = Apple).  
+   - MAC-adressen adresseren frames binnen een lokaal netwerk.  
 
-#### Media Access Control (MAC)
+#### Frame Structure & Types
 
-- Definieert hoe apparaten toegang krijgen tot het fysieke medium.
-- Zorgt voor data link layer adressing via unieke MAC-adressen voor netwerkinterfaces.
-- MAC-adressen zijn 48-bits en vaak in hex weergegeven (bijv. `00:1A:2B:3C:4D:5E`).
-- MAC-adressen adresseren frames binnen een lokaal netwerk.
-- OUI (Organizationally Unique Identifier) = eerste 24 bits van een MAC-adres (fabrikant).
+1. **Frame Structure**  
+   1. Start/Stop indicator flags (L1).  
+   2. Addressing: bron- en bestemmings-MAC.  
+   3. Type/Protocol: welk L3-protocol in de data (bv. IPv4, IPv6).  
+   4. Controle: QoS, prioriteit of vertraging.  
+   5. Data: payload = packet header + segment header + data.  
+   6. Error Detection: foutcontrole (na de data).  
 
-Voorbeeld: `00:1A:2B` (OUI) wijst op fabrikant Apple.
+   > Bij elke router-hop verandert het frame, maar het IP-pakket blijft hetzelfde.  
 
-### Frame Structure
+2. **Frame Types**  
+   Ethernet, 802.11 Wireless, PPP (Point-to-Point Protocol), HDLC (High-Level Data Link Control), Frame Relay.  
 
-**Generieke structuur van een frame:**
-- Start en stop indicator flags (L1)
-- Addressing: bron en bestemming MAC-adressen
-- Type/Protocol: welk Layer 3 protocol in de data field (bijv. IPv4, IPv6)
-- Controle: quality of service (QOS), prioriteit of vertraging
-- Data: frame payload, packet header, segment header, daadwerkelijke data
-- Error Detection: foutdetectie (na de data)
-
-> Elke keer als je een router passeert, verandert het frame maar het IP-pakket blijft hetzelfde.
-
-#### Frame Types
-
-- Ethernet
-- 802.11 Wireless
-- PPP (Point-to-Point Protocol)
-- HDLC (High-Level Data Link Control)
-- Frame Relay
-
-**Runts** zijn frames < 64 bytes (vaak fouten of verkeerde config).  
-**Giants** zijn > 1518 bytes (of 9000 bytes voor jumbo frames).
+3. **Speciale gevallen**  
+   - **Runts**: frames kleiner dan 64 bytes (fouten of verkeerde configuratie).  
+   - **Giants**: frames groter dan 1518 bytes (of > 9000 bij jumbo frames).  
 
 ---
+
+
+
 

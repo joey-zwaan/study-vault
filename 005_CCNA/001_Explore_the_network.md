@@ -136,18 +136,25 @@ De term Wi-fi is een merknaam die wordt beheerd door de Wi-Fi Alliance, een orga
 
 Alle apparaten in range ontvangen alle frames; zoals devices bij een hub. Het is de taak van het ontvangende apparaat om te bepalen of het frame voor hem bedoeld is (aan de hand van het MAC-adres).
 Bij draadloze netwerken encrypteer je de frames om te voorkomen dat anderen ze kunnen lezen.
-We gebruiken CSMA/CA (Collision Avoidance) in plaats van CSMA/CD (Collision Detection) omdat het moeilijk is om te detecteren of er een collision is op een draadloos medium. In plaats daarvan proberen apparaten te voorkomen dat ze tegelijkertijd zenden door eerst te luisteren of het kanaal vrij is.
+We gebruiken CSMA/CA (Collision Avoidance) in plaats van CSMA/CD (Collision Detection) omdat het moeilijk is om te detecteren of er een collision is op een draadloos medium. In plaats daarvan proberen apparaten te voorkomen dat ze tegelijkertijd zenden door eerst te luisteren of het kanaal 
 
-verklaring van de termen die te maken hebben met golven:
+1. **Signal absorption**  
+   Materialen zoals beton, hout en metaal kunnen draadloze signalen absorberen, waardoor de signaalsterkte afneemt.  
 
-**Signal absorption:** Materialen zoals beton, hout, en metaal kunnen draadloze signalen absorberen, waardoor de signaalsterkte afneemt.
-**Reflection:** Draadloze signalen kunnen reflecteren op oppervlakken zoals muren en meubels, wat kan leiden tot slechte receptie.
-**Refraction:** Waneer een golf gebogen wordt als het door verschillende media gaat waar het signaal andere snelheden heeft. Een voorbeeld met glas water: licht gaat langzamer door water dan door lucht, waardoor het licht gebogen wordt als het door het water gaat.
-**Diffraction:** Gebeurt wanneer een golf een obstakel tegenkomt en daardoor eromheen gaat. Dit kan zorgen voor blind spots achter het obstakel.
-**Scattering:** Wanneer een golf op kleine deeltjes botst en in verschillende richtingen wordt verspreid. Dit kan leiden tot een zwakker signaal.
-**Interference:** Andere elektronische apparaten, zoals magnetrons en draadloze telefoons, kunnen interferentie veroorzaken met draadloze signalen.
-Voorbeeld: 2.4 GHz is een veelgebruikt frequentiebereik voor draadloze netwerken, maar het wordt ook gebruikt door andere apparaten zoals Bluetooth-apparaten, babyfoons, en magnetrons. Dit kan leiden tot interferentie en verminderde prestaties van het draadloze netwerk.
+2. **Reflection**  
+   Draadloze signalen kunnen reflecteren op oppervlakken zoals muren en meubels, wat kan leiden tot slechte receptie.  
 
+3. **Refraction**  
+   Een golf buigt af als het door verschillende media gaat waar het signaal een andere snelheid heeft. Voorbeeld: licht gaat langzamer door water dan door lucht, waardoor het buigt als het door water gaat.  
+
+4. **Diffraction**  
+   Gebeurt wanneer een golf een obstakel tegenkomt en eromheen buigt. Dit kan zorgen voor blind spots achter het obstakel.  
+
+5. **Scattering**  
+   Wanneer een golf op kleine deeltjes botst en in verschillende richtingen wordt verspreid, wat leidt tot een zwakker signaal.  
+
+6. **Interference**  
+   Andere elektronische apparaten zoals magnetrons, babyfoons en Bluetooth-apparaten kunnen storing veroorzaken. Voorbeeld: 2.4 GHz is druk bezet en daardoor gevoeliger voor interferentie en prestatieverlies.  
 
 #### WLAN Radio Frequencies
 1. **Basisbegrippen**  
