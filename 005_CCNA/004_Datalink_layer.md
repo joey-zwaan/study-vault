@@ -105,4 +105,45 @@ ICMP wordt gebruikt voor netwerkdiagnose, bijvoorbeeld met het commando **ping**
 - ICMP bevat geen MAC-adressen, alleen IP-adressen.
 - Werkt op de Internet Layer (Layer 3)
 
----
+
+## Discovery Protocol (LLDP/CDP)
+
+Ze delen en ontdekken informatie over naburige netwerkapparaten. Ze werken op de Data Link Layer (Layer 2). De shared informatie bestaat uit onder andere: IP address, device type, device name, poort ID, capabilities, VLAN info. Dit werkt op layer 2 & niet op layer 3.
+
+CDP is Cisco proprietary en werkt alleen tussen Cisco apparaten.
+
+LLDP is een open standaard en werkt tussen apparaten van verschillende fabrikanten. (IEEE 802.1AB)
+
+Omdat ze informatie delen over apparaten in het netwerk worden ze vaak beschouwd als een beveiligingsrisico. Daarom worden ze vaak uitgeschakeld op productie netwerken.
+
+
+### CDP
+
+Is bij default ingeschakeld op alle Cisco apparaten. Het kan uitgeschakeld worden met het commando:
+
+```no cdp run
+```
+
+CDP messages worden elke 60 seconden verzonden naar het multicast MAC-adres 01:00:0C:CC:CC:CC. Wanneer een apparaat een CDP bericht ontvangt, slaat het de informatie op en forward het bericht niet. Ze worden bij default elke 60 seconden verzonden.
+
+Er is een default TTL van 180 seconden. Dit betekent dat als er binnen die tijd geen nieuw CDP bericht ontvangen wordt, de informatie verwijderd wordt uit de CDP neighbor table.
+CDPv2 wordt gebruikt bij default.
+
+### LLDP
+
+Is bij default uitgeschakeld op Cisco apparaten. Het kan ingeschakeld worden met het commando:
+
+```lldp run
+```
+
+LLDP messages worden elke 30 seconden verzonden naar het multicast MAC-adres 01:80:C2:00:00:0E. Wanneer een apparaat een LLDP bericht ontvangt, slaat het de informatie op en forward het bericht niet. Ze worden bij default elke 30 seconden verzonden.
+LLDP heeft een additionele timer voor het verzenden van LLDP berichten bij verandering in de configuratie. Dit is standaard 2 seconden.
+
+TX & RX moet apart ingeschakeld worden op interfaces met de commando's:
+
+```lldp transmit
+```
+
+```lldp receive
+``` 
+

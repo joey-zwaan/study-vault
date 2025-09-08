@@ -278,17 +278,9 @@ Een kortere manier om uit te rekenen is om elk octet af te trekken van het subne
 **Reported Distance** = De afstand (metric) naar de bestemming zoals gerapporteerd door een andere router.
 **Successor** = the route met de laagste metric (de beste route)
 
-### Link State Routing Protocols
+### OSPF
 
 Wanneer je een link state routing protocol gebruikt maakt elke router een 'connectivity' map van het netwerk.
-
-Om dit te doen werken advertised elke router informatie over zijn interfaces (connected networks) naar zijn buren. Deze advertisement worden dan doorgestuurd door de andere routers tot alle routers in het netwerk een zelfde map van het netwerk hebben.
-
-Elke router individueel gebruikt deze map om de beste routes te bereken naar elke bestemming.
-
-Link state protocols gebruiken meer rescources van de CPU op de router omdat er meer informatie gedeeld wordt. Link state routing protocols reageren sneller op veranderingen dan distance vector protocols.
-
-#### OSPF
 
 OSPF (Open Shortest Path First) is een link‑state routingprotocol. Het gebruikt het Dijkstra‑algoritme (SPF) om de kortste paden te berekenen. Ontworpen voor grotere netwerken: snelle convergentie en schaalbaarheid.
 
@@ -341,6 +333,16 @@ interface loopback 0
  ip address 192.168.1.1 255.255.255.255
 ```
 
+```cisco
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+router ospf 1
+ default-information originate
+```
+router ospf 1 → default-information originate
+
+Dit vertelt OSPF: “Als ik een default route in mijn eigen routing table heb, adverteer deze naar alle andere OSPF-routers.”
+Omdat je net die statische default hebt gemaakt, heeft de router een default route, dus hij zal hem ook injecteren in OSPF.
+
 **Router ID order of priority**
 
 1. Manuele configuratie
@@ -352,3 +354,230 @@ Een autonomous system boundary router (ASBR) is een router die het OSPF netwerk 
 **Router loopback interface**
 
 Je kunt een loopback-interface op een router configureren om te dienen als een stabiele OSPF-router-ID. Dit wordt gedaan door een virtuele interface te maken die altijd actief is en een IP-adres kan krijgen. De loopback-interface heeft de voorkeur voor de router-ID omdat deze niet is gekoppeld aan een fysieke interface, die kan uitvallen.
+
+
+#### OSPF metrics
+
+OSPF metric noemen we "cost".
+Het is automatisch berekend gebaseerd op de bandwith (speed) van de interface.
+Het word berekend als reference bandwith / interface snelheid in Mbps.
+De default reference bandwidth is 100 Mbps.
+
+Reference: 100mbps / Interface: 10mbps = cost of 10
+Reference: 100mbps / Interface: 100mbps = cost of 1
+Reference: 100mbps / Interface: 1000mbps = cost of 1
+Reference: 100mbps / Interface: 10000mbps = cost of 1
+
+In OSPF worden alle waardes onder nul naar boven afgerond 1.
+Daarom zijn FastEthernet, GigabitEthernet en 10GigabitEthernet interfaces allemaal standaard gelijk aan een cost van 1.
+Het is best practice om de default cost aan te passen.
+
+**De totale kost van een OSPF route is de som van de kosten van alle uitgaande interfaces in de route.**
+
+
+**OSPF Cost veranderen**
+
+Reference bandwith veranderen
+```cisco
+router ospf 1
+ auto-cost reference-bandwidth 100000
+```
+
+100000 / 100 = cost of 1000 voor FastEthernet
+100000 / 1000 = cost of 100 voor GigabitEthernet
+100000 / 10000 = cost of 10 voor 10GigabitEthernet
+
+Manueel instellen van OSPF cost
+
+```cisco
+interface FastEthernet0/0
+ ip ospf cost 1000
+```
+
+Interface bandwidth veranderen
+Opmerking : bandwith =/= snelheid van de interface dit is enkel een metric gebruikt door dynamische routing protocols.
+```cisco
+interface FastEthernet0/0
+ bandwidth 100000 # kilobits-per-second
+```
+
+**OSPF Neighbors**
+
+Zorgen dat routers succesvol OSPF neighbors worden is de hoofdtaak van instellen & troubleshooting van OSPF.
+
+Eens routers buren zijn kunnen ze automatisch het werk doen voor het delen van netwerkinformatie, routes berekenen, etc.
+
+Wanneer OSPF is geactiveerd op een interface, begint de router met het sturen van OSPF hello messages uit de interface op reguliere intervals. dit wordt bepaald door de hello timer. Deze messsages zijn bedoeld om de router te introduceren naar potentiële buren. Bij default is de hello timer 10 seconden op een ethernet connectie.
+
+OSPF messages zijn encapsulated in een IP header met een value van 89 in het Protocol field.
+
+> Hello messages zijn multicast naar 224.0.0.5 (All OSPF Routers)
+
+<img src="/assets/OSPF3.png" alt="OSPF Hello Messages" width="600">
+
+##### OSPF Neighbors States
+
+Voorbeeld:
+
+**Down State**
+
+OSPF is geactiveerd op R1's G0/0 interface verbonden met G0/0 met R2.
+Het stuurt een OSPF hello message naar 224.0.0.5 (All OSPF Routers)
+R1 kent zijn buren nog niet dus zijn huidige state is Down.
+
+R2 ontvangt het Hello packet en voegt een entry toe voor R1 in zijn OSPF neighbor table. In R2's neighbor table de relatie met R1 is nu in de INIT state.
+
+> Init state = Hello packet ontvangen, maar eigen router ID is niet in het Hello packet.
+
+**2-way state**
+
+R2 stuurt een Hello packet met de RID van beide routers
+R1 zet R2 in zijn OSPF neighbor table in de 2-way state.
+
+R1 stuurt nog een Hello packet en deze keer ook met R2's RID en nu staan beide routers in de 2-way state. 
+
+Als beide routers in de 2-way state zijn betekent dit dat alle condities om OSPF neighbors te worden zijn voldaan. 
+
+> 2-way state = Hello packet ontvangen met eigen router ID.
+
+
+**Exstart State**
+
+De 2 routers gaan zich nu voorbereiden om informatie uit te wisselen over hun LSDB (Link State Database).
+Voordat ze dit doen gaan ze eerst moeten beslissen wie de uitwisseling gaat starten. ( Master & Slave)
+
+De router met de hogere RID word de Master en start de uitwisseling. De router met de lagere RID word de slave. Om te beslissen wie de Master & Slave worden wisselen ze een DBD (Database Description) packets uit.
+
+In deze state wisselen ze ook LSA's (Link State Advertisements) uit die in hun LSDB staan.. Dit is zonder gedetaileerde informatie over de LSAs enkel een beschrijving.
+De routers vergelijken de informatie in de DBD die ze ontvangen met hun eigen LSDB om te beslissen welke LSAs ze moeten ontvangen van hun buur.
+
+**Loading state**
+
+In de Loading state, sturen routers LSR (Link State Request) packets naar hun buren om de ontbrekende LSAs op te vragen. Dit gebeurt nadat de routers hebben vastgesteld welke LSAs ze missen op basis van de informatie in de DBD packets.
+
+
+**Full State**
+
+In de Full state, hebben de routers een full OSPF adjacency opgebouwd en identieke LSDB (Link State Database). 
+Ze blijven continue nog steeds hello packets versturen (elke 10 seconden) en ook luisteren om de neighbor adjacency te onderhouden.
+
+Er wordt ook een 'Dead' timer ingesteld. Als een router geen hello packets ontvangt van een buur binnen de 40 seconden van de Dead timer, wordt de buur als down beschouwd en verwijderd uit de neighbor table.
+
+De routers blijven LSA doorsturen om zeker te zijn dat elke router in het OSPF netwerk een identieke LSDB heeft.
+
+<img src="/assets/OSPF2.png" alt="OSPF Neighbors States" width="600">
+
+
+
+**OSPF Neighbor requirements**
+
+1. Area nummer moet overeenkomen op beide routers.
+2. Interfaces moeten in hetzelfde subnet zitten.
+3. OSPF mag niet shutdown zijn. (Je kan dit instellen op een router) Dan schakel je OSPF uit maar blijven de instellingen behouden.
+4. OSPF Router ID moeten uniek zijn.
+5. Hello & Dead timers moeten overeenkomen.
+6. Authentificatie moet overeenkomen (Je kan een OSPF password instellen)
+7. IP MTU instellingen moeten overeenkomen (Default 1500 bytes).
+8. OSPF network type moet overeenkomen.
+
+#### OSPF network types
+
+OSPF network type refereert naar de type van connectie tussen OSPF buren (Ethernet, Point-to-Point, etc).
+
+Er zijn 3 netwerktypes in OSPF:
+
+1. **Broadcast**: Standaard enabled op Ethernet & FDDI interfaces.
+2. **Point-to-Point**: Standaard enabled op PPP (Point-to-Point Protocol) en HDLC (High-Level Data Link Control) interfaces.
+3. **Non-Broadcast Multi-Access (NBMA)**: Gebruikt voor netwerken zoals Frame Relay & X.25 interfaces.
+
+
+
+##### Broadcast
+
+Routers ontdekken buren dynamisch door te luisteren en door het versturen van OSPF Hello packets naar het multicast adres 224.0.0.5 (All OSPF Routers).
+
+Een DR (Designated Router) en BDR (Backup Designated Router) moeten gekozen worden op elk subnet. Geen BDR maar wel DR als er geen OSPF neighbors zijn.
+Routers die geen DR of BDR zijn, worden DROther.
+
+DROthers houden enkel een FULL state met de DR & BDR, de neighbor state met andere DROthers zal 2-way zijn. Routers wisselen enkel LSAs met de DR & BDR uit.
+
+**DR/BDR verkiezing**
+
+1. Hoogste OSPF interface priority
+2. Hoogste OSPF Router ID
+
+--> Eerste plaats wordt DR voor het subnet, 2e plaats wordt BDR.
+De default OSPF interface priority is 1 voor alle interfaces.
+
+Je kan de interface priority aanpassen met volgende commando:
+
+```cisco
+Router(config)# interface <interface>
+Router(config-if)# ip ospf priority <waarde>
+```
+
+Als je de priority op 0 zet, wordt de router een DROther en kan deze geen DR of BDR worden.
+
+Als je de interface priority na de verkiezing hoger set zal de router toch geen rol van DR of BDR aannemen want de verkiezing is 'non-preemptive'. Ze behouden hun rol todat OSPF wordt gereset, of als de interface failed of shutdown.
+
+Stel dat de interface faalt of gereset wordt, dan zal de BDR de rol van DR overnemen en zal er een nieuwe verkiezing voor de BDR gehouden worden.
+
+Belangrijk: 
+Messages naar de DR/BDR moeten altijd verstuurd worden met een multicast adres (224.0.0.6). Het multicast address 224.0.0.5 (All OSPF Routers) wordt gebruikt voor berichten naar alle OSPF routers.
+
+
+##### Point-to-Point
+
+Deze netwerktype is enabled op serial interfaces die PPP (Point-to-Point Protocol) gebruiken of HDLC (High-Level Data Link Control) encapsulations by default. Dit zijn layer 2 encapsulations zoals ethernet maar dan voor seriele verbindingen.
+
+Routers dynamically discover neighbors door luisteren en versturen van OSPF Hello packets naar het multicast adres 224.0.0.5 (All OSPF Routers).
+
+Een DR & BDR worden niet gekozen, deze encapsulaties zijn point-to-point en er is geen behoefte aan een DR of BDR.
+De 2 routers vormen een Full adjacency met elkaar.
+
+
+### First Hop Redundancy Protocols (FHRP)
+
+Een first hop redundancy protocol is een netwerk protocol die is ontworpen om de beschikbaarheid van de eerste hop router te waarborgen in een netwerk. Dit wordt bereikt door meerdere routers te groeperen zodat als de actieve router faalt, een andere router automatisch de rol van actieve router kan overnemen zonder onderbreking van de netwerkverbinding.
+
+**Algemene Werking**
+
+Een virtuele IP wordt geconfigureerd op de routers die deelnemen aan het FHRP. Deze virtuele IP wordt gebruikt als het standaard gateway adres voor de hosts in het netwerk.
+Een virtuele MAC wordt geconfigureerd voor het virtuele IP adres. 
+
+Een active & standby routers worden verkozen.
+Als de active router faalt wordt de standby router de active router. De nieuwe active router zal gratuitous ARP berichten versturen zodat de switches hun MAC-adres kunnen bijwerken. Deze is nu de active default gateway.
+
+Standaard is er geen preemption, wat betekent dat als de oude active router terug online komt hij niet automatisch terug de role van actieve router pakt. Hij word de standby router. Bij de meeste protocollen kan je dit instellen.
+
+**HSRP**
+
+Deze is Cisco proprietary en staat voor Hot Standby Router Protocol. Een active & standby router worden verkozen. Er zijn 2 versies, version 1 & version 2.
+versie 2 ondersteund IPv6.
+
+Multicast IPv4 adres: 224.0.0.2 v1 & 224.0.0.102 v2
+
+Virtual MAC address V1=0000.0C07.acXX
+Virtual MAC address V2=0000.0C9f.fXXX
+
+In een situatie met meerde subnets/vlans kan je per subnet/vlan een andere active router aanduiden. Zo kan je loadbalancing toepassen tussen de 2 routers.
+
+**VRRP**
+
+Dit is een Open standaard.
+Een master & backup router worden verkozen.
+Multicast IPv4 adres: 224.0.0.18
+Virtual MAC address=0000.5E00.01XX
+
+Je kan verschillende subnets/vlans configureren met loadbalancing. Een verschillende active router in elk subnet aanduiden.
+
+**GLBP**
+
+Dit is een Cisco proprietary protocol.
+Het load balanced tussen verschillende routers in een enkel subnet/vlan. 
+AVG (Active Virtual Gateway) is verkozen.
+Er worden tot 4 AVFs (Active Virtual Forwarders) gekozen. De AVG zelf kan ook een AVF zijn.
+
+Elke AVF is de default gateway for een portie van de host in het subnet.
+Multicast IPv4 adres: 224.0.0.102
+Virtual MAC address=0007.b400.XXYY

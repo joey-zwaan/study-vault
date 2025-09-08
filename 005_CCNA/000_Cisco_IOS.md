@@ -253,3 +253,51 @@ EtherChannel bundelt meerdere fysieke poorten tot één logische link voor bandb
 > - Alle poorten moeten identieke configuratie hebben
 > - LACP ondersteunt standby links (max 16)
 > - Voor layer 3 EtherChannel moet je "no switchport" gebruiken op de interfaces
+
+
+
+## Port Security
+
+Is een feature op Cisco switches die de toegang tot een switchpoort beperkt op basis van MAC-adressen. Dit helpt ongeautoriseerde apparaten te voorkomen en verhoogt de netwerkbeveiliging.
+
+### Basisconfiguratie
+
+| Commando | Beschrijving |
+|----------|--------------|
+| `switchport port-security` | Zet port security aan op de interface |
+| `switchport port-security maximum <aantal>` | Stel het maximum aantal MAC-adressen in |
+| `switchport port-security violation <actie>` | Stel de actie in bij een overtreding (protect, restrict, shutdown) |
+| `switchport port-security mac-address <mac>` | Voeg een specifieke MAC-adres toe aan de beveiligde lijst |
+
+### Verificatie
+
+| Commando | Beschrijving |
+|----------|--------------|
+| `show port-security interface <if>` | Toont de port security status van een interface |
+| `show port-security address` | Toont de beveiligde MAC-adressen |
+| `show port-security` | Toont algemene port security informatie |
+
+Als je geen specifieke MAC-adressen configureert, staat de switch de eerste MAC-address toe. De grootste winst met port security is dat je het aantal toegestane MAC-adressen kunt beperken.
+
+Violation modes:
+
+Shutdown: De poort wordt uitgeschakeld bij een overtreding (default).
+Restrict: De poort blijft actief, maar de overtreding wordt gelogd en het frame wordt gedropt.
+Protect: De poort blijft actief, overtredingen worden gedropt zonder logging.
+
+Sticky secure MAC-adressen worden automatisch geleerd en opgeslagen in de running-config. Bij een herstart gaan ze verloren tenzij je de configuratie opslaat.
+
+```cisco
+switchport port-security mac-address sticky
+```
+ 
+ ### DHCP Snooping
+
+DHCP snooping is een beveiligingsfunctie die ongeautoriseerde (rogue) DHCP-servers in een netwerk voorkomt. Het werkt door alleen DHCP-berichten van vertrouwde poorten toe te staan en alle andere te blokkeren.
+
+```cisco
+ip dhcp snooping
+ip dhcp snooping vlan <vlan-id>
+interface <interface-id>
+ip dhcp snooping trust
+```
