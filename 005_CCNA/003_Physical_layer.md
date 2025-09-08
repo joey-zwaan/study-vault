@@ -1,25 +1,30 @@
-# Physical Layer
-## Overzicht
-De Physical Layer (Layer 1) van het OSI-model is verantwoordelijk voor de fysieke verbindingen tussen netwerkapparaten. Dit omvat de elektrische, optische of radiogolven die gebruikt worden om data over te dragen. De belangrijkste aspecten zijn de kabels, connectoren, signaalsterkte en transmissiesnelheid.
+## Physical Layer
 
-### Ethernet & Netwerkmedia
+De Physical Layer (Layer 1) van het OSI-model is verantwoordelijk voor de fysieke verbindingen tussen netwerkapparaten. Dit omvat de elektrische, optische of radiogolven die gebruikt worden om data over te dragen. De belangrijkste aspecten zijn de kabels, connectoren, signaalsterkte en transmissiesnelheid.
 
 Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare communicatie tussen apparaten. Ethernet media verwijst naar de fysieke kabels en verbindingen die gebruikt worden om netwerken te bouwen.
 
-### Typen Netwerkmedia
+#### Soorten netwerkmedia
 
-- **Twisted Pair Cable (UTP/STP):**
-  - Meest gebruikt (Cat5e, Cat6, Cat6a, Cat7)
-  - Hoge snelheden, lage interferentie
-- **Fiber Optic Cable:**
-  - Lange afstanden, hoge snelheden
-  - Bestand tegen elektromagnetische interferentie
-- **Coaxial Cable:**
-  - Minder gebruikelijk, nog in gebruik voor kabel-tv en oude netwerken
-- **Wireless (Wi-Fi):**
-  - Draadloos via radiogolven
+1. **Twisted Pair Cable (UTP/STP)**  
+   - Meest gebruikt (Cat5e, Cat6, Cat6a, Cat7)  
+   - Hoge snelheden, relatief goedkoop  
+   - STP biedt extra bescherming tegen interferentie  
 
-### Elektromagnetische Interferentie (EMI) & Crosstalk
+2. **Fiber Optic Cable**  
+   - Geschikt voor lange afstanden en hoge snelheden  
+   - Bestand tegen elektromagnetische interferentie  
+   - Duurder en kwetsbaarder bij installatie  
+
+3. **Coaxial Cable**  
+   - Minder gebruikelijk in moderne netwerken  
+   - Nog toegepast bij kabel-tv en oudere netwerken  
+
+4. **Wireless (Wi-Fi)**  
+   - Draadloze communicatie via radiogolven  
+   - Handig voor mobiliteit, maar gevoeliger voor interferentie en beveiligingsrisico’s 
+
+**Signaalproblemen**
 
 - **EMI/RFI:** 
   - Stoort signaalkwaliteit, vooral bij langere kabels
@@ -28,9 +33,9 @@ Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare 
   - Verstoring van een signaal door andere kabels in de buurt
   - Kan leiden tot signaalverlies of interferentie
 
-## Veelvoorkomende Ethernet-standaarden
+#### Veelvoorkomende Ethernet-standaarden
 
-### UTP (koper) standaarden
+**UTP (koper) standaarden**
 
 | Type               | Standaard    | IEEE    | Max. Snelheid | Max. Lengte      |
 |--------------------|--------------|---------|---------------|------------------|
@@ -39,7 +44,7 @@ Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare 
 | Gigabit Ethernet   | 1000Base-T   | 802.3ab | 1 Gbps        | 100 meter (UTP)  |
 | 10 Gig Ethernet    | 10GBase-T    | 802.3an | 10 Gbps       | 100 meter (UTP)  |
 
-### Fiber standaarden
+**Fiber standaarden**
 
 | Type               | Standaard    | IEEE    | Max. Snelheid | Medium            | Max. Lengte      |
 |--------------------|--------------|---------|---------------|-------------------|------------------|
@@ -50,8 +55,6 @@ Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare 
 | 10 Gig Ethernet    | 10GBase-LR   | 802.3ae | 10 Gbps       | Single-mode fiber | 10 km            |
 | 10 Gig Ethernet    | 10GBase-ER   | 802.3ae | 10 Gbps       | Single-mode fiber | 30 km            |
 
-### Uitleg termen
-
 - **Base:** baseband, alleen dat protocol op de kabel
 - **T:** twisted pair (koper)
 - **FX:** fiber optic (glasvezel)
@@ -61,20 +64,16 @@ Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare 
 - **UTP:** Unshielded Twisted Pair
 - **STP:** Shielded Twisted Pair
 
-### Kabelsoorten en aansluitingen
+#### Netwerkbekabeling
 
-- **Cross-over kabel:** voor verbinding tussen gelijke apparaten (switch-switch)
-- **Straight-through kabel:** voor verschillende apparaten (switch-computer)
-- **Auto MDI-X:** moderne apparaten herkennen automatisch het type verbinding
+1. **Koperen kabels**  
+   - **Cross-over kabel:** gebruikt voor verbinding tussen gelijke apparaten (bv. switch ↔ switch).  
+   - **Straight-through kabel:** gebruikt voor verbinding tussen verschillende apparaten (bv. switch ↔ computer).  
+   - **Auto MDI-X:** moderne apparaten herkennen automatisch het type verbinding, waardoor cross-over kabels vrijwel niet meer nodig zijn.  
 
-### Fiber-optic
-
-- **Multimode fiber:** grotere core, meerdere lichtmodi, goedkoper, kortere afstand
-- **Single-mode fiber:** kleinere core, één lichtstraal, duurder, langere afstand
-
-### UTP Kabels in Detail
-
-#### Twisted Pair Categories
+2. **Glasvezel**  
+   - **Multimode fiber (MMF):** grotere core, meerdere lichtmodi tegelijk, goedkoper, geschikt voor kortere afstanden.  
+   - **Single-mode fiber (SMF):** kleinere core, één lichtstraal, duurder, geschikt voor langere afstanden.  
 
 | Categorie | Max Snelheid | Bandbreedte
 |-----------|--------------|-----------
@@ -83,6 +82,3 @@ Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare 
 | Cat6a     | 10 Gbps      | 500 MHz
 | Cat7      | 10 Gbps      | 600 MHz
 | Cat8      | 40 Gbps      | 2000 MHz
-
-
----

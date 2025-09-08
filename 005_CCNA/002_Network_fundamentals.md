@@ -122,26 +122,31 @@ De header bevat o.a. bron- en bestemmings-MAC-adressen, de trailer bevat vaak ee
 2. **Media Access Control (MAC)**  
    Definieert hoe apparaten toegang krijgen tot het fysieke medium. Zorgt voor adressering via unieke MAC-adressen (48-bit hex, bv. `00:1A:2B:3C:4D:5E`).  
    - Eerste 24 bits = **OUI (Organizationally Unique Identifier)** → fabrikant (bv. `00:1A:2B` = Apple).  
-   - MAC-adressen adresseren frames binnen een lokaal netwerk.  
-
+   - MAC-adressen adresseren frames binnen een lokaal netwerk.
+   - Fysieke adressering: MAC-adressen zijn uniek voor elk apparaat op het netwerk.
+ 
 #### Frame Structure & Types
 
-1. **Frame Structure**  
-   1. Start/Stop indicator flags (L1).  
-   2. Addressing: bron- en bestemmings-MAC.  
-   3. Type/Protocol: welk L3-protocol in de data (bv. IPv4, IPv6).  
-   4. Controle: QoS, prioriteit of vertraging.  
-   5. Data: payload = packet header + segment header + data.  
-   6. Error Detection: foutcontrole (na de data).  
+1. **Frame Structure**
+   - Start/Stop indicator flags (L1)  
+   - Addressing: bron- en bestemmings-MAC  
+   - Type/Protocol: welk L3-protocol in de data (bv. IPv4, IPv6)  
+   - Controle: QoS, prioriteit of vertraging  
+   - Data: payload = packet header + segment header + data  
+   - Error Detection: foutcontrole (na de data)  
 
    > Bij elke router-hop verandert het frame, maar het IP-pakket blijft hetzelfde.  
 
-2. **Frame Types**  
-   Ethernet, 802.11 Wireless, PPP (Point-to-Point Protocol), HDLC (High-Level Data Link Control), Frame Relay.  
+2. **Frame Types**
+   - Ethernet  
+   - 802.11 Wireless  
+   - PPP (Point-to-Point Protocol)  
+   - HDLC (High-Level Data Link Control)  
+   - Frame Relay  
 
-3. **Speciale gevallen**  
-   - **Runts**: frames kleiner dan 64 bytes (fouten of verkeerde configuratie).  
-   - **Giants**: frames groter dan 1518 bytes (of > 9000 bij jumbo frames).  
+3. **Speciale gevallen**
+   - Runts = frames < 64 bytes (fouten of verkeerde configuratie).  
+   - Giants = frames > 1518 bytes (of > 9000 bij jumbo frames).  
 
 ---
 
