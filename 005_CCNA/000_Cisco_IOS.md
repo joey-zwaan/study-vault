@@ -1,303 +1,213 @@
-# Inleiding tot Cisco IOS CLI
+## IOS
 
-## Nuttige Commando’s
+Cisco IOS (Internetwork Operating System) is het besturingssysteem dat wordt gebruikt op Cisco netwerkapparaten zoals routers en switches. Het biedt een command-line interface (CLI) voor configuratie, beheer en troubleshooting van netwerkfuncties. Cisco IOSXE is een meer geavanceerde versie van IOS, ontworpen voor grotere en complexere netwerken, met verbeterde schaalbaarheid en prestaties.
 
-### MAC-adrestabel
+**SUPER TIP:** `no ip domain-lookup ` commando ingeven om te voorkomen dat de router probeert onbestaande hostnames te vertalen naar IP-adressen, wat vertraging kan veroorzaken bij het invoeren van onjuiste commando's.
+**SUPER TIP:** `Logging synchronous` op console & vty lines zorgt ervoor dat console output (zoals syslog berichten) niet de command prompt overschrijft tijdens het typen van commando's.
+**SUPER TIP:** `Exec-timeout 0 0` zorgt ervoor dat de console of vty sessie nooit automatisch wordt verbroken door inactiviteit.
 
-| Commando                              | Beschrijving                                   |
-|----------------------------------------|------------------------------------------------|
-| `show mac address-table`               | Toont de MAC-adrestabel                        |
-| `show mac address-table dynamic`       | Toont alleen dynamische vermeldingen           |
-| `show mac address-table static`        | Toont alleen statische vermeldingen            |
-| `clear mac address-table`              | Leegt de MAC-adrestabel                        |
 
-### ARP (Address Resolution Protocol)
+### Common switch config modes
 
-| Commando                                | Beschrijving                                   |
-|------------------------------------------|------------------------------------------------|
-| `arp -n`                                | Toont de ARP-tabel (zonder hostnamen)          |
-| `arp -a`                                | Toont de ARP-tabel                             |
-| `arp -d <ip-adres>`                      | Verwijdert een ARP-vermelding                  |
-| `arp -s <ip-adres> <mac-adres>`          | Voegt een statische ARP-vermelding toe         |
+| **Modus**                 | **Prompt**               | **Toegang via**                      | **Voorbeeldcommando's**                               |
+| ------------------------- | ------------------------ | ------------------------------------ | ----------------------------------------------------- |
+| **Privileged EXEC Mode**  | `hostname#`              | `enable`                             | `show running-config`, `copy startup-config`          |
+| **Global Config Mode**    | `hostname(config)#`      | `configure terminal`                 | `hostname R1`, `enable secret cisco`                  |
+| **Line Config Mode**      | `hostname(config-line)#` | `line console 0``line vty 0 4`       | `password cisco`, `login`                             |
+| **Interface Config Mode** | `hostname(config-if)#`   | `interface g0/0``interface g0/1`     | `ip address 192.168.1.1 255.255.255.0`, `no shutdown` |
+| **VLAN Config Mode**      | `hostname(config-vlan)#` | `vlan 10``vlan 20`                   | `name Finance`, `exit`                                |
 
-## Interfaceconfiguratie
 
-### Inleiding
+### Terminologie
 
-Commando’s voor het configureren van fysieke en virtuele interfaces op Cisco-apparatuur.
+**RAM**: Tijdelijke opslag voor lopende processen en configuraties. Verlies van stroom betekent verlies van RAM-gegevens.
+**NVRAM**: Niet-vluchtige opslag voor de startup-configuratie. Blijft behouden bij stroomuitval.
+**Flash memory**: Opslag voor het IOS-besturingssysteem en andere bestanden. Behoudt gegevens bij stroomuitval.
+**ROM**: Bevat de bootloader en diagnostische software. Verlies van stroom heeft geen effect.
+**Reload**: Herstart van het apparaat, waarbij de configuratie opnieuw wordt geladen.
 
-| Commando                                 | Beschrijving                                   |
-|-------------------------------------------|------------------------------------------------|
-| `interface <interface-naam>`              | Gaat naar interfaceconfiguratiemodus           |
-| `no shutdown`                            | Zet de interface aan                           |
-| `shutdown`                               | Zet de interface uit                           |
-| `description <beschrijving>`              | Voegt een beschrijving toe aan de interface    |
+> startup-configuratie wordt opgeslagen in NVRAM en geladen in RAM bij het opstarten van het apparaat. Lopende configuratie wordt bewaard in RAM en gaat verloren bij herstart, tenzij opgeslagen naar NVRAM.
 
-## Basisapparaatbeveiliging
+> Do commands zorgt ervoor dat je een commando kan uitvoeren zonder de huidige modus te verlaten. Bijvoorbeeld in interface config mode kan je met `do show running-config` de lopende configuratie bekijken zonder eerst naar privileged EXEC mode te moeten gaan.
 
-### Inleiding
+### Password Security (Cisco)
 
-Raadpleeg voor uitgebreide hardening de officiële Cisco-beveiligingsgidsen. Beveilig minimaal ongebruikte poorten, stel wachtwoorden in en activeer logging.
+- `enable secret <password>` → Stelt een versleuteld wachtwoord in voor privileged EXEC mode.
+- `service password-encryption` → Versleutelt alle wachtwoorden in de configuratie.
 
-## Routing
+#### Line password configuration
 
-### Configuratie van statische routes
+line console 0
+ password <password>
+ login
 
-| Commando                                                           | Beschrijving                                     |
-|--------------------------------------------------------------------|--------------------------------------------------|
-| `ip route <best-net> <masker> <next-hop>`                          | Voegt een statische route toe                    |
-| `ip route <best-net> <masker> <exit-interface>`                    | Statische route via een exit-interface           |
-| `ip route <best-net> <masker> <next-hop> <admin-afstand>`          | Statische route met administratieve afstand      |
-| `ip route <best-net> <masker> <exit-interface> <next-hop>`         | Route met exit-interface én next-hop             |
-| `ip route <best-net> <masker> <exit-interface> <next-hop> <admin-afstand>` | Route met exit-interface, next-hop én admin-afstand |
+line vty 0 4
+  password <password>
+  login
+  transport input all
 
-#### Standaardroute
+Als we de console een gebruikersnaam + wachtwoordt moet vragen moeten we deze aanmaken in user mode. We moeten ook de line console & vty lines aanpassen naar login local. Dit zorgt ervoor dat de console & vty lines de lokale gebruikersdatabase gebruiken voor authenticatie.
 
-| Commando                                   | Beschrijving                        |
-|---------------------------------------------|-------------------------------------|
-| `ip route 0.0.0.0 0.0.0.0 <next-hop>`      | Stelt de standaardroute in          |
+**username <username> secret <password>**
 
-> **Let op:**  
-> De "gateway of last resort" (standaardroute) wordt gebruikt wanneer geen andere routes overeenkomen met het bestemmingsnetwerk.
+line console 0
+  login local
 
-## VLAN-configuratie
+line vty 0 4
+  login local
 
-### Inleiding
 
-Dit hoofdstuk geeft de belangrijkste commando’s voor het aanmaken, bekijken en beheren van VLANs op Cisco-switches. De commando’s zijn gegroepeerd per doel.
+- `Level 0 = User EXEC Mode (Prompt: `Router>`)`
+- `Level 15 = Privileged EXEC Mode (Prompt: `Router#`)
+- `username <username> privilege <level> secret <password>` → Maakt een gebruiker aan met een specifiek privilege level (0-15).
 
-### VLAN-overzicht
+#### Remote access met SSH
 
-| Commando                                 | Beschrijving                                    |
-|-------------------------------------------|-------------------------------------------------|
-| `show vlan brief`                        | Overzicht van alle VLANs, namen en toegewezen poorten   |
-| `show vlan id <vlan-id>`                  | Details van een specifieke VLAN op ID           |
-| `show vlan name <vlan-naam>`              | Details van een specifieke VLAN op naam         |
-| `show interfaces switchport`              | Toont modus en VLAN-toewijzing per interface    |
-| `show interfaces trunk`                   | Lijst met trunkpoorten en hun toegestane VLANs  |
+- `ip domain-name <domain>` → Stelt de domeinnaam in voor het apparaat.
+- `crypto key generate rsa` → Genereert een RSA-sleutelpaar voor SSH.
+- `ip ssh version 2` → Stelt SSH versie 2 in (aanbevolen).
+- `line vty 0 15` → Gaat naar de VTY lijnen.
+- `transport input ssh` → Staat alleen SSH-toegang toe (geen Telnet).
+- `login local` → Gebruikt lokale gebruikersdatabase voor authenticatie.
+- `username <username> secret <password>` → Maakt een lokale gebruiker aan met wachtwoord.
 
-### VLAN aanmaken en naam toewijzen
 
-| Commando                                 | Beschrijving                                    |
-|-------------------------------------------|-------------------------------------------------|
-| `vlan <vlan-id> name <vlan-naam>`         | Maakt een VLAN aan en geeft een naam            |
+Best Practices
+- Gebruik altijd **`enable secret`** i.p.v. `enable password` (versleuteld).
+- Zet **`service password-encryption`** aan om wachtwoorden in de config te verbergen.
+- Gebruik bij voorkeur **local usernames met secrets** i.p.v. plain-text passwords.
 
-### Access-poortconfiguratie
 
-| Commando                                 | Beschrijving                                    |
-|-------------------------------------------|-------------------------------------------------|
-| `interface <type> <slot/poort>`           | Gaat naar interfaceconfiguratie                 |
-| `switchport mode access`                  | Zet de poort in access-modus                    |
-| `switchport access vlan <vlan-id>`        | Wijs de poort toe aan een specifieke VLAN       |
 
-### Trunk-poortconfiguratie
+### Autonegotiate & duplex
 
-| Commando                                    | Beschrijving                                   |
-|----------------------------------------------|------------------------------------------------|
-| `interface <type> <slot/poort>`              | Gaat naar interfaceconfiguratie                |
-| `switchport mode trunk`                      | Zet de poort in trunk-modus                    |
-| `switchport trunk encapsulation dot1q`       | Zet de trunk encapsulatie op 802.1Q            |
-| `switchport trunk allowed vlan <vlan-lijst>` | Geeft op welke VLANs over de trunk mogen gaan  |
-| `switchport trunk native vlan <vlan-id>`     | Stelt de native (untagged) VLAN voor de trunk in|
-| `switchport nonegotiate`                     | Zet DTP-onderhandeling uit op de interface     |
+- `no negotiate auto` → Schakelt autonegotiatie uit op de interface.
+- `speed 10, 100, 1000, auto` → Stelt de snelheid van de interface in.
+- `duplex half, full, auto` → Stelt de duplex-modus in.
+- `description <text>` → Voegt een beschrijving toe aan de interface.
+- `no mdix auto` → Schakelt Auto-MDIX uit op de interface.
+- `mdix auto` → Schakelt Auto-MDIX in op de interface (standaard).
 
 
+### VLAN & Switchport configuration
 
-## ROAS (Router-on-a-Stick)
+- `vlan <vlan-id>` → Creëer of ga naar VLAN-configuratiemodus.
+- `name <vlan-name>` → Geef een naam aan het VLAN.
+- `interface vlan <vlan-id>` → Ga naar de VLAN-interface voor Layer 3-configuratie.
+- `switchport mode access` → Zet de poort in access mode (voor eindapparaten).
+- `switchport mode trunk` → Zet de poort in trunk mode (voor switch-to-switch links).
+- `switchport access vlan <vlan-id>` → Wijs een VLAN toe aan een access-poort.
+- `switchport trunk allowed vlan <vlan-list>` → Beperk toegestane VLANs op een trunk-poort.
+- `switchport trunk native vlan <vlan-id>` → Stel het native VLAN in op een trunk-poort.
+- `switchport trunk allowed vlan except <vlan-id>` → Sta alle VLANs toe behalve de opgegeven vlan.
+- `switchport trunk allowed vlan add <vlan-id>` → Voeg een VLAN toe aan de lijst van toegestane VLANs op een trunk-poort.
+- `switchport trunk encapsulation dot1q` → Stelt 802.1Q encapsulatie in op een trunk-poort (indien ondersteund).
+- `switchport nonegotiate` → Schakelt DTP uit op een trunk-poort.
+- `switchport mode trunk dynamic auto` → Stelt de poort in op dynamische auto mode (standaard).
+- `switchport mode trunk dynamic desirable` → Stelt de poort in op dynamische gewenste mode.
 
-**Router Configuratie**
 
-```cisco
-interface g0/0.10
- encapsulation dot1Q 10
- ip address 192.168.10.1 255.255.255.0
-```
+### STP & RSTP configuration
+- `spanning-tree mode rapid-pvst` → Zet Rapid PVST+ in als STP-modus.
+- `spanning-tree vlan <vlan-id> priority <value>` → Stelt de prioriteit van de switch in voor een specifiek VLAN (waarde tussen 0-61440, in stappen van 4096).
+- `spanning-tree vlan <vlan-id> root primary` → Maakt de switch de primaire root switch voor het opgegeven VLAN.
+- `spanning-tree vlan <vlan-id> root secondary` → Maakt de switch de secundaire root switch voor het opgegeven VLAN.
+- `spanning-tree bpduguard enable` → Schakelt BPDU Guard in op de interface.
+- `spanning-tree bpdufilter enable` → Schakelt BPDU-filtering in op de interface. --> Dit betekent dat de switch geen BPDU's zal verzenden of ontvangen op die poort. feitelijk wordt de poort uitgeschakeld voor STP.
+- `spanning-tree root guard` → Schakelt Root Guard in op de interface. 
+- `spanning-tree portfast` → Schakelt PortFast in op de interface.
+- `spanning-tree portfast bpduguard default` → Schakelt BPDU Guard in op alle PortFast-poorten. --> Global config mode
+- `spanning-tree portfast default` → Schakelt PortFast in op alle niet-trunk poorten. --> Global config mode
+- `spanning-tree loopguard default` → Schakelt Loop Guard in op alle niet-trunk poorten. --> Global config mode
+- `spanning-tree guard loop` → Schakelt Loop Guard in op de interface.
 
-```cisco
-interface g0/0.20
- encapsulation dot1Q 20
- ip address 192.168.20.1 255.255.255.0
-```
+### EtherChannel / PortChannel configuration
 
-```cisco
-interface g0/0.30
- encapsulation dot1Q 30
- ip address 192.168.30.1 255.255.255.0
-```
+- `interface range <type/nummer> - <type/nummer>` → Selecteer meerdere interfaces.
+- `shutdown` → Schakel de interfaces uit (indien nodig).
+- `channel-group <number> mode active` → Voeg de interfaces toe aan een EtherChannel in actieve LACP-modus.
+- `channel-group <number> mode passive` → Voeg de interfaces toe aan een EtherChannel in passieve LACP-modus.
+- `channel-group <number> mode on` → Voeg de interfaces toe aan een statische EtherChannel (geen LACP of PAgP).
+- `no shutdown` → Schakel de interfaces weer in.
+- `interface port-channel <number>` → Ga naar de PortChannel-interface voor verdere configuratie.
+- `show etherchannel summary` → Toont een overzicht van alle EtherChannels en hun status.
+- `show interfaces port-channel <number>` → Toont gedetailleerde informatie over een specifieke PortChannel.
 
-**Switch Configuratie**
 
-```cisco
-interface g0/1
- switchport trunk encapsulation dot1q
- switchport mode trunk
- switchport trunk allowed vlan 10,20,30
-```
 
-**Opmerkingen**
 
-- De router moet **802.1Q** trunking ondersteunen
-- Elke VLAN moet zich in een uniek **IP-subnet** bevinden
+### Cli help functies
 
+Cisco IOS biedt verschillende help-functies in de command-line interface (CLI) om gebruikers te ondersteunen bij het invoeren van commando's en het navigeren door de configuratie. Hier zijn enkele van de belangrijkste help-functies:
 
+? : Toont contextspecifieke hulp en beschikbare commando's.
+command? : Toont hulp voor een specifiek commando.
+com? : Toont alle commando's die beginnen met "com".
+command parm? : Toont hulp voor een specifiek commando met een parameter.
 
 
----
+### Cisco Show Commands
 
+#### Show Commands – Interfaces & MAC Addresses
 
-### Intervlan routing met SVI
-```cisco
-interface Vlan10
-no switchport
-ip routing
-ip address 192.168.10.1 255.255.255.0 
-```
-Hier gebruiken we geen encapsulation omdat de switch dit automatisch afhandelt.
+- `show ip interface brief` → Overzicht interfaces, IP-adres, status (up/down).
+- `show interface [type/nummer]` → Detail van één interface.
+- `show interfaces` → Detail van alle interfaces.
+- `show interfaces status` → Status, snelheid, duplex, err-disabled.
+- `show interfaces counters errors` → Foutentellers per interface.
+- `show interfaces description` → Beschrijvingen + status.
 
 
-### Spanning Tree Protocol (RSTP)
+- `show mac address-table` -> Volledige MAC-address table van de switch.
+- `show mac address-table dynamic` -> Dynamisch geleerde MAC-adressen.
+- `show mac address-table static` -> Statisch geconfigureerde MAC-adressen.
+- `show mac address-table aging-time` -> Huidige aging time voor MAC-adressen.
+- `show mac address-table count` -> Aantal MAC-adressen in de tabel.
+- `show mac address-table interface [type/nummer]` -> MAC-adressen op een specifieke interface.
+- `show mac address-table vlan [vlan-id]` -> MAC-adressen in een specifiek VLAN.
 
-| Commando                                 | Beschrijving                                              |
-|-------------------------------------------|----------------------------------------------------------|
-| `show spanning-tree`                      | Toont algemene STP/RSTP-status en -topologie             |
-| `show spanning-tree vlan <vlan-id>`       | Toont STP/RSTP-informatie specifiek voor een VLAN        |
-| `show spanning-tree interface <if>`       | Laat de STP/RSTP-status van een specifieke interface zien|
-| `show spanning-tree detail`               | Meer gedetailleerde info over STP/RSTP-topologie         |
-| `show spanning-tree summary`              | Samenvatting van de STP/RSTP-instanties                  |
-| `show spanning-tree root`                 | Overzicht van root bridge per VLAN                       |
-| `show spanning-tree bridge`               | Toont bridge-ID info van de eigen switch                 |
+#### Show Commands – Routing
 
-***STP/RSTP configureren**
+- `show ip route` → Toont de IP-routingtabel.
+- `show ip route static` → Toont alleen statische routes.
+- `show ip route connected` → Toont alleen connected routes.
+- `show ip route ospf` → Toont OSPF-routes.
+- `show ip default-gateway` → Toont de default gateway op een switch.
+- `show ip route eigrp` → Toont EIGRP-routes.
 
-| Commando                                  | Beschrijving                                              |
-|--------------------------------------------|----------------------------------------------------------|
-| `spanning-tree mode rapid-pvst`           | Zet de switch in Rapid PVST+ (Cisco RSTP) mode           |
-| `spanning-tree mode pvst`                 | Zet de switch in PVST+ (Cisco STP) mode                  |
-| `spanning-tree vlan <vlan-id> priority <waarde>` | Wijzigt de bridge priority voor STP/RSTP voor een VLAN   |
-| `spanning-tree vlan <vlan-id> root primary`     | Maakt de switch root bridge voor opgegeven VLAN          |
-| `spanning-tree vlan <vlan-id> root secondary`   | Maakt de switch backup root bridge voor opgegeven VLAN   |
-| `spanning-tree portfast`                        | Zet PortFast aan op een interface (voor snelle activatie)|
-| `spanning-tree bpduguard enable`                | Zet BPDU Guard aan op een PortFast interface             |
 
-**Portrollen en states bekijken**
+#### Show Commands – Configuratie
 
-| Commando                                 | Beschrijving                                              |
-|-------------------------------------------|----------------------------------------------------------|
-| `show spanning-tree interface <if>`       | Toont de huidige role (Root, Designated, Alternate, Backup) en state van de poort |
-| `show spanning-tree active`               | Overzicht van actieve spanning-tree instanties            |
+- `show running-config` → Toont de huidige configuratie.
+- `show startup-config` → Toont de opgeslagen configuratie.
+- `show version` → Toont IOS-versie, uptime, geheugen.
+- `show crypto key mypubkey rsa` → Toont de gegenereerde RSA-sleutels voor SSH.
+- `show ssh` → Toont actieve SSH-sessies.
+- `show users` → Toont actieve gebruikerssessies.
+- `show history` → Toont de commandogeschiedenis van de huidige sessie.
 
 
+#### Show Commands - Switchport & VLANs
 
- **Let op:**  
-  Cisco gebruikt voor snelle STP meestal *rapid-pvst* (Rapid Per VLAN Spanning Tree Plus), gebaseerd op RSTP (802.1w).
 
+- `show interfaces switchport` → Toont switchport-informatie voor alle interfaces.
+- `show interfaces [type/nummer] switchport` → Toont switchport-informatie voor een specifieke interface.
+- `show vlan brief` → Toont een overzicht van alle VLANs en hun toegewezen poorten.
+- `show vlan id [vlan-id]` → Toont gedetailleerde informatie over een specifiek VLAN.
+- `show interfaces status` → Toont de status van alle interfaces, inclusief snelheid en duplex-instellingen.
+- `show interfaces trunk` → Toont informatie over alle trunk-poorten.
+- `show interfaces [type/nummer] trunk` → Toont trunk-informatie voor een specifieke interface.
+- `show spanning-tree vlan [vlan-id]` → Toont STP-informatie voor een specifiek VLAN.
 
-### EtherChannel
 
-EtherChannel bundelt meerdere fysieke poorten tot één logische link voor bandbreedte en redundantie.
 
-- Poorten moeten identieke configuratie hebben (snelheid, duplex, VLAN)
-- Beide switches gebruiken zelfde protocol en channel-group nummer
+#### Show Commands - STP & RSTP
 
+- `show spanning-tree` → Toont de STP-status voor alle VLANs.
+- `show spanning-tree detail` → Toont gedetailleerde STP-informatie.
+- `show spanning-tree vlan [vlan-id]` → Toont STP-informatie voor een specifiek VLAN.
+- `show spanning-tree interface [type/nummer]` → Toont STP-informatie voor een specifieke interface.
+- `show spanning-tree vlan [vlan-id] detail` → Toont gedetailleerde STP-informatie voor een specifiek VLAN.
+- `show spanning-tree summary` → Toont een samenvatting van de STP-configuratie en status.
+- 
 
-#### Protocollen
-
-| Protocol | Mode Options | Description |
-|----------|--------------|-------------|
-| LACP     | active, passive | IEEE 802.3ad standaard |
-| PAgP     | desirable, auto | Cisco proprietary protocol |
-| Static   | on | Geen negotiatie |
-
-#### Basisconfiguratie
-
-| Commando | Beschrijving |
-|----------|--------------|
-| `interface range g0/1-2` | Selecteer interfaces voor EtherChannel |
-| `channel-group 1 mode active` | LACP active mode |
-| `channel-group 1 mode passive` | LACP passive mode |
-| `channel-group 1 mode desirable` | PAgP desirable mode |
-| `channel-group 1 mode auto` | PAgP auto mode |
-| `channel-group 1 mode on` | Static EtherChannel |
-
-#### Port-channel Interface
-
-| Commando | Beschrijving |
-|----------|--------------|
-| `interface port-channel 1` | Configureer port-channel interface |
-| `switchport mode trunk` | Zet interface in trunk mode |
-| `switchport trunk allowed vlan 10,20` | Sta specifieke VLANs toe |
-
-#### Load-Balancing
-
-| Commando | Beschrijving |
-|----------|--------------|
-| `port-channel load-balance src-mac` | Source MAC based |
-| `port-channel load-balance dst-mac` | Destination MAC based |
-| `port-channel load-balance src-dst-mac` | Source-destination MAC based |
-| `port-channel load-balance src-ip` | Source IP based |
-| `port-channel load-balance dst-ip` | Destination IP based |
-| `port-channel load-balance src-dst-ip` | Source-destination IP based |
-
-#### Verificatie
-
-| Commando | Beschrijving |
-|----------|--------------|
-| `show etherchannel summary` | Overzicht van alle EtherChannels |
-| `show interfaces port-channel 1` | Details van specifieke port-channel |
-| `show etherchannel load-balance` | Huidige load-balancing methode |
-| `show etherchannel port-group` | Poort groep informatie |
-| `show etherchannel protocol` | Protocol status |
-
-> **Let op:**  
-> - Maximum 8 interfaces per EtherChannel
-> - Alle poorten moeten identieke configuratie hebben
-> - LACP ondersteunt standby links (max 16)
-> - Voor layer 3 EtherChannel moet je "no switchport" gebruiken op de interfaces
-
-
-
-## Port Security
-
-Is een feature op Cisco switches die de toegang tot een switchpoort beperkt op basis van MAC-adressen. Dit helpt ongeautoriseerde apparaten te voorkomen en verhoogt de netwerkbeveiliging.
-
-### Basisconfiguratie
-
-| Commando | Beschrijving |
-|----------|--------------|
-| `switchport port-security` | Zet port security aan op de interface |
-| `switchport port-security maximum <aantal>` | Stel het maximum aantal MAC-adressen in |
-| `switchport port-security violation <actie>` | Stel de actie in bij een overtreding (protect, restrict, shutdown) |
-| `switchport port-security mac-address <mac>` | Voeg een specifieke MAC-adres toe aan de beveiligde lijst |
-
-### Verificatie
-
-| Commando | Beschrijving |
-|----------|--------------|
-| `show port-security interface <if>` | Toont de port security status van een interface |
-| `show port-security address` | Toont de beveiligde MAC-adressen |
-| `show port-security` | Toont algemene port security informatie |
-
-Als je geen specifieke MAC-adressen configureert, staat de switch de eerste MAC-address toe. De grootste winst met port security is dat je het aantal toegestane MAC-adressen kunt beperken.
-
-Violation modes:
-
-Shutdown: De poort wordt uitgeschakeld bij een overtreding (default).
-Restrict: De poort blijft actief, maar de overtreding wordt gelogd en het frame wordt gedropt.
-Protect: De poort blijft actief, overtredingen worden gedropt zonder logging.
-
-Sticky secure MAC-adressen worden automatisch geleerd en opgeslagen in de running-config. Bij een herstart gaan ze verloren tenzij je de configuratie opslaat.
-
-```cisco
-switchport port-security mac-address sticky
-```
- 
- ### DHCP Snooping
-
-DHCP snooping is een beveiligingsfunctie die ongeautoriseerde (rogue) DHCP-servers in een netwerk voorkomt. Het werkt door alleen DHCP-berichten van vertrouwde poorten toe te staan en alle andere te blokkeren.
-
-```cisco
-ip dhcp snooping
-ip dhcp snooping vlan <vlan-id>
-interface <interface-id>
-ip dhcp snooping trust
-```

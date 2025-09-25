@@ -4,14 +4,6 @@
 
 De Datalink Layer (Layer 2) van het OSI-model is verantwoordelijk voor de betrouwbare overdracht van dataframes tussen apparaten op hetzelfde netwerk. Het zorgt voor foutdetectie, frame-synchronisatie en MAC-adressering. De belangrijkste protocollen zijn Ethernet en PPP.
 
-## Ethernet & Netwerkmedia
-
-Ethernet is een verzameling netwerkprotocollen en -standaarden voor betrouwbare communicatie tussen apparaten. Ethernet media verwijst naar de fysieke kabels en verbindingen die gebruikt worden om netwerken te bouwen.
-
-
-
-### Ethernet Frame Structuur
-
 Een Ethernet frame is de eenheid van data die over een Ethernet-netwerk wordt verzonden. Het bestaat uit verschillende delen.
 
 **Ethernet Header:**
