@@ -1,0 +1,46 @@
+---
+
+
+- name: Make server-specific backup directory
+  become: true
+  ansible.builtin.file:
+    path: /mnt/backup/{{ ansible_hostname }}
+    state: directory
+
+- name: Ensure log file exists
+  become: true
+  ansible.builtin.file:
+    path: /var/log/auto-backup.log
+    state: touch
+
+- name: Rsync backup to NFS share
+  become: true
+  delegate_to: "{{ inventory_hostname }}"
+  ansible.posix.synchronize:
+    mode: push
+    src: /home/joey/
+    dest: /mnt/backup/{{ ansible_hostname }}/
+    rsync_opts:
+      - "--exclude=.cache/"
+      - "--exclude=.ssh/"
+      - "--exclude=.ansible"
+
+  register: rsync_result
+  
+- name: Show rsync statistics
+  ansible.builtin.debug:
+    var: rsync_result
+    verbosity: 1
+
+- name: Creates a cron file under /etc/cron.d
+  become: true
+  ansible.builtin.cron:
+    name: auto-backup
+    weekday: "2"
+    minute: "0"
+    hour: "12"
+    user: root
+    job: "/usr/bin/rsync -avH --exclude=.ssh/ --exclude=.ansible/ --exclude=.cache /home/joey/ /mnt/backup/{{ ansible_hostname }}/ --log-file=/var/log/auto-backup.log 2>&1"
+    cron_file: auto-backup
+
+    

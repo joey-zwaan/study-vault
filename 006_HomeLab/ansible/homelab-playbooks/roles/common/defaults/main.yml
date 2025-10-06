@@ -9,3 +9,9 @@ applications_to_install:
   - ca-certificates
   - apt-transport-https
   - ufw
+  - rclone
+  - git
+  - nfs-common
+  - traceroute
+  - cron
+

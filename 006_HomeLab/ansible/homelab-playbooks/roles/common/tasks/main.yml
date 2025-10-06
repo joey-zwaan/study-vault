@@ -1,5 +1,9 @@
 ---
 # tasks file for common
+
 - include_tasks: install-applications.yml
 - include_tasks: timezone.yml
 - include_tasks: motd.yml
+- include_tasks: mount-nfs-backup.yml
+- include_tasks: rsync-backup.yml
+

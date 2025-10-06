@@ -1,0 +1,22 @@
+---
+- name: Ensure backup directory exists
+  ansible.builtin.file:
+    path: /mnt/backup
+    state: directory
+    
+- name: Mount NFS backup share
+  ansible.posix.mount:
+    path: /mnt/backup
+    src: 192.168.20.92:/volume1/backup-workstations
+    fstype: nfs
+    state: mounted
+
+- name: Gather mount facts
+  ansible.builtin.setup:
+    gather_subset:
+      - mounts
+
+- name: Show NFS mounts
+  ansible.builtin.debug:
+    var: ansible_mounts
+    verbosity: 1
