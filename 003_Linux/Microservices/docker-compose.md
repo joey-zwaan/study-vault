@@ -1,10 +1,6 @@
 # Docker Compose
 
-## Wat is Docker Compose?
-
-Docker Compose is een tool waarmee je multi-container Docker applicaties kunt definiëren en beheren met behulp van een YAML-bestand. Hiermee kun je de services, netwerken en volumes die je applicatie nodig heeft, eenvoudig configureren en met één enkele opdracht starten, stoppen en beheren.
-
-### Docker Compose commands
+## Docker Compose commands
 
 ```bash
 docker compose up -d
@@ -24,7 +20,7 @@ docker compose stats
 - `docker compose top`: Toont de actieve processen binnen de containers die worden beheerd door Docker Compose.
 - `docker compose stats`: Toont een realtime overzicht van de resourcegebruik (CPU, geheugen, netwerk I/O, schijf I/O) van de containers die worden beheerd door Docker Compose.
 
-### Configureren van een Docker Compose bestand
+## Configureren van een Docker Compose bestand
 
 Een Docker Compose bestand wordt meestal `docker compose.yml` genoemd en bevat de configuratie voor de verschillende services die je applicatie nodig heeft. Hier is een eenvoudig voorbeeld van een `docker compose.yml` bestand. Om te starten gebruiken we het commando `docker compose up -d` in de directory waar het bestand zich bevindt. Als het bestand een andere naam heeft kan je dat aangeven met de `-f` optie, bijvoorbeeld `docker compose -f mijn-bestand.yml up -d`.
 Als we de containers weer willen stoppen gebruiken we `docker compose down`.
@@ -71,8 +67,6 @@ volumes:
 
 ```
 
-#### Uitleg van het bestand
-
 - `services`: Hier definieer je de verschillende services (containers) die je applicatie nodig heeft. In dit voorbeeld zijn er twee services: `web` (Nginx) en `db` (MariaDB).
 - `image`: De Docker-image die gebruikt wordt voor de service.
 - `ports`: Hiermee koppel je poorten van de host aan de container. In dit geval wordt poort 8888 van de host gekoppeld aan poort 80 van de Nginx-container.
@@ -81,7 +75,7 @@ volumes:
 
 > Bij sommige variabelen zoals MARIADB_RANDOM_ROOT_PASSWORD werkt dit alleen op de eerste keer dat je de container opstart en daarna wordt het wachtwoord niet meer getoond. Als je de container verwijdert en opnieuw aanmaakt met dezelfde volume zal de database de oude data blijven gebruiken en dus hetzelfde wachtwoord.
 
-### Opdracht 5 — multi-app-01
+## Opdracht 5 — multi-app-01
 
 Doel: bouw een kleine multi-container demo met PHP (web), Redis en MariaDB. Lever een werkende `docker-compose.yml` en een eenvoudige `Dockerfile` voor de webservice. De PHP-app (index.php) is de test-app die verbinding maakt met MariaDB en Redis.
 
@@ -132,19 +126,7 @@ Vereisten
 - De webservice wordt gebouwd met een `Dockerfile` (zorg dat mysqli en redis extensions aanwezig zijn). Gebruik recente, stabiele images.
 - Exposeer de webservice op een hostpoort (bijv. 8080).
 
-Aanlevering (deliverables)
-
-- `docker-compose.yml` (werkend)
-- `Dockerfile` voor de webservice
-
-Tips en best practices
-
-- Gebruik environment variables voor DB/Redis host, user, pass, and DB name.
-- Gebruik een named volume voor MariaDB data (bv. `db_data:/var/lib/mysql`).
-- Gebruik `docker-php-ext-install mysqli` en `pecl install redis && docker-php-ext-enable redis` in je Dockerfile.
-- Test lokaal op een apart netwerk en port-forward naar je host.
-
-#### STAP 1 : Dockerfile voor de webservice maken
+### STAP 1 : Dockerfile voor de webservice maken
 
 We gaan voor de php script ons eigen Docker image maken met een Dockerfile.
 
@@ -152,37 +134,115 @@ We gaan voor de php script ons eigen Docker image maken met een Dockerfile.
 
 FROM php:8.4.15RC1-zts-alpine3.21 
 
+
+## `WORKDIR` is de directory waar de applicatie draait binnen de container. In dit geval is dat `/app`.
 WORKDIR /app
-
+## `COPY` kopieert de lokale `index.php` naar de container op de locatie `/app/index.php`.
 COPY /php-site/index.php /app/index.php
-
+## `RUN apk add --no-cache autoconf g++ make` installeert de benodigde build tools om de redis extensie te kunnen installeren. We gebruiken apk omdat we een alpine image gebruiken.
 RUN apk add --no-cache autoconf g++ make
-
+## `RUN docker-php-ext-install mysqli` installeert de mysqli extensie voor PHP. Dit is nodig om verbinding te maken met de MariaDB database.
 RUN docker-php-ext-install mysqli
-
+## `RUN pecl install redis && docker-php-ext-enable redis` installeert de redis extensie via PECL en activeert deze voor PHP. Dit is nodig om verbinding te maken met de Redis server.
 RUN pecl install redis && docker-php-ext-enable redis
-
+## `EXPOSE 8000` geeft aan dat de container luistert op poort 8000 voor inkomend verkeer.
 EXPOSE 8000
-
+## `CMD [ "php", "-S","0.0.0.0:8000", "-t", "/app" ]` start de PHP ingebouwde webserver op poort 8000 en stelt de document root in op `/app`.
+## `-S` betekent dat we de ingebouwde webserver van PHP willen gebruiken.
+## `-t` geeft de document root aan, oftewel de directory waar de webbestanden zich bevinden. in dit geval is dat `/app`.
+## `php` geeft aan dat we het PHP commando willen uitvoeren.
 CMD [ "php", "-S","0.0.0.0:8000", "-t", "/app" ]
 ```
-
-- `WORKDIR` is de directory waar de applicatie draait binnen de container. In dit geval is dat `/app`.
-- `COPY` kopieert de lokale `index.php` naar de container op de locatie `/app/index.php`.
-- `RUN apk add --no-cache autoconf g++ make` installeert de benodigde build tools om de redis extensie te kunnen installeren. We gebruiken apk omdat we een alpine image gebruiken.
-- `RUN docker-php-ext-install mysqli` installeert de mysqli extensie voor PHP. Dit is nodig om verbinding te maken met de MariaDB database.
-- `RUN pecl install redis && docker-php-ext-enable redis` installeert de redis extensie via PECL en activeert deze voor PHP. Dit is nodig om verbinding te maken met de Redis server.
-- `EXPOSE 8000` geeft aan dat de container luistert op poort 8000 voor inkomend verkeer.
-- `CMD [ "php", "-S","0.0.0.0:8000", "-t", "/app" ]` start de PHP ingebouwde webserver op poort 8000 en stelt de document root in op `/app`.
--S betekent dat we de ingebouwde webserver van PHP willen gebruiken.
--t geeft de document root aan, oftewel de directory waar de webbestanden zich bevinden. in dit geval is dat `/app`.
-php geeft aan dat we het PHP commando willen uitvoeren.
 
 We bouwen het image met het volgende commando in de directory waar de Dockerfile zich bevindt:
 
 ```bash
-sudo docker build . -t opdracht5-php:0.1.=
+sudo docker build . -t opdracht5-php:0.1.0-alpha
+```
 
-De `.` geeft aan dat de build context de huidige directory is.
-`-t opdracht5-php:0.1.0-alpha` geeft de naam en tag van de image aan die we willen maken. We kiezen voor de de officiele semver notatie.
+- De `.` geeft aan dat de build context de huidige directory is.
+- `-t opdracht5-php:0.1.0-alpha` geeft de naam en tag van de image aan die we willen maken. We kiezen voor de de officiele semver notatie.
 We kunnen controleren of de image succesvol is aangemaakt met het commando `sudo docker images`.
+
+### STAP 2 : docker-compose.yml maken
+
+We maken nu een `docker-compose.yml` bestand aan in dezelfde directory als de Dockerfile.
+
+```yaml
+name: joey
+
+services:
+  web:
+    image: opdracht5-php:0.1.0-alpha 
+    ports:
+      - "8005:8000"
+    hostname: opdracht5-php
+    depends_on:
+      - redis
+      - db
+    environment: 
+      - DB_HOST=mariadb-db ## Verwijst naar de service naam van de database in hetzelfde netwerk
+      - DB_USER=joey-admin ## Gebruiker die we gebruiken om in te loggen
+      - DB_PASS=53596635 ## Wachtwoord voor de database gebruiker om in te loggen
+      - DB_NAME=opdracht5 ## Naam van de database die we willen gebruiken
+      - REDIS_HOST=redis ## Verwijst naar de redis service in hetzelfde netwerk
+      - REDIS_PORT=6379 ## Poort van de redis service
+    volumes:
+      - php1:/app/php-sites ## Bind mount voor de php code
+    networks:
+      - frontend ## Verwijst naar het netwerk dat moet worden gebruikt
+
+
+
+  redis:
+    image: redis:8.2.3-bookworm ## Image voor de redis service
+    hostname: redis ## Hostname voor de redis service
+    networks:
+      - frontend
+
+
+
+  db:
+    image: mariadb:12.0
+    hostname: mariadb-db
+    volumes: mariadb:/var/lib/mysql ## Volume voor persistente data opslag
+    environment:
+      - MARIADB_DATABASE=opdracht5 ## Naam van de database die we willen aanmaken
+      - MARIADB_RANDOM_ROOT_PASSWORD=yes ## Willekeurig root wachtwoord genereren
+      - MARIADB_USER=joey-admin ## Gebruiker die we willen aanmaken
+      - MARIADB_PASSWORD=53596635 ## Wachtwoord voor de gebruiker die we willen aanmaken
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    driver: bridge
+    enable_ipv4: true
+    enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.10.0/24
+          ip_range: 172.18.10.0/24
+          gateway: 172.18.10.1
+
+volumes:
+  php1:
+  mariadb:
+```
+
+- `depends_on`: Hiermee geef je aan dat de `web` service afhankelijk is van de `redis` en `db` services. Docker Compose zorgt ervoor dat deze services eerst worden gestart voordat de `web` service wordt.
+
+### STAP 3 : Docker Compose up
+
+Nu kunnen we de multi-container applicatie starten met het volgende commando:
+
+```bash
+docker compose up -d ## Start de services in de achtergrond
+```
+
+We controlleren of alle containers draaien met:
+
+```bash
+docker compose ps ## Toont de status van alle services die gestart zijn via docker compose
+```
