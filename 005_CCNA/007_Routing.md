@@ -46,7 +46,6 @@ End hosts gebruiken een default gateway om adressen buiten hun eigen netwerk te 
 
 Bij een point-to-point verbinding, zoals tussen twee routers, kun je een `/31` subnet gebruiken omdat je geen broadcast of netwerkadres nodig hebt. Dit geeft je precies twee bruikbare IP-adressen voor de twee routers.
 
-
 ### ROAS (Router-on-a-Stick)
 
 **Router-on-a-Stick (ROAS)** is een methode waarbij één enkele fysieke routerinterface gebruikt wordt om verkeer tussen meerdere VLANs te routeren. Dit gebeurt door op die interface meerdere **subinterfaces** te configureren. Elke subinterface is gekoppeld aan een specifieke VLAN via **802.1Q VLAN-tagging**.
@@ -77,12 +76,10 @@ interface g0/0.10
 
 Een L3 switch kan ook intervlan routing doen zonder een router. Dit wordt vaak gebruikt in grotere netwerken waar meerdere VLANs zijn en routing tussen deze VLANs nodig is. De L3 switch heeft interfaces die geconfigureerd zijn voor elk VLAN, en kan verkeer tussen deze VLANs routeren zonder dat een aparte router nodig is.
 
-
 Dit gebeurd door middel van SVI (Switched Virtual Interface).
 
-SVI's zijn virtuele interfaces die aan een VLAN zijn gekoppeld en fungeren als de default gateway voor dat VLAN. 
+SVI's zijn virtuele interfaces die aan een VLAN zijn gekoppeld en fungeren als de default gateway voor dat VLAN.
 Als het VLAN niet bestaat op de switch, dan gaat de interface down blijven ookal heb je het no-shutdown commando gebruikt.
-
 
 ```cisco
 interface Vlan10
@@ -97,24 +94,28 @@ Ze vormen "adjacencies" met andere routers en wisselen informatie uit over hun r
 Als meerdere routes naar een netwerk beschikbaar zijn, kiest de router de beste route op basis van de metric die superior is aan de andere route (lagere metric = superior).
 
 Dynamic routing protocollen kunnen verdeld worden in twee categorieën:
+
 - **Interior Gateway Protocols (IGP):** Gebruikt binnen een autonoom systeem (bijv. OSPF, EIGRP, RIP) Dit is bijvoorbeeld een enkele organisatie (een bedrijf).
 
 - **Exterior Gateway Protocols (EGP):** Gebruikt om informatie uit te wisselen tussen verschillende autonome systemen (bijv. BGP) bijvoorbeeld tussen verschillende providers of organisaties.
+
 > Enkel BGP wordt gebruikt in moderne netwerken.
 
 **We kunnen dit verder onderverdelen in algoritmes:**
 
 - **Distance Vector:** Routers sturen hun volledige routing table naar directe buren (RIP & EIGRP). Ze weten alleen de afstand tot een netwerk, niet de route ernaartoe.
+
 > IGP zoals RIP en EIGRP gebruiken distance vector algoritmes.
 
 - **Link State:** Routers sturen updates over de status van hun directe verbindingen (OSPF & IS-IS). Ze kennen de volledige topologie van het netwerk en kunnen de beste route berekenen op basis van die informatie.
+
 > IGP zoals OSPF en IS-IS gebruiken link state algoritmes.
 
 - **Path Vector:** Routers houden bij welke paden ze hebben genomen om een netwerk te bereiken (bijv. BGP). Ze kunnen complexe beslissingen nemen op basis van beleidsregels en padinformatie.
+
 > EGP zoals BGP gebruikt path vector algoritmes.
 
 <img src="/assets/dynamic-routing.png" alt="Dynamic Routing Protocols" width="600">
-
 
 #### Distance Vector Protocols
 
@@ -137,7 +138,6 @@ Voorbeelden hiervan zijn **RIPv1** en **IGRP**, die later werden verbeterd naar 
   - **Vector:** de richting (volgende hop) naar dat netwerk  
 - Routers delen dus **afstand en richting**, maar niet het volledige pad ernaartoe  
 
-
 #### Link State Protocols
 
 - Elke router verzamelt informatie over zijn **direct verbonden interfaces (links)**  
@@ -158,7 +158,7 @@ Voorbeelden hiervan zijn **RIPv1** en **IGRP**, die later werden verbeterd naar 
   - Wanneer er meerdere routes naar een bestemming zijn met exact dezelfde metric, kan de router deze routes **gelijktijdig gebruiken**  
   - Dit verdeelt het verkeer over meerdere paden en verhoogt de efficiëntie van de netwerkdoorvoer  
 
-#### Metrics 
+#### Metrics
 
 **RIP:**
 
@@ -183,9 +183,8 @@ Voorbeelden hiervan zijn **RIPv1** en **IGRP**, die later werden verbeterd naar 
   - Kan verkeer over paden met verschillende kosten verdelen, afhankelijk van configuratie  
   - Dit maakt het mogelijk om suboptimale paden te gebruiken zonder ze volledig uit te schakelen
 
-
-
 **IS-IS:**
+
 - Gebruikt **cost** als metric, vergelijkbaar met OSPF
 - Standaard wordt deze cost handmatig toegekend aan elke link
 - Elke route heeft standaard een cost van 10
@@ -195,7 +194,6 @@ Voorbeelden hiervan zijn **RIPv1** en **IGRP**, die later werden verbeterd naar 
 De **Administrative Distance (AD)** is een waarde die aangeeft hoe betrouwbaar een route is. Het wordt gebruikt wanneer een router meerdere routes naar hetzelfde netwerk kent via verschillende routingprotocollen. De route met de **laagste AD** wordt als meest betrouwbaar beschouwd en krijgt voorrang in de routing table.
 
 Wanneer een router meerdere routes naar hetzelfde netwerk via **hetzelfde protocol** leert, bepaalt de **metric** van dat protocol welke route gekozen wordt. Alleen wanneer er routes via **verschillende protocollen** zijn, gebruikt de router de AD om te bepalen welke route in de routing table wordt geplaatst.
-
 
 | Route protocol/type          | AD   | Route protocol/type      | AD   |
 |-----------------------------|------|-------------------------|------|
@@ -226,11 +224,11 @@ RIP (Routing Information Protocol) en EIGRP (Enhanced Interior Gateway Routing P
 - Geen ondersteuning voor VLSM of CIDR
 
 RIP heeft 3 versies:
+
 - **RIPv1:** IPv4, classful routing (geen ondersteuning voor VLSM of CIDR) Het zijn broadcast berichten. 255.255.255.255
 Gebruikt geen subnetmaskers in zijn advertisements.
 - **RIPv2:** IPv4, classless routing (ondersteunt VLSM en CIDR) het zijn multicast berichten. 224.0.09
 Gebruikt subnetmaskers in zijn advertenties.
- 
 
 - **RIPng:** Ondersteunt IPv6
 Ze gebruiken 2 messages:
@@ -267,7 +265,6 @@ Dit komt doordat binair 255.255.255.192 gelijk is aan 11111111.11111111.11111111
 
 Een kortere manier om uit te rekenen is om elk octet af te trekken van het subnetmask 255.
 
-
 <img src="/assets/wildcard.png" alt="Wildcard Masken" width="600" />
 
 #### Terminology EIGRP
@@ -285,21 +282,25 @@ Wanneer je een link state routing protocol gebruikt maakt elke router een 'conne
 OSPF (Open Shortest Path First) is een link‑state routingprotocol. Het gebruikt het Dijkstra‑algoritme (SPF) om de kortste paden te berekenen. Ontworpen voor grotere netwerken: snelle convergentie en schaalbaarheid.
 
 **Versies**
+
 - OSPFv1: verouderd
 - OSPFv2: IPv4
 - OSPFv3: IPv6
 
 **LSA’s en LSDB**
+
 - Routers adverteren Link State Advertisements (LSA’s)
 - LSA’s vormen de Link State Database (LSDB) per area
 - LSA’s worden geflood binnen de area; aging ± 30 min, daarna refresh
 
 **Basiswerking**
+
 1. Routers in hetzelfde area vormen neighbors
 2. Ze wisselen LSA’s uit en synchroniseren de LSDB
 3. Elke router runt lokaal SPF en installeert beste routes
 
 **Areas**
+
 - Area = set routers/links met dezelfde LSDB
 - Backbone = area 0; alle andere areas verbinden logisch met area 0
 - Internal router: alle interfaces in één area
@@ -325,7 +326,6 @@ router ospf 1
  network 192.168.3.0 0.0.0.255 area 1
 ```
 
-
 router loopback interface commands
 
 ```cisco
@@ -338,6 +338,7 @@ ip route 0.0.0.0 0.0.0.0 203.0.113.1
 router ospf 1
  default-information originate
 ```
+
 router ospf 1 → default-information originate
 
 Dit vertelt OSPF: “Als ik een default route in mijn eigen routing table heb, adverteer deze naar alle andere OSPF-routers.”
@@ -354,7 +355,6 @@ Een autonomous system boundary router (ASBR) is een router die het OSPF netwerk 
 **Router loopback interface**
 
 Je kunt een loopback-interface op een router configureren om te dienen als een stabiele OSPF-router-ID. Dit wordt gedaan door een virtuele interface te maken die altijd actief is en een IP-adres kan krijgen. De loopback-interface heeft de voorkeur voor de router-ID omdat deze niet is gekoppeld aan een fysieke interface, die kan uitvallen.
-
 
 #### OSPF metrics
 
@@ -374,10 +374,10 @@ Het is best practice om de default cost aan te passen.
 
 **De totale kost van een OSPF route is de som van de kosten van alle uitgaande interfaces in de route.**
 
-
 **OSPF Cost veranderen**
 
 Reference bandwith veranderen
+
 ```cisco
 router ospf 1
  auto-cost reference-bandwidth 100000
@@ -396,6 +396,7 @@ interface FastEthernet0/0
 
 Interface bandwidth veranderen
 Opmerking : bandwith =/= snelheid van de interface dit is enkel een metric gebruikt door dynamische routing protocols.
+
 ```cisco
 interface FastEthernet0/0
  bandwidth 100000 # kilobits-per-second
@@ -434,12 +435,11 @@ R2 ontvangt het Hello packet en voegt een entry toe voor R1 in zijn OSPF neighbo
 R2 stuurt een Hello packet met de RID van beide routers
 R1 zet R2 in zijn OSPF neighbor table in de 2-way state.
 
-R1 stuurt nog een Hello packet en deze keer ook met R2's RID en nu staan beide routers in de 2-way state. 
+R1 stuurt nog een Hello packet en deze keer ook met R2's RID en nu staan beide routers in de 2-way state.
 
-Als beide routers in de 2-way state zijn betekent dit dat alle condities om OSPF neighbors te worden zijn voldaan. 
+Als beide routers in de 2-way state zijn betekent dit dat alle condities om OSPF neighbors te worden zijn voldaan.
 
 > 2-way state = Hello packet ontvangen met eigen router ID.
-
 
 **Exstart State**
 
@@ -455,10 +455,9 @@ De routers vergelijken de informatie in de DBD die ze ontvangen met hun eigen LS
 
 In de Loading state, sturen routers LSR (Link State Request) packets naar hun buren om de ontbrekende LSAs op te vragen. Dit gebeurt nadat de routers hebben vastgesteld welke LSAs ze missen op basis van de informatie in de DBD packets.
 
-
 **Full State**
 
-In de Full state, hebben de routers een full OSPF adjacency opgebouwd en identieke LSDB (Link State Database). 
+In de Full state, hebben de routers een full OSPF adjacency opgebouwd en identieke LSDB (Link State Database).
 Ze blijven continue nog steeds hello packets versturen (elke 10 seconden) en ook luisteren om de neighbor adjacency te onderhouden.
 
 Er wordt ook een 'Dead' timer ingesteld. Als een router geen hello packets ontvangt van een buur binnen de 40 seconden van de Dead timer, wordt de buur als down beschouwd en verwijderd uit de neighbor table.
@@ -466,8 +465,6 @@ Er wordt ook een 'Dead' timer ingesteld. Als een router geen hello packets ontva
 De routers blijven LSA doorsturen om zeker te zijn dat elke router in het OSPF netwerk een identieke LSDB heeft.
 
 <img src="/assets/OSPF2.png" alt="OSPF Neighbors States" width="600">
-
-
 
 **OSPF Neighbor requirements**
 
@@ -489,8 +486,6 @@ Er zijn 3 netwerktypes in OSPF:
 1. **Broadcast**: Standaard enabled op Ethernet & FDDI interfaces.
 2. **Point-to-Point**: Standaard enabled op PPP (Point-to-Point Protocol) en HDLC (High-Level Data Link Control) interfaces.
 3. **Non-Broadcast Multi-Access (NBMA)**: Gebruikt voor netwerken zoals Frame Relay & X.25 interfaces.
-
-
 
 ##### Broadcast
 
@@ -522,9 +517,8 @@ Als je de interface priority na de verkiezing hoger set zal de router toch geen 
 
 Stel dat de interface faalt of gereset wordt, dan zal de BDR de rol van DR overnemen en zal er een nieuwe verkiezing voor de BDR gehouden worden.
 
-Belangrijk: 
+Belangrijk:
 Messages naar de DR/BDR moeten altijd verstuurd worden met een multicast adres (224.0.0.6). Het multicast address 224.0.0.5 (All OSPF Routers) wordt gebruikt voor berichten naar alle OSPF routers.
-
 
 ##### Point-to-Point
 
@@ -535,7 +529,6 @@ Routers dynamically discover neighbors door luisteren en versturen van OSPF Hell
 Een DR & BDR worden niet gekozen, deze encapsulaties zijn point-to-point en er is geen behoefte aan een DR of BDR.
 De 2 routers vormen een Full adjacency met elkaar.
 
-
 ### First Hop Redundancy Protocols (FHRP)
 
 Een first hop redundancy protocol is een netwerk protocol die is ontworpen om de beschikbaarheid van de eerste hop router te waarborgen in een netwerk. Dit wordt bereikt door meerdere routers te groeperen zodat als de actieve router faalt, een andere router automatisch de rol van actieve router kan overnemen zonder onderbreking van de netwerkverbinding.
@@ -543,7 +536,7 @@ Een first hop redundancy protocol is een netwerk protocol die is ontworpen om de
 **Algemene Werking**
 
 Een virtuele IP wordt geconfigureerd op de routers die deelnemen aan het FHRP. Deze virtuele IP wordt gebruikt als het standaard gateway adres voor de hosts in het netwerk.
-Een virtuele MAC wordt geconfigureerd voor het virtuele IP adres. 
+Een virtuele MAC wordt geconfigureerd voor het virtuele IP adres.
 
 Een active & standby routers worden verkozen.
 Als de active router faalt wordt de standby router de active router. De nieuwe active router zal gratuitous ARP berichten versturen zodat de switches hun MAC-adres kunnen bijwerken. Deze is nu de active default gateway.
@@ -574,7 +567,7 @@ Je kan verschillende subnets/vlans configureren met loadbalancing. Een verschill
 **GLBP**
 
 Dit is een Cisco proprietary protocol.
-Het load balanced tussen verschillende routers in een enkel subnet/vlan. 
+Het load balanced tussen verschillende routers in een enkel subnet/vlan.
 AVG (Active Virtual Gateway) is verkozen.
 Er worden tot 4 AVFs (Active Virtual Forwarders) gekozen. De AVG zelf kan ook een AVF zijn.
 

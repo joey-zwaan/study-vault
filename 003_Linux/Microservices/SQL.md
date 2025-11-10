@@ -14,6 +14,7 @@ mysqldump -u joey-admin -p --databases APP1 APP2 APP3 > backup.sql
 mysql -u username -p database_name < backup.sql
 # Lijst alle databases 
 mariadb -u joey-admin -p -e "SHOW DATABASES;"
+
 ```
 
 `-e`: Voer een SQL-opdracht uit vanuit de commandoregel zonder de interactieve shell te openen.
@@ -56,17 +57,15 @@ Instructies die worden gebruikt om gegevens in de database te manipuleren, zoals
 
 Voorbeelden:
 
+#### Users aanmaken
+
 ```sql
--- Voeg een regel toe
-INSERT INTO users (id, name) VALUES (1, 'Alice');
--- Lees alle regels
-SELECT * FROM users;
--- Werk een regel bij
-UPDATE users SET name = 'Alice Smith' WHERE id = 1;
--- Verwijder een regel
-DELETE FROM users WHERE id = 1;
--- Maak gebruiker aan
-CREATE USER 'joey-admin'@'localhost' IDENTIFIED BY 'securepassword';
+-- Maak een gebruiker aan met toegang vanaf localhost
+CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+-- Maak een gebruiker aan met toegang vanaf elk IP-adres
+CREATE USER 'username'@'%' IDENTIFIED BY 'password';
+-- Verwijder de gebruiker ook uit alle databases en tabellen
+DROP USER 'joey-admin'@'%';
 ```
 
 #### Data opvragen (Querying Data)
@@ -74,6 +73,8 @@ CREATE USER 'joey-admin'@'localhost' IDENTIFIED BY 'securepassword';
 Om gegevens uit een database op te vragen, gebruik je het `SELECT` statement. Hier zijn enkele voorbeelden:
 
 ```sql
+-- Database selecteren
+USE example_db;
 -- Selecteer alle kolommen van alle rijen in de tabel 'users'
 SELECT * FROM users;
 -- Selecteer specifieke kolommen 
@@ -106,7 +107,13 @@ SELECT ano, aname , weight FROM articles WHERE ano IN ('A1', 'A2', 'A3');
 SELECT aname FROM articles WHERE city ='Brussels' AND weight IS NULL;
 -- Toon de artikelen met een naam die begint met B of C
 SELECT * FROM articles WHERE aname LIKE 'B%' OR aname LIKE 'C%';
+-- Bereken de gemiddelde prijs per productlijn
+SELECT productLine, AVG(buyPrice) FROM products GROUP BY productLine;
 
+- AVG(): Berekent het gemiddelde van een numerieke kolom.
+- SUM(): Berekent de som van een numerieke kolom.
+- COUNT(): Telt het aantal rijen in een resultaatset.
+- GROUP BY: Groepeert rijen die dezelfde waarden in opgegeven kolommen delen.
 
 ```
 
@@ -133,6 +140,7 @@ WHERE-operatoren kunnen worden gebruikt om specifieke voorwaarden te definiëren
 ### DCL (Data Control Language)
 
 Instructies die de toegang tot de gegevens in de database regelen, zoals het verlenen of intrekken van gebruikersrechten.
+
 
 #### Privileges toekennen / intrekken
 

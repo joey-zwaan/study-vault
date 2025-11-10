@@ -1,13 +1,12 @@
-## IOS
+# IOS
 
 Cisco IOS (Internetwork Operating System) is het besturingssysteem dat wordt gebruikt op Cisco netwerkapparaten zoals routers en switches. Het biedt een command-line interface (CLI) voor configuratie, beheer en troubleshooting van netwerkfuncties. Cisco IOSXE is een meer geavanceerde versie van IOS, ontworpen voor grotere en complexere netwerken, met verbeterde schaalbaarheid en prestaties.
 
-**SUPER TIP:** `no ip domain-lookup ` commando ingeven om te voorkomen dat de router probeert onbestaande hostnames te vertalen naar IP-adressen, wat vertraging kan veroorzaken bij het invoeren van onjuiste commando's.
+**SUPER TIP:** `no ip domain-lookup` commando ingeven om te voorkomen dat de router probeert onbestaande hostnames te vertalen naar IP-adressen, wat vertraging kan veroorzaken bij het invoeren van onjuiste commando's.
 **SUPER TIP:** `Logging synchronous` op console & vty lines zorgt ervoor dat console output (zoals syslog berichten) niet de command prompt overschrijft tijdens het typen van commando's.
 **SUPER TIP:** `Exec-timeout 0 0` zorgt ervoor dat de console of vty sessie nooit automatisch wordt verbroken door inactiviteit.
 
-
-### Common switch config modes
+## Common switch config modes
 
 | **Modus**                 | **Prompt**               | **Toegang via**                      | **Voorbeeldcommando's**                               |
 | ------------------------- | ------------------------ | ------------------------------------ | ----------------------------------------------------- |
@@ -16,7 +15,6 @@ Cisco IOS (Internetwork Operating System) is het besturingssysteem dat wordt geb
 | **Line Config Mode**      | `hostname(config-line)#` | `line console 0``line vty 0 4`       | `password cisco`, `login`                             |
 | **Interface Config Mode** | `hostname(config-if)#`   | `interface g0/0``interface g0/1`     | `ip address 192.168.1.1 255.255.255.0`, `no shutdown` |
 | **VLAN Config Mode**      | `hostname(config-vlan)#` | `vlan 10``vlan 20`                   | `name Finance`, `exit`                                |
-
 
 ### Terminologie
 
@@ -56,9 +54,8 @@ line console 0
 line vty 0 4
   login local
 
-
-- `Level 0 = User EXEC Mode (Prompt: `Router>`)`
-- `Level 15 = Privileged EXEC Mode (Prompt: `Router#`)
+- `Level 0 = User EXEC Mode (Prompt:`Router>`)`
+- `Level 15 = Privileged EXEC Mode (Prompt:`Router#`)
 - `username <username> privilege <level> secret <password>` → Maakt een gebruiker aan met een specifiek privilege level (0-15).
 
 #### Remote access met SSH
@@ -71,13 +68,11 @@ line vty 0 4
 - `login local` → Gebruikt lokale gebruikersdatabase voor authenticatie.
 - `username <username> secret <password>` → Maakt een lokale gebruiker aan met wachtwoord.
 
-
 Best Practices
+
 - Gebruik altijd **`enable secret`** i.p.v. `enable password` (versleuteld).
 - Zet **`service password-encryption`** aan om wachtwoorden in de config te verbergen.
 - Gebruik bij voorkeur **local usernames met secrets** i.p.v. plain-text passwords.
-
-
 
 ### Autonegotiate & duplex
 
@@ -87,7 +82,6 @@ Best Practices
 - `description <text>` → Voegt een beschrijving toe aan de interface.
 - `no mdix auto` → Schakelt Auto-MDIX uit op de interface.
 - `mdix auto` → Schakelt Auto-MDIX in op de interface (standaard).
-
 
 ### VLAN & Switchport configuration
 
@@ -106,15 +100,15 @@ Best Practices
 - `switchport mode trunk dynamic auto` → Stelt de poort in op dynamische auto mode (standaard).
 - `switchport mode trunk dynamic desirable` → Stelt de poort in op dynamische gewenste mode.
 
-
 ### STP & RSTP configuration
+
 - `spanning-tree mode rapid-pvst` → Zet Rapid PVST+ in als STP-modus.
 - `spanning-tree vlan <vlan-id> priority <value>` → Stelt de prioriteit van de switch in voor een specifiek VLAN (waarde tussen 0-61440, in stappen van 4096).
 - `spanning-tree vlan <vlan-id> root primary` → Maakt de switch de primaire root switch voor het opgegeven VLAN.
 - `spanning-tree vlan <vlan-id> root secondary` → Maakt de switch de secundaire root switch voor het opgegeven VLAN.
 - `spanning-tree bpduguard enable` → Schakelt BPDU Guard in op de interface.
 - `spanning-tree bpdufilter enable` → Schakelt BPDU-filtering in op de interface. --> Dit betekent dat de switch geen BPDU's zal verzenden of ontvangen op die poort. feitelijk wordt de poort uitgeschakeld voor STP.
-- `spanning-tree root guard` → Schakelt Root Guard in op de interface. 
+- `spanning-tree root guard` → Schakelt Root Guard in op de interface.
 - `spanning-tree portfast` → Schakelt PortFast in op de interface.
 - `spanning-tree portfast bpduguard default` → Schakelt BPDU Guard in op alle PortFast-poorten. --> Global config mode
 - `spanning-tree portfast default` → Schakelt PortFast in op alle niet-trunk poorten. --> Global config mode
@@ -129,12 +123,11 @@ Best Practices
 - `channel-group <number> mode passive` → Voeg de interfaces toe aan een EtherChannel in passieve LACP-modus.
 - `channel-group <number> mode on` → Voeg de interfaces toe aan een statische EtherChannel (geen LACP of PAgP).
 - `no shutdown` → Schakel de interfaces weer in.
-- `interface port-channel <number>` → Ga naar de PortChannel-interface voor verdere configuratie.
+- `channel-group` <number> mode desirable → Probeert actief een etherchannel te vormen.
+- `channel-group` <number> mode active → Wacht passief op de andere kant om de etherchannel te vormen. (PAgP)
+- `interface port-channel <number>` → Ga naar de PortChannel-interface voor verdere configuratie. (PAgP)
 - `show etherchannel summary` → Toont een overzicht van alle EtherChannels en hun status.
 - `show interfaces port-channel <number>` → Toont gedetailleerde informatie over een specifieke PortChannel.
-
-
-
 
 ### Cli help functies
 
@@ -144,7 +137,6 @@ Cisco IOS biedt verschillende help-functies in de command-line interface (CLI) o
 command? : Toont hulp voor een specifiek commando.
 com? : Toont alle commando's die beginnen met "com".
 command parm? : Toont hulp voor een specifiek commando met een parameter.
-
 
 ### Cisco Show Commands
 
@@ -156,7 +148,6 @@ command parm? : Toont hulp voor een specifiek commando met een parameter.
 - `show interfaces status` → Status, snelheid, duplex, err-disabled.
 - `show interfaces counters errors` → Foutentellers per interface.
 - `show interfaces description` → Beschrijvingen + status.
-
 
 - `show mac address-table` -> Volledige MAC-address table van de switch.
 - `show mac address-table dynamic` -> Dynamisch geleerde MAC-adressen.
@@ -175,7 +166,6 @@ command parm? : Toont hulp voor een specifiek commando met een parameter.
 - `show ip default-gateway` → Toont de default gateway op een switch.
 - `show ip route eigrp` → Toont EIGRP-routes.
 
-
 #### Show Commands – Configuratie
 
 - `show running-config` → Toont de huidige configuratie.
@@ -186,9 +176,7 @@ command parm? : Toont hulp voor een specifiek commando met een parameter.
 - `show users` → Toont actieve gebruikerssessies.
 - `show history` → Toont de commandogeschiedenis van de huidige sessie.
 
-
 #### Show Commands - Switchport & VLANs
-
 
 - `show interfaces switchport` → Toont switchport-informatie voor alle interfaces.
 - `show interfaces [type/nummer] switchport` → Toont switchport-informatie voor een specifieke interface.
@@ -199,8 +187,6 @@ command parm? : Toont hulp voor een specifiek commando met een parameter.
 - `show interfaces [type/nummer] trunk` → Toont trunk-informatie voor een specifieke interface.
 - `show spanning-tree vlan [vlan-id]` → Toont STP-informatie voor een specifiek VLAN.
 
-
-
 #### Show Commands - STP & RSTP
 
 - `show spanning-tree` → Toont de STP-status voor alle VLANs.
@@ -209,5 +195,4 @@ command parm? : Toont hulp voor een specifiek commando met een parameter.
 - `show spanning-tree interface [type/nummer]` → Toont STP-informatie voor een specifieke interface.
 - `show spanning-tree vlan [vlan-id] detail` → Toont gedetailleerde STP-informatie voor een specifiek VLAN.
 - `show spanning-tree summary` → Toont een samenvatting van de STP-configuratie en status.
-- 
-
+-
