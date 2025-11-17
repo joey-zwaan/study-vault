@@ -57,6 +57,7 @@ login=joey-home.com,                      \
 password=******          \
 @,edge.joey-home.com
 ```
+
 We gaan de systemd service file maken & zorgen dat ddclient automatisch opstart bij het booten van de container.
 
 ```bash

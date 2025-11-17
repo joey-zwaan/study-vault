@@ -246,3 +246,8 @@ We controlleren of alle containers draaien met:
 ```bash
 docker compose ps ## Toont de status van alle services die gestart zijn via docker compose
 ```
+
+
+Wat is Mediawiki?
+
+MediaWiki is een gratis en open-source wiki-softwarepakket dat oorspronkelijk is ontwikkeld voor gebruik op Wikipedia. Het is geschreven in PHP en maakt gebruik van een database, meestal MySQL of MariaDB, om de inhoud van de wiki op te slaan. MediaWiki is ontworpen om het gemakkelijk te maken voor gebruikers om samen te werken aan het creëren en bewerken van webpagina's, en het biedt een breed scala aan functies die het geschikt maken voor zowel kleine als grote wiki-projecten.
