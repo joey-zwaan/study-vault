@@ -247,7 +247,165 @@ We controlleren of alle containers draaien met:
 docker compose ps ## Toont de status van alle services die gestart zijn via docker compose
 ```
 
+## docker-compose multi-container
 
-Wat is Mediawiki?
+We hebben in de vorige opdracht een eenvoudige multi-container setup gemaakt met PHP, Redis en MariaDB. Hieronder vind je een uitgebreider voorbeeld van een `docker-compose.yml` bestand dat meerdere services bevat, waaronder een PostgreSQL database, een webapplicatie (Peppermint), een Nginx reverse proxy met Let's Encrypt ondersteuning, een MediaWiki installatie met MariaDB en Uptime Kuma voor monitoring.
 
-MediaWiki is een gratis en open-source wiki-softwarepakket dat oorspronkelijk is ontwikkeld voor gebruik op Wikipedia. Het is geschreven in PHP en maakt gebruik van een database, meestal MySQL of MariaDB, om de inhoud van de wiki op te slaan. MediaWiki is ontworpen om het gemakkelijk te maken voor gebruikers om samen te werken aan het creëren en bewerken van webpagina's, en het biedt een breed scala aan functies die het geschikt maken voor zowel kleine als grote wiki-projecten.
+### docker-compose.yml voorbeeld
+
+```yaml
+name: Multi-container setup
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:18-bookworm
+    env_file: docker.env ## Laad omgevingsvariabelen uit docker.env en plaats ze in de containeromgeving
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_postgres_password
+      POSTGRES_DB: peppermint
+    secrets:
+      - db_postgres_password ## Verwijst naar het secret dat we later definiëren
+    networks:
+      - nginx-proxy
+
+  peppermint:
+    container_name: peppermint
+    image: pepperlabs/peppermint:latest
+    env_file: docker.env
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: "postgres"
+      VIRTUAL_HOST: "helpdesk.joey-home.com"
+      LETSENCRYPT_HOST: "helpdesk.joey-home.com"
+      VIRTUAL_PORT: "3000"
+    networks:
+      - nginx-proxy
+
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: nginxproxy/nginx-proxy:1.9.0
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro ## Maakt communicatie met de Docker daemon mogelijk
+    networks:
+      - nginx-proxy
+
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion:2.6
+    env_file: docker.env
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy
+    environment:
+      NGINX_PROXY_CONTAINER: nginx-proxy
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
+    networks:
+      - nginx-proxy
+
+
+  mediawiki:
+    image: joey-mediawiki:1.44
+    env_file: docker.env
+    container_name: mediawiki
+    restart: unless-stopped
+    environment:
+      VIRTUAL_HOST: "wiki.joey-home.com"
+      VIRTUAL_PORT: 80
+      LETSENCRYPT_HOST: "wiki.joey-home.com"
+      MEDIAWIKI_DB_HOST: "mariadb-wiki"
+    volumes:
+      - mediawiki:/var/www/html
+      - mediawiki-data:/data
+    networks:
+      - nginx-proxy
+
+  mariadb-wiki:
+    image: mariadb:12.0
+    env_file: docker.env
+    container_name: mariadb-wiki
+    restart: unless-stopped
+    secrets:
+      - db_mariadb_password
+    environment:
+      - MARIADB_DATABASE=mediawiki
+      - MARIADB_RANDOM_ROOT_PASSWORD=yes
+    networks:
+      - nginx-proxy
+    volumes:
+      - mariadb-wiki:/var/lib/mysql
+
+  uptime-kuma:
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:debian
+    restart: unless-stopped
+    environment:
+      VIRTUAL_HOST: "uptime.joey-home.com"
+      VIRTUAL_PORT: 3001
+      LETSENCRYPT_HOST: "uptime.joey-home.com"
+    networks:
+      - nginx-proxy
+    volumes:
+      - uptime-kuma:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock ## Nodig voor container monitoring
+
+
+
+networks:
+  nginx-proxy:
+    driver: bridge
+    enable_ipv4: true
+    enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.11.0/24
+          ip_range: 172.18.11.0/24
+          gateway: 172.18.11.1
+
+volumes:
+  html:
+  certs:
+  pgdata:
+  acme:
+  mariadb-wiki:
+  mediawiki:
+  mediawiki-data:
+  uptime-kuma:
+secrets:
+  db_postgres_password:
+    file: /home/joey/secrets/postgres/db_password.txt
+  db_mariadb_password:
+    file: /home/joey/secrets/mariadb/db_password.txt ## Pad naar het bestand met het wachtwoord
+```
+
+We gebruiken een apart `docker.env`-bestand om gevoelige informatie, zoals gebruikersnamen en wachtwoorden, op te slaan. Dit bestand wordt door de relevante services ingeladen via de env_file-directive. Hierdoor worden de variabelen rechtstreeks in de containeromgeving geïnjecteerd, zonder dat ze zichtbaar hoeven te zijn in het docker-compose.yml-bestand. Het nadeel is wel dat wachtwoorden via deze manier nog altijd zichtbaar zijn met het commando `docker inspect <container>`. Dus is niet zo veilig als secrets.
+
+Dit verschilt van `.env`, dat enkel wordt gebruikt door docker-compose zelf om variabelen in het compose-bestand te vervangen, maar niet automatisch wordt doorgegeven aan containers.
+
+### docker.env voorbeeld
+
+```env  
+joey@mariadb-test:~/opdracht-2$ cat docker.env 
+MARIADB_USER=joey-admin
+MARIADB_PASSWORD=Test123!
+MEDIAWIKI_DB_USER=joey-admin1
+MEDIAWIKI_DB_PASSWORD=Test123!
+DB_USERNAME=peppermint
+DB_PASSWORD=Test123!
+POSTGRES_USER=peppermint
+DEFAULT_EMAIL=joey@EXAMPLE.COM
+```
