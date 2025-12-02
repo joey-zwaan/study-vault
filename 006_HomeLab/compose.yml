@@ -1,0 +1,208 @@
+name: monitoring infrastructure
+
+services:
+
+  uptime-kuma:
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:debian
+    restart: unless-stopped
+    networks:
+      - plex-stack
+    volumes:
+      - uptime-kuma:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock ## Nodig voor container monitoring
+    labels:
+      - homepage.group=containers
+      - homepage.name=Uptime Kuma
+      - homepage.icon=uptime-kuma.png
+      - homepage.href=http://uptime-kuma.joey-home.com/
+      - homepage.description=Uptime monitoring tool
+      - homepage.container=uptime-kuma
+
+  homepage:
+    container_name: homepage
+    image: ghcr.io/gethomepage/homepage:latest
+    restart: unless-stopped
+    networks:
+      - plex-stack
+ #   ports:
+ #     - 3000:3000
+    volumes:
+      - homepage:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: homepage.joey-home.com,192.168.20.11:3000
+      VIRTUAL_HOST: "homepage.joey-home.com"
+      LETSENCRYPT_HOST: "homepage.joey-home.com"
+      VIRTUAL_PORT: "3000"
+
+
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: nginxproxy/nginx-proxy:1.9.0
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro ## Maakt communicatie met de Docker daemon mogelijk
+    networks:
+      - plex-stack
+
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion:2.6
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy
+    environment:
+      NGINX_PROXY_CONTAINER: nginx-proxy
+      DEFAULT_EMAIL: monitoring@joey-home.com
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
+    networks:
+      - plex-stack
+
+  qbittorrent:
+    image: ghcr.io/linuxserver/qbittorrent
+    container_name: qbittorrent
+    environment:
+      TZ: CEST
+      WEBUI_PORT: "8085"
+      VIRTUAL_HOST: "qbit.joey-home.com"
+      LETSENCRYPT_HOST: "qbit.joey-home.com"
+      VIRTUAL_PORT: "8085"
+    volumes:
+      - /mnt/plex-stack/config-containers/qbittorrent/config:/config
+      - /mnt/plex-stack/media/downloads:/downloads
+    restart: unless-stopped
+    networks:
+    - plex-stack
+
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      TZ: CEST
+      VIRTUAL_HOST: "sonarr.joey-home.com"
+      LETSENCRYPT_HOST: "sonarr.joey-home.com"
+      VIRTUAL_PORT: "8989"
+    volumes:
+      - /mnt/plex-stack/config-containers/sonarr/config:/config
+      - /mnt/plex-stack/media/tv-shows:/tv
+      - /mnt/plex-stack/media/downloads:/downloads
+    restart: unless-stopped
+    networks:
+      - plex-stack
+
+  radarr:
+    image: ghcr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      TZ: CEST
+      VIRTUAL_HOST: "radarr.joey-home.com"
+      LETSENCRYPT_HOST: "radarr.joey-home.com"
+      VIRTUAL_PORT: "7878"
+
+    volumes:
+      - /mnt/plex-stack/config-containers/radarr/config:/config
+      - /mnt/plex-stack/media/movies:/movies
+      - /mnt/plex-stack/media/downloads:/downloads
+    restart: unless-stopped
+    networks:
+      - plex-stack
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+#    ports:
+#      - "9696:9696"
+    environment:
+      - TZ=CEST
+    volumes:
+      - /mnt/plex-stack/config-containers/prowlarr/config:/config
+    restart: unless-stopped
+    networks:
+      - plex-stack
+
+  unpackerr:
+    image: golift/unpackerr
+    container_name: unpackerr
+#    ports:
+ #     - "5656:5656"
+    volumes:
+      - /mnt/plex-stack/media/downloads:/downloads
+    restart: always
+    user: 1000:100
+    environment:
+      - TZ=CEST
+      - UN_LOG_FILE=/downloads/unpackerr.log
+      - UN_SONARR_0_URL=https://sonarr.joey-home.com
+      - UN_SONARR_0_API_KEY=572cb4b84b5d4162ac8ddb19328dc867
+      - UN_RADARR_0_URL=https://radarr.joey-home.com
+      - UN_RADARR_0_API_KEY=0aa7f080ac8844388c451fac46d39abf
+      - UN_DELAY=300
+    networks:
+      - plex-stack
+
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      TZ: CEST
+      VIRTUAL_HOST: "sab.joey-home.com"
+      LETSENCRYPT_HOST: "sab.joey-home.com"
+      VIRTUAL_PORT: "8080"
+    volumes:
+      - /mnt/plex-stack/config-containers/sabnzbd:/config
+      - /mnt/plex-stack/media/downloads:/downloads #optional
+      - /mnt/plex-stack/media/downloads/incomplete:/incomplete-downloads #optional
+    restart: unless-stopped
+    networks:
+      - plex-stack
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+#    ports:
+#      - "32400:32400"
+    environment:
+      TZ: CEST
+      VERSION: docker
+      VIRTUAL_HOST: "plex.joey-home.com"
+      LETSENCRYPT_HOST: "plex.joey-home.com"
+      VIRTUAL_PORT: "32400"
+#      PLEX_CLAIM: claim-xsYXPceRgbos3SgCA5Ta #optional
+#      ADVERTISE_IP: 192.168.20.11
+    volumes:
+      - plex-config:/config
+      - /mnt/plex-stack/media/tv-shows:/tv
+      - /mnt/plex-stack/media/movies:/movies
+    restart: unless-stopped
+    networks:
+      - plex-stack
+
+volumes:
+  uptime-kuma:
+  homepage:
+  certs:
+  acme:
+  html:
+  plex-config:
+
+networks:
+  plex-stack:
+    driver: bridge
+    enable_ipv4: true
+    enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.11.0/24
+          ip_range: 172.18.11.0/24
+          gateway: 172.18.11.1

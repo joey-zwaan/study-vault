@@ -399,7 +399,6 @@ Dit verschilt van `.env`, dat enkel wordt gebruikt door docker-compose zelf om v
 ### docker.env voorbeeld
 
 ```env  
-joey@mariadb-test:~/opdracht-2$ cat docker.env 
 MARIADB_USER=joey-admin
 MARIADB_PASSWORD=Test123!
 MEDIAWIKI_DB_USER=joey-admin1

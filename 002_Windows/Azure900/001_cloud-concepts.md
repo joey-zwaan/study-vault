@@ -96,7 +96,18 @@ Je hebt 2 manieren om op te schalen:
 
 `Reliability` verwijst naar de consistentie en stabiliteit van een systeem om zijn functies uit te voeren zonder fouten of onderbrekingen over een bepaalde periode. In de context van cloud computing betekent dit dat diensten en applicaties betrouwbaar beschikbaar zijn voor gebruikers, met minimale downtime en storingen.
 
+- `Auto-healing`
+Dit zorgt ervoor dat als bijvoorbeeld een VM faalt de cloudomgeving dit detecteert en zelf zonder tussenkomst van een beheerder een nieuwe VM opstart om de falende te vervangen.
+
+- `Storage` wordt vaak gerepliceerd over meerdere fysieke locaties om dataverlies te voorkomen bij hardwarestoringen.
+
+- `Auto-scaling` wordt gebruikt om automatisch extra resources toe te voegen tijdens piekbelastingen en deze weer te verwijderen wanneer de vraag afneemt. Dit helpt om prestaties consistent te houden, zelfs tijdens onverwachte verkeerspieken. Zonder tussenkomst van een beheerder.
+
 `Predictability` verwijst naar het vermogen om de prestaties en kosten van een systeem nauwkeurig te voorspellen op basis van vooraf bepaalde parameters. In de cloud betekent dit dat organisaties in staat zijn om hun resourcegebruik, prestaties en uitgaven te plannen en te beheren op een manier die consistent is met hun verwachtingen en budgetten. Dit helpt bij het vermijden van onverwachte kosten en zorgt voor een betere afstemming van IT-resources op zakelijke behoeften.
+
+- `SKU` (Stock Keeping Unit) zorgt ervoor dat je weet welke rescources je krijgt voor welke prijs. Er zijn verschillende modellen beschikbaar afhankelijk van je behoeften. Je weet dus vooraf wat je kan verwachten.
+
+- `Templates` gebruiken in je deployments zorgt ervoor dat je altijd dezelfde omgeving krijgt en dat er geen onverwachte verschillen zijn tussen verschillende implementaties. Automatiseren is hier de sleutel.
 
 `Performance` predictability draait om het garanderen dat een applicatie consistent en betrouwbaar presteert, ongeacht hoeveel gebruikers of verkeer er is. Cloudconcepten zoals autoscaling, load balancing en high availability spelen hierin een cruciale rol.
 Wanneer de vraag plots stijgt, kan de cloudomgeving automatisch opschalen zodat er voldoende resources beschikbaar zijn. Daalt de belasting daarna weer, dan kan de omgeving afschalen om kosten te besparen zonder aan prestaties in te boeten. Hierdoor blijft de gebruikerservaring stabiel, zelfs tijdens pieken of onverwachte workloads.

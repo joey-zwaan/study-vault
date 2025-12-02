@@ -1,6 +1,7 @@
-## Windows run commands
-**hotkey = WIN+R**
+# Windows run commands
 
+**hotkey = WIN+R**
+q
 | Description                | Executable  |
 |----------------------------|-------------|
 | Remote desktop connection  | mstc.exe    |
@@ -15,4 +16,3 @@
 | Remote desktop connection  | mstc.exe    |
 | Remote desktop connection  | mstc.exe    |
 | Remote desktop connection  | mstc.exe    |
-
