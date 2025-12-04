@@ -98,7 +98,8 @@ services:
       - /mnt/plex-stack/media/downloads:/downloads
     restart: unless-stopped
     networks:
-      - plex-stack
+      plex-stack:
+        ipv4_address: 172.18.11.10
 
   radarr:
     image: ghcr.io/linuxserver/radarr:latest
@@ -115,7 +116,8 @@ services:
       - /mnt/plex-stack/media/downloads:/downloads
     restart: unless-stopped
     networks:
-      - plex-stack
+      plex-stack:
+        ipv4_address: 172.18.11.8
 
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
@@ -190,7 +192,26 @@ services:
       - /mnt/plex-stack/media/movies:/movies
     restart: unless-stopped
     networks:
+      plex-stack:
+        ipv4_address: 172.18.11.4
+
+  jellyseerr:
+    image: ghcr.io/fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+#     init: true
+    environment:
+      LOG_LEVEL: info
+      TZ: CEST
+      VIRTUAL_HOST: "request.joey-home.com"
+      LETSENCRYPT_HOST: "request.joey-home.com"
+      VIRTUAL_PORT: "5055"
+    volumes:
+      - seer:/app/config
+    restart: unless-stopped
+    networks:
       - plex-stack
+
+
 
 volumes:
   uptime-kuma:
@@ -199,7 +220,7 @@ volumes:
   acme:
   html:
   plex-config:
-
+  seer:
 networks:
   plex-stack:
     driver: bridge
@@ -211,3 +232,4 @@ networks:
         - subnet: 172.18.11.0/24
           ip_range: 172.18.11.0/24
           gateway: 172.18.11.1
+
