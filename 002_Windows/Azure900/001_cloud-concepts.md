@@ -121,3 +121,13 @@ Afhankelijk van het gekozen cloud model kan dit zelfs automatisch worden toegepa
 
 Op de kant van security kan je een cloudoplossing vinden die bij je security-beleid past.
 
+## Veelgebruikte cloud termen
+
+Data
+APP
+Runtime
+OS
+HIV
+COMPUTE
+NETWORK
+Storage

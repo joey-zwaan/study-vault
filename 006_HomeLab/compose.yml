@@ -81,7 +81,8 @@ services:
       - /mnt/plex-stack/media/downloads:/downloads
     restart: unless-stopped
     networks:
-    - plex-stack
+      plex-stack:
+        ipv4_address: 172.18.11.20
 
   sonarr:
     image: ghcr.io/linuxserver/sonarr:latest
@@ -127,7 +128,9 @@ services:
       - /mnt/plex-stack/config-containers/prowlarr/config:/config
     restart: unless-stopped
     networks:
-      - plex-stack
+      plex-stack:
+        ipv4_address: 172.18.11.21
+
 
   unpackerr:
     image: golift/unpackerr
@@ -164,13 +167,15 @@ services:
       - /mnt/plex-stack/media/downloads/incomplete:/incomplete-downloads #optional
     restart: unless-stopped
     networks:
-      - plex-stack
+      plex-stack:
+        ipv4_address: 172.18.11.22
+
 
   plex:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
-#    ports:
-#      - "32400:32400"
+    ports:
+      - "32400:32400"
     environment:
       TZ: CEST
       VERSION: docker

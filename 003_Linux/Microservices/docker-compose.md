@@ -396,6 +396,14 @@ We gebruiken een apart `docker.env`-bestand om gevoelige informatie, zoals gebru
 
 Dit verschilt van `.env`, dat enkel wordt gebruikt door docker-compose zelf om variabelen in het compose-bestand te vervangen, maar niet automatisch wordt doorgegeven aan containers.
 
+Voor sommige containers kan het belangrijk zijn om een fixed IP-adres te hebben binnen het Docker-netwerk. Dit kan bijvoorbeeld nodig zijn voor services die afhankelijk zijn van vaste IP-adressen voor communicatie of configuratie. In het bovenstaande voorbeeld is dit echter niet geïmplementeerd, maar kan eenvoudig worden toegevoegd door de `ipv4_address`-optie toe te voegen onder de `networks`-sectie van de betreffende service.
+
+```yaml
+    networks:
+      custom_net:
+        ipv4_address: 10.5.0.5
+```
+
 ### docker.env voorbeeld
 
 ```env  
@@ -408,3 +416,4 @@ DB_PASSWORD=Test123!
 POSTGRES_USER=peppermint
 DEFAULT_EMAIL=joey@EXAMPLE.COM
 ```
+
