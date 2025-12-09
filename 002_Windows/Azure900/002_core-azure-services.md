@@ -21,6 +21,8 @@ Een availability zone is een fysiek gescheiden locatie binnen een regio deze hee
 `Zone resources` zijn resources die specifiek zijn toegewezen aan een bepaalde availability zone.
 `Zone-redundant resources` zijn resources die automatisch worden gerepliceerd over meerdere availability zones binnen dezelfde regio. Dit biedt een hogere beschikbaarheid en veerkracht tegen uitval van een enkele zone. Er is een automatische failover tussen de zones.
 
+## Azure Cost Management
+
 ## Resource Groups
 
 Een resource group is een container die gerelateerde Azure-resources groepeert. Dit maakt het eenvoudiger om resources te beheren. Het is een logische groepering, geen fysieke. Er kunnen resources uit verschillende regio's in dezelfde resource group zitten. Er kunnen ook verschillende types van resources in dezelfde resource group zitten. Er kan gebruik worden gemaakt van tags om resources binnen een resource group verder te categoriseren. Dit wordt niet automatisch toegepast op de resources binnen de resource group.
@@ -124,7 +126,7 @@ Azure Container Instances (ACI) is een service die het mogelijk maakt om contain
 
 ### Azure Kubernetes Service
 
-Azure Kubernetes Service (AKS) is een beheerde Kubernetes-service die het eenvoudiger maakt om containerized applicaties te implementeren, beheren en schalen met behulp van Kubernetes. AKS neemt veel van de complexiteit weg die gepaard gaat met het opzetten en beheren van een Kubernetes-cluster. Microsoft beheert de control-plane van het cluster, inclusief de API-server, etcd-database en andere kritieke componenten. Dit betekent dat ik me kan concentreren op het implementeren en beheren van mijn applicaties zonder me zorgen te maken over de onderliggende infrastructuur. 
+Azure Kubernetes Service (AKS) is een beheerde Kubernetes-service die het eenvoudiger maakt om containerized applicaties te implementeren, beheren en schalen met behulp van Kubernetes. AKS neemt veel van de complexiteit weg die gepaard gaat met het opzetten en beheren van een Kubernetes-cluster. Microsoft beheert de control-plane van het cluster, inclusief de API-server, etcd-database en andere kritieke componenten. Dit betekent dat ik me kan concentreren op het implementeren en beheren van mijn applicaties zonder me zorgen te maken over de onderliggende infrastructuur.
 
 ### App Service
 
@@ -132,7 +134,7 @@ Azure App Service is een volledig beheerde platform-as-a-service (PaaS) die het 
 
 **Serverless functies**
 
-Azure Functions is een serverless compute-service die het mogelijk maakt om code uit te voeren als reactie op gebeurtenissen. Met Azure Functions kan ik kleine stukjes code schrijven, bekend als "functies", die automatisch worden uitgevoerd wanneer ze worden geactiveerd door specifieke gebeurtenissen, zoals HTTP-aanvragen, timergebeurtenissen of berichten in een wachtrij. Ik betaal alleen voor de tijd dat mijn code wordt uitgevoerd, wat het kostenefficiënt maakt voor toepassingen met onregelmatige of onvoorspelbare workloads. 
+Azure Functions is een serverless compute-service die het mogelijk maakt om code uit te voeren als reactie op gebeurtenissen. Met Azure Functions kan ik kleine stukjes code schrijven, bekend als "functies", die automatisch worden uitgevoerd wanneer ze worden geactiveerd door specifieke gebeurtenissen, zoals HTTP-aanvragen, timergebeurtenissen of berichten in een wachtrij. Ik betaal alleen voor de tijd dat mijn code wordt uitgevoerd, wat het kostenefficiënt maakt voor toepassingen met onregelmatige of onvoorspelbare workloads.
 
 ### Virtual machine scalesets
 
@@ -222,7 +224,6 @@ NoSQL-opslag voor gestructureerde data zonder relationele database. Geschikt voo
 5. Data Lake Storage  
 Schaalbare opslag voor big-data en analytische workloads. Gebouwd bovenop Blob storage en is geoptimaliseert voor analyse met tools zoals Azure HDInsight en Azure Databricks. Dit is ideaal voor machine learning, data-analyse en rapportage.
 
-
 ### Redundancy opties
 
 `Local-redundant storage (LRS):` Slaat drie kopieën van de gegevens op binnen één datacenter in een regio. Dit beschermt tegen hardwarestoringen, maar niet tegen datacenter-brede storingen.
@@ -236,9 +237,230 @@ Schaalbare opslag voor big-data en analytische workloads. Gebouwd bovenop Blob s
 
 ### Access tiers
 
-
 Azure Storage biedt verschillende access tiers om kosten te optimaliseren op basis van de toegankelijkheid en het gebruikspatroon van gegevens:
 
 1. Hot Tier: Deze laag is bedoeld voor gegevens die vaak worden geraadpleegd. Het biedt de laagste latentie en de hoogste doorvoersnelheid, maar heeft hogere opslagkosten. Ideaal voor actieve gegevens die regelmatig worden gebruikt.
 2. Cool Tier: Deze laag is bedoeld voor gegevens die minder vaak worden geraadpleegd, maar nog steeds snel toegankelijk moeten zijn. Het heeft lagere opslagkosten dan de hot tier, maar hogere toegangs- en bewerkingskosten. Geschikt voor gegevens die enkele keren per maand worden geraadpleegd.
 3. Archive Tier: Deze laag is bedoeld voor gegevens die zelden worden geraadpleegd en waarvoor een langere toegangsduur acceptabel is. Het heeft de laagste opslagkosten, maar de hoogste toegangs- en bewerkingskosten. Gegevens in deze laag moeten eerst worden opgehaald voordat ze kunnen worden geraadpleegd, wat uren kan duren. Ideaal voor langdurige archivering van gegevens die zelden worden gebruikt
+
+## Azure Database resources
+
+Je hebt `Azure SQL Database`, een volledig beheerde relationele database-service gebaseerd op Microsoft SQL Server. Deze service neemt veel van het beheer en de onderhoudstaken uit handen, zoals patching, back-ups en schaling. Dit noemen we ook wel Platform as a Service (PaaS). Je kunt eenvoudig databases maken, beheren en schalen via de Azure Portal, CLI of API's.
+
+`Azure SQL Managed Instance` is een andere variant van Azure SQL Database die meer compatibiliteit biedt met on-premises SQL Server-omgevingen. Het is ontworpen voor organisaties die hun bestaande SQL Server-workloads naar de cloud willen migreren zonder grote wijzigingen aan te brengen. Managed Instance biedt bijna volledige compatibiliteit met SQL Server, inclusief ondersteuning voor SQL Agent, cross-database queries en meer. Het is ook een PaaS-oplossing, wat betekent dat Microsoft het beheer en onderhoud van de onderliggende infrastructuur verzorgt.
+
+`MYSQL` , `PostgreSQL` en `MariaDB` zijn populaire open-source relationele databasesystemen die ook beschikbaar zijn als volledig beheerde diensten in Azure. Azure Database for MySQL en Azure Database for PostgreSQL bieden vergelijkbare voordelen als Azure SQL Database.
+
+- Citus: Is een hyperscale optie voor PostgreSQL binnen Azure. Het maakt het mogelijk om PostgreSQL-databases horizontaal te schalen door gegevens over meerdere knooppunten te verdelen.
+
+`Cosmos DB` is een volledig beheerde NoSQL-database-service die is ontworpen voor schaalbaarheid, lage latentie en wereldwijde distributie. Het ondersteunt meerdere API's, waaronder SQL, MongoDB, Cassandra, Gremlin en Table API.
+
+- Multi-model: Cosmos DB ondersteunt verschillende datamodellen, waaronder document, key-value, grafiek en kolom-georiënteerde modellen.
+- Multi-consistency: Biedt vijf goed gedefinieerde consistentieniveaus om te kiezen, afhankelijk van de behoeften van de applicatie.
+
+> NoSQL-databases worden zo genoemd omdat ze niet het traditionele relationele databasemodel volgen. Het zorgt ervoor dat je zoals Cosmos DB, MongoDB, Cassandra, etc. flexibeler bent in het opslaan van gegevens. In plaats van tabellen met rijen en kolommen, kunnen NoSQL-databases verschillende structuren gebruiken zoals documenten, key-value paren, grafieken of kolom-georiënteerde opslag.
+
+`Azure Files` is een volledig beheerde bestandsdelingservice in Azure die toegankelijk is via het SMB- of NFS-protocol. Dit staat gelijk aan een gedeelde netwerkmap die je kunt gebruiken om bestanden op te slaan en te delen tussen meerdere virtuele machines en on-premises systemen. Azure Files is ideaal voor scenario's waarin je gedeelde configuratiebestanden, logs of applicatiegegevens wilt opslaan die toegankelijk moeten zijn vanaf verschillende locaties.
+
+`Azure File Sync` is een service die het mogelijk maakt om bestanden te synchroniseren tussen on-premises bestandsservers en Azure Files. Dit zorgt voor een hybride opslagoplossing waarbij je lokale bestanden kunt behouden terwijl je profiteert van de schaalbaarheid en beschikbaarheid van Azure Files. Met Azure File Sync kun je ook meerdere on-premises locaties synchroniseren met dezelfde Azure File Share, waardoor het eenvoudig is om bestanden te delen en te beheren over verschillende locaties.
+
+We hebben een scenario waar we on premise snmb share hebben en we willen deze migreren naar Azure Files. We kunnen dit doen met Azure File Sync. We installeren een agent op de on-premises server die de bestanden synchroniseert met Azure Files. Dit zorgt ervoor dat alle wijzigingen die lokaal worden aangebracht automatisch worden gesynchroniseerd met Azure Files, en vice versa. Hierdoor kunnen we geleidelijk migreren naar de cloud zonder downtime of gegevensverlies. We kunnen ook kiezen om ook gedeeltelijk lokaal te cachen zodat veelgebruikte bestanden snel toegankelijk zijn zonder dat ze telkens uit de cloud hoeven te worden opgehaald.
+
+Het grote voordeel van deze werkwijze is dat je dan via Azure AD toegangscontrole kunnen regelen.
+
+`Cloud Tiers` is een functie binnen Azure Files die het mogelijk maakt om automatisch bestanden te verplaatsen tussen verschillende opslaglagen op basis van hun gebruikspatronen. Dit helpt om opslagkosten te optimaliseren door minder vaak geraadpleegde bestanden naar goedkopere opslaglagen te verplaatsen, terwijl veelgebruikte bestanden snel toegankelijk blijven.
+
+### Azure Storage Explorer
+
+Azure Storage Explorer is een gratis, zelfstandige applicatie die het mogelijk maakt om Azure-opslagaccounts te beheren en te verkennen. Met Storage Explorer kunnen we eenvoudig bestanden uploaden, downloaden en beheren in verschillende Azure-opslagdiensten, zoals Blob Storage, Azure Files, Queue Storage en Table Storage. Goed voor een interactie waar we weinig data willen overzetten of beheren zonder dat we de Azure Portal hoeven te gebruiken. Het biedt een gebruiksvriendelijke interface waarmee we snel toegang hebben tot onze opslagresources en deze kunnen beheren vanaf onze lokale machine. Voor meerdere bestanden is het handiger om AzCopy te gebruiken.
+
+### AzCopy
+
+AzCopy is een command-line tool die is ontworpen voor het efficiënt kopiëren van data naar en van Azure Storage.
+
+- Automatiseren: AzCopy kan worden geïntegreerd in scripts en geautomatiseerde workflows, waardoor het ideaal is voor regelmatige back-ups of gegevensmigraties.
+- Copy/Sync: AzCopy ondersteunt zowel het kopiëren van bestanden als het synchroniseren van mappen tussen lokale systemen en Azure Storage. Dit maakt het eenvoudig om gegevens up-to-date te houden tussen verschillende locaties.
+- Cloud to Cloud: AzCopy kan ook worden gebruikt om gegevens direct tussen verschillende Azure Storage-accounts te kopiëren, wat handig is voor het verplaatsen van gegevens tussen omgevingen of regio's.
+
+### Azure Migrate
+
+Azure Migrate is een dienst die helpt bij het plannen en uitvoeren van de migratie van on-premises workloads naar Azure. Het biedt tools en services om de huidige infrastructuur te beoordelen, migratie-opties te evalueren en de migratie zelf uit te voeren. Azure Migrate ondersteunt verschillende soorten workloads, waaronder virtuele machines, databases, applicaties en gegevens.
+
+- VM-migratie: Azure Migrate biedt tools om on-premises virtuele machines te ontdekken, beoordelen en migreren naar Azure Virtual Machines.
+- Database-migratie: Het ondersteunt ook de migratie van on-premises databases naar Azure
+- Applicatiemigratie: Azure Migrate kan helpen bij het migreren van on-premises applicaties naar Azure App Service of andere Azure-diensten.
+- Gegevensmigratie: Het biedt tools om grote hoeveelheden gegevens te migreren naar Azure Storage of andere Azure-diensten.
+
+> Azcopy , Azure migrate , Azure Files, Azure File Sync, AzCopy zijn allemaal online-diensten. Je hebt een werkende internetverbinding nodig om deze te gebruiken.
+
+### Azure Data Box
+
+Azure Data Box is een fysieke apparaatoplossing die wordt aangeboden door Microsoft om grote hoeveelheden gegevens veilig naar Azure te migreren. Het is ontworpen voor scenario's waarin het overbrengen van gegevens via het internet onpraktisch of te tijdrovend is, zoals bij zeer grote datasets of beperkte netwerkbandbreedte.
+
+- Disk : Dit is een kleiner apparaat dat geschikt is voor het overbrengen van enkele terabytes aan gegevens. Het apparaat wordt naar de klant gestuurd, die de gegevens erop kopieert en het vervolgens terugstuurt naar Microsoft voor upload naar Azure.
+- Box : Is voor export en import van grotere datasets, tot 80 TB. Het apparaat heeft meerdere harde schijven en is ontworpen voor het veilig overbrengen van grote hoeveelheden gegevens.
+- Data Box Heavy: Dit is een robuuster apparaat dat tot 770TB aan gegevens kan overbrengen. Het is bedoeld voor zeer grote datasets en biedt extra beveiligingsfuncties om de gegevens tijdens het transport te beschermen.
+
+> Dit is offline data transfer. Je krijgt een fysieke apparaat opgestuurd van Microsoft, je sluit deze aan op je netwerk, kopieert de data erop en stuurt het apparaat terug naar Microsoft. Zij laden de data dan voor je in Azure. Als je er data wilt afhalen kan je hetzelfde doen maar dan in omgekeerde volgorde.
+
+## Azure Marketplace
+
+Azure Marketplace is een online winkel waar je duizenden vooraf gebouwde applicaties, diensten en oplossingen kunt vinden die zijn ontwikkeld door Microsoft en 3e partijen. Dit zijn kant & klare deployable oplossingen die je direct in je Azure-omgeving kunt implementeren.
+Deze worden aangerekend op basis van licenses per uur maar er zijn ook waar je je eigen licentie voor moet hebben (BYOL - Bring Your Own License).
+
+## Azure IOT services
+
+Azure IoT (Internet of Things) services zijn een reeks cloudgebaseerde diensten die zijn ontworpen om IoT-oplossingen te bouwen, implementeren en beheren.
+Het doel van IoT is om fysieke apparaten te verbinden met het internet, zodat ze gegevens kunnen verzamelen, verzenden en ontvangen. Dit voor telemetry gegevens, command & control en met andere apparaten communiceren. Dit brengt nieuwe problemen met zich mee qua veiligheid omdat deze apparaten vaak kwetsbaarder zijn dan traditionele IT-apparaten.
+
+We willen graag sensors, identiteitsbeheer, data-analyse en integratie met andere systemen. Azure IoT biedt verschillende diensten die deze functionaliteiten ondersteunen, zoals:
+
+### Azure IoT Hub
+
+Azure IoT Hub is een beheerde service (PAAS) die fungeert als een centrale hub voor het verbinden, bewaken en beheren van IoT-apparaten. Het ondersteunt bidirectionele communicatie tussen apparaten en de cloud, waardoor je gegevens kunt verzamelen van apparaten en commando's kunt verzenden naar apparaten. IoT Hub biedt ook functies zoals apparaatregistratie, apparaatbeheer en beveiliging.
+
+Device to cloud --> Metrics, Telemetry data
+Device --> Cloud upload & request response
+Cloud to device --> Command & Control & firmware updates
+
+Device twins: Virtuele representaties van fysieke apparaten in de cloud. Hiermee kun je de staat en configuratie van apparaten bijhouden en synchroniseren tussen de cloud en de apparaten. Dit is een manier om met de apparaten te communiceren zonder dat je direct verbinding hoeft te maken. Dit wordt de verantwoordelijkheid van IoT Hub.
+
+SDK's: IoT Hub biedt SDK's voor verschillende programmeertalen, waardoor het eenvoudiger wordt om IoT-toepassingen te ontwikkelen en apparaten te integreren met de hub. Ik moet enkel een applicatie maken die de SDK gebruikt om met IoT Hub te communiceren.
+
+### Azure IoT Central
+
+Azure IoT Central is een volledig beheerde (SAAS) IoT-applicatieplatform dat is ontworpen om het bouwen en implementeren van IoT-oplossingen te vereenvoudigen. Het biedt een gebruiksvriendelijke interface en vooraf gebouwde sjablonen om snel IoT-toepassingen te maken.  IoT Central gebruikt IoT Hub als de onderliggende communicatie- en apparaatbeheerlaag, maar voegt extra functionaliteiten toe zoals dashboards, rapportage, device templates en integraties met andere Azure-diensten. Dit is als je wilt dat het out-of-the-box werkt zonder dat je zelf veel moet ontwikkelen.
+
+Je kan via een wizard instellen die bepaalde acties ondernemen wanneer een sensor een bepaalde waarde overschrijdt. Je kan dit volledig zelf samenstellen via een eenvoudige interface.
+
+- Signal --> condition --> Action --> Email, SMS, Webhook, Function, Logic App
+
+### Azure Sphere
+
+Azure Sphere is een end-to-end beveiligde IoT-oplossing die bestaat uit drie geïntegreerde componenten:
+
+- Een beveiligde microcontroller (MCU) met ingebouwde hardware-beveiliging.
+- Een op Linux gebaseerd besturingssysteem (Azure Sphere OS) dat applicaties isoleert en beveiligde updates ondersteunt.
+- AS3 – de Azure Sphere Security Service, de cloudgebaseerde beveiligingslaag die zorgt voor continue verificatie, certificaatbeheer en beveiligde OS- en applicatie-updates.
+
+Dit is nodig als veiligheid cruciaal is voor je IoT-apparaten, zoals in industriële toepassingen, gezondheidszorg of kritieke infrastructuren.
+
+## Big Data en Analytics
+
+Azure biedt verschillende diensten voor big data en analytics, waarmee je grote hoeveelheden gegevens kunt verwerken, analyseren en visualiseren.
+
+### Azure Data Factory
+
+Azure Data Factory (ADF)
+
+Azure Data Factory is een cloudgebaseerde gegevensintegratie- en orchestratieservice. Het maakt het mogelijk om gegevens uit verschillende bronnen te extraheren, te transformeren en te laden (ETL/ELT) naar diverse doelsystemen. Met ADF kunnen data pipelines worden opgebouwd, gepland, beheerd en geautomatiseerd via een visuele interface of code.
+
+ADF fungeert als orchestrator het:
+
+- Verplaatst data tussen systemen (copy activities).
+- Voert dataworkflows uit volgens schema’s of triggers.
+- Start berekeningen in andere platformen (zoals Spark, Databricks, HDInsight).
+- Automatiseert ETL- en ELT-processen.
+- Integreert met vrijwel elke Azure-dienst en veel externe systemen.
+
+ADF is dus de dirigent van het dataverwerkingsproces en geen data opslag- of verwerkingsdienst op zich.
+
+`Azure Synapse Analytics` is een geïntegreerd analytics-platform dat datawarehousing, big-data-verwerking en data-integratie combineert binnen één omgeving. Het bevat zowel SQL-gebaseerde analyse, Apache Spark-verwerking als Synapse Pipelines, die dezelfde technologie gebruiken als Azure Data Factory voor het bouwen van dataworkflows.
+Synapse stuurt Azure Data Factory niet aan, maar bevat zelf ingebouwde orkestratiefuncties die functioneel vergelijkbaar zijn. Hierdoor kunnen zowel opslag, verwerking als integratie vanuit één centrale omgeving worden beheerd.
+
+### Extract, Transform, Load (ETL)
+
+ETL (Extract, Transform, Load)
+Extract, Transform, Load (ETL) is een gegevensverwerkingsproces waarbij data vanuit één of meerdere bronnen wordt opgehaald, vervolgens wordt opgeschoond en omgevormd, en tenslotte wordt geladen in een doelsysteem. ETL is een kernonderdeel van data-integratie en vormt de basis voor analytische omgevingen zoals data warehouses en data lakes.
+
+Het proces bestaat uit drie stappen:
+
+- Extract – Het ophalen van data uit diverse bronnen (bijvoorbeeld applicaties, API’s, databases of sensoren).
+- Transform – Het opschonen, verrijken en structureren van de data. Denk aan cleaning, wrangling en het toepassen van businessregels.
+- Load – Het wegschrijven van de getransformeerde data naar een doelsysteem (de sink), zoals een SQL-database, Cosmos DB of een analytische omgeving.
+
+In veel moderne architecturen wordt dit volledige proces aangestuurd door een orchestrator (zoals Azure Data Factory of Synapse Pipelines), die bepaalt wanneer welke stap wordt uitgevoerd.
+
+`Data Lake` is een opslagomgeving waarin grote hoeveelheden gestructureerde, semi-gestructureerde en ongestructureerde data kunnen worden opgeslagen. In tegenstelling tot traditionele databases hoeft data niet vooraf te worden omgevormd; het kan in zijn oorspronkelijke RAW formaat worden opgeslagen.
+
+Dit biedt belangrijke voordelen:
+
+- Je kunt later verschillende analysemethoden toepassen.
+- Nieuwe tools of machine-learningmodellen kunnen direct op de ruwe data worden gebruikt.
+- De opslag is schaalbaar en flexibel.
+- Een data lake fungeert daarmee vaak als tussenlaag of verzamelplaats binnen een ETL- of ELT-proces: data wordt eerst geparkeerd in het lake en van daaruit verder verwerkt of geanalyseerd.
+
+### HDInsight
+
+Azure HDInsight is een volledig beheerde cloudservice die het mogelijk maakt om big data- en analytische workloads uit te voeren met behulp van populaire open-source frameworks zoals Apache Hadoop, Spark, Hive, HBase, Storm en Kafka. Deze kan je bijvoorbeeld loslaten op data die is opgeslagen in Azure Data Lake Storage of Azure Blob Storage. HDInsight neemt veel van de complexiteit weg die gepaard gaat met het opzetten en beheren van big data-clusters, waardoor je je kunt concentreren op het analyseren van gegevens en het bouwen van data-intensieve toepassingen. 
+
+`Hadoop` is een open-source big-data framework dat grote hoeveelheden gegevens verwerkt via gedistribueerde opslag en verwerking. Het bestaat uit twee kerncomponenten:
+HDFS (Hadoop Distributed File System): Slaat data op over meerdere nodes, met automatische replicatie voor fouttolerantie en hoge beschikbaarheid.
+MapReduce: Batchverwerkingsmodel dat taken opsplitst in kleine stukken, deze parallel uitvoert op het cluster en de resultaten samenvoegt.
+
+`Apache Spark` is een open-source big-data verwerkingsframework dat ontworpen is voor snelle, in-memory data-analyse. In tegenstelling tot Hadoop MapReduce voert Spark berekeningen voornamelijk uit in RAM, waardoor het tot tintallen keren sneller kan zijn. Spark ondersteunt zowel batch- als near real-time verwerking binnen één uniform platform.
+Belangrijke componenten binnen Spark zijn:
+
+- Spark SQL: SQL-queries en gestructureerde data-analyse.
+- Spark Streaming: Near real-time verwerking via micro-batching.
+- MLlib: Bibliotheek voor machine learning-algoritmes op schaal.
+- GraphX: Framework voor grafiek- en netwerk-analyses.
+
+| Framework  | Type       | Gebruik                    | Snelheid  | Bijzonder                         |
+| ---------- | ---------- | -------------------------- | --------- | --------------------------------- |
+| **Hadoop** | Disk-based | Batch                      | Langzaam  | Zeer schaalbaar                   |
+| **Spark**  | In-memory  | Batch + ML + Streaming     | Zeer snel | Unified engine                    |
+| **Hive**   | Disk-based | SQL op big data            | Matig     | Bouwt op Hadoop (live-query)      |
+| **HBase**  | Disk-based | NoSQL, random access       | Snel      | Lage latency, niet voor analytics |
+| **Storm**  | In-memory  | True real-time streaming   | Zeer snel | Event-by-event verwerking         |
+| **Kafka**  | Log-based  | Data pipelines & messaging | Zeer snel | Backbone voor streaming           |
+
+`Azure data bricks` is een samenwerkingsplatform voor datawetenschap en engineering dat is gebouwd op Apache Spark. Het biedt een geïntegreerde omgeving voor het ontwikkelen, trainen en implementeren van machine learning-modellen en data-analyseworkflows. Azure Databricks combineert de kracht van Spark met gebruiksvriendelijke tools zoals notebooks, dashboards en geautomatiseerde workflows, waardoor teams efficiënter kunnen samenwerken aan data-intensieve projecten.
+
+### AI services
+
+Azure AI services zijn een reeks cloudgebaseerde diensten die kunstmatige intelligentie (AI) en machine learning (ML) functionaliteiten bieden.
+
+Azure Machine Learning is een platform voor het bouwen, trainen en implementeren van machine learning-modellen. Het biedt tools voor dataverwerking, modeltraining, hyperparameterafstemming, AutoML en modelbeheer. Er is totale controle over het machine learning-proces, van data-preprocessing tot modeldeployment.
+
+- Data ophalen: vanuit Azure Storage, Data Lake, databases of externe bronnen.
+- Train & evalueer: modellen trainen op lokale of cloudcompute en evalueren met geregistreerde metrics.
+- Pipelines: automatiseren van stappen zoals datavoorbereiding, training en validatie.
+- Deploy: modellen uitrollen als API-services via AKS(Azure Kubernetes Service), ACI (Azure Container Instances) of managed endpoints.
+
+### Azure Cognitive Services
+
+Azure Cognitive Services is een verzameling van vooraf gebouwde AI-modellen en API's die ontwikkelaars kunnen gebruiken om intelligente functies toe te voegen aan hun applicaties zonder dat ze diepgaande kennis van machine learning nodig hebben. Deze diensten zijn onderverdeeld in verschillende categorieën, waaronder:
+
+- Vision: Bevat API's voor beeldherkenning, gezichtsherkenning, objectdetectie en OCR (Optical Character Recognition).
+- Speech: Biedt spraakherkenning, spraaksynthese, vertaling en spraaktranscriptie.
+- Language: Omvat natuurlijke taalverwerking, sentimentanalyse, tekstanalyse en vertaling.
+- Decision: Bevat diensten voor aanbevelingssystemen, anomaliedetectie en contentmoderatie.
+
+### Azure Bot Services
+
+Azure Bot Services is een platform voor het bouwen, implementeren en beheren van intelligente chatbots die kunnen communiceren met gebruikers via verschillende kanalen, zoals websites, mobiele apps, Microsoft Teams, Slack en meer. Het maakt gebruik van de Microsoft Bot Framework en integreert naadloos met andere Azure-diensten, zoals Cognitive Services, om geavanceerde AI-functionaliteiten toe te voegen aan de bots. Dit wordt veel gebruikt voor klantenservice, verkoopondersteuning en interne bedrijfsprocessen.
+
+- Virtuele agenten: Bouwen van chatbots die natuurlijke taal begrijpen en reageren op gebruikersvragen.
+
+### Serverless Technologies
+
+Het is consumption based, wat betekent dat je alleen betaalt voor de compute resources die je daadwerkelijk gebruikt tijdens de uitvoering van je code. Er zijn geen vaste kosten voor inactiviteit. Ze worden aangestuurd door event-driven architectuur, wat betekent dat ze automatisch worden uitgevoerd als reactie op bepaalde gebeurtenissen, zoals HTTP-aanvragen, timergebaseerde triggers, berichten in een wachtrij of wijzigingen in een database.
+
+`Azure Functions` is een serverless compute-service waarmee je kleine stukjes code (functies) kunt uitvoeren in reactie op gebeurtenissen zonder dat je je zorgen hoeft te maken over de onderliggende infrastructuur. Je kunt functies schrijven in verschillende programmeertalen, zoals C#, JavaScript, Python en meer. Azure Functions is ideaal voor het bouwen van microservices, het verwerken van gegevensstromen, het automatiseren van taken en het integreren van systemen.
+Azure Functions is stateless, wat betekent dat elke uitvoering van een functie onafhankelijk is en geen informatie behoudt tussen oproepen.
+Je hebt ook Durable Functions, een uitbreiding van Azure Functions die het mogelijk maakt om stateful workflows te bouwen binnen een serverless architectuur.
+
+> Bij default is het stateless maar met Durable Functions kan je stateful workflows bouwen.
+
+`Azure Logic Apps` is een cloudgebaseerde dienst waarmee je geautomatiseerde workflows kunt bouwen en beheren zonder code of een kleine hoeveelheid code te schrijven. Het biedt een visuele ontwerper waarmee je eenvoudig verschillende diensten en systemen kunt integreren via vooraf gebouwde connectors. Het is automatiseren op basis van een trigger (bijv. een inkomende e-mail, een bestand dat wordt geüpload, een timergebeurtenis) en vervolgens een reeks acties uitvoeren (bijv. gegevens verwerken, meldingen verzenden, API-aanroepen doen).
+
+### Devops Technologies
+
+Devops is een soort cultuur en een set van praktijken die de samenwerking en communicatie tussen softwareontwikkeling (Dev) en IT-operations (Ops) teams bevorderen. Het doel is om de softwareleveringscyclus te versnellen, de kwaliteit van de software te verbeteren en de betrouwbaarheid van systemen te waarborgen door automatisering, continue integratie en continue levering (CI/CD) toe te passen. Het is niet perse een tool maar er zijn wel tools die dit proces ondersteunen.
+
+`Azure DevOps` is een cloudgebaseerd platform dat een reeks tools en diensten biedt voor softwareontwikkeling, samenwerking en continue integratie/continue levering (CI/CD). Het ondersteunt teams bij het plannen, bouwen, testen en implementeren van softwaretoepassingen. Azure DevOps omvat verschillende componenten, waaronder Azure Repos (broncodebeheer), Azure Pipelines (CI/CD), Azure Boards (projectbeheer), Azure Test Plans (testbeheer) en Azure Artifacts (pakketbeheer).
+
+De bedoeling van Azure Repo's is om versiebeheer te bieden voor broncode en andere bestanden. Het ondersteunt zowel Git als Team Foundation Version Control (TFVC) als versiebeheersystemen. Met Azure Repos kunnen teams samenwerken aan code, wijzigingen bijhouden, branches beheren en pull requests gebruiken om code te beoordelen en samen te voegen. Ze kunnen ook lokale repositories klonen naar hun ontwikkelomgeving om offline te werken.
+
+Er is wel een grotere speler in dit domein: `GitHub`. GitHub is een webgebaseerd platform voor versiebeheer en samenwerking dat is gebouwd rond het Git-versiebeheersysteem. Het stelt ontwikkelaars in staat om code op te slaan, te beheren en samen te werken aan projecten. GitHub biedt functies zoals pull requests, issues, project boards en integraties met andere tools en diensten. Het is een van de populairste platforms voor open-source en private softwareontwikkeling. Er is ook Github Actions, wat vergelijkbaar is met Azure Pipelines. Hiermee kan je CI/CD workflows bouwen die automatisch code bouwen, testen en implementeren op basis van gebeurtenissen zoals pushen naar een repository of het openen van een pull request.
