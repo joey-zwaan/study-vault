@@ -6,41 +6,44 @@ services:
     container_name: uptime-kuma
     image: louislam/uptime-kuma:debian
     restart: unless-stopped
+    environment:
+      VIRTUAL_HOST: "status.joey-home.com"
+      LETSENCRYPT_HOST: "status.joey-home.com"
+      VIRTUAL_PORT: "3001"
+#    ports:
+#      - 3001:3001
     networks:
       - plex-stack
     volumes:
       - uptime-kuma:/app/data
       - /var/run/docker.sock:/var/run/docker.sock ## Nodig voor container monitoring
-    labels:
-      - homepage.group=containers
-      - homepage.name=Uptime Kuma
-      - homepage.icon=uptime-kuma.png
-      - homepage.href=http://uptime-kuma.joey-home.com/
-      - homepage.description=Uptime monitoring tool
-      - homepage.container=uptime-kuma
 
-  homepage:
-    container_name: homepage
-    image: ghcr.io/gethomepage/homepage:latest
+
+  homarr:
+    container_name: homarr
+    image: ghcr.io/homarr-labs/homarr:latest
     restart: unless-stopped
-    networks:
-      - plex-stack
- #   ports:
- #     - 3000:3000
     volumes:
-      - homepage:/app/config # Make sure your local config directory exists
-      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - homarr:/appdata
     environment:
-      HOMEPAGE_ALLOWED_HOSTS: homepage.joey-home.com,192.168.20.11:3000
-      VIRTUAL_HOST: "homepage.joey-home.com"
-      LETSENCRYPT_HOST: "homepage.joey-home.com"
-      VIRTUAL_PORT: "3000"
-
+      SECRET_ENCRYPTION_KEY: 874c2740aff027134136cc0f6663c831f2765b7eeb759d97e97e7d07eee8bcae
+#      BASE_URL: "https://start.joey-home.com"
+      VIRTUAL_HOST: "start.joey-home.com"
+      LETSENCRYPT_HOST: "start.joey-home.com"
+      VIRTUAL_PORT: "7575"
+    networks:
+      plex-stack:
+        ipv4_address: 172.18.11.55
 
   nginx-proxy:
     container_name: nginx-proxy
     image: nginxproxy/nginx-proxy:1.9.0
     restart: unless-stopped
+    environment:
+      TZ: CEST
+      ENABLE_IPV6: true
+#      PREFER_IPV6_NETWORK: true
     ports:
       - "80:80"
       - "443:443"
@@ -122,8 +125,8 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
-#    ports:
-#      - "9696:9696"
+    ports:
+      - "9696:9696"
     environment:
       - TZ=CEST
     volumes:
@@ -193,7 +196,7 @@ services:
     restart: unless-stopped
     networks:
       plex-stack:
-        ipv4_address: 172.18.11.4
+        ipv4_address: 172.18.11.50
 
   jellyseerr:
     image: ghcr.io/fallenbagel/jellyseerr:latest
@@ -221,15 +224,17 @@ volumes:
   html:
   plex-config:
   seer:
+  homarr:
+
 networks:
   plex-stack:
     driver: bridge
     enable_ipv4: true
-    enable_ipv6: false
+    enable_ipv6: true
     ipam:
       driver: default
       config:
         - subnet: 172.18.11.0/24
           ip_range: 172.18.11.0/24
           gateway: 172.18.11.1
-
+        - subnet: fd00:11::/64
